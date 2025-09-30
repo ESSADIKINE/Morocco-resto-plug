@@ -2096,6 +2096,7 @@
 
 .header-search-input-container {
     position: relative;
+    width: 90%;
 }
 
 .header-search-input {
@@ -2106,6 +2107,7 @@
     background: white;
     transition: all 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 100%;
 }
 
 .header-search-input:focus {
@@ -2458,8 +2460,8 @@
 
 .fullscreen-map-close {
     position: absolute;
-    top: 24px;
-    right: 24px;
+    top: 10px;
+    right: 60px;
     width: 44px;
     height: 44px;
     display: flex;
@@ -2494,8 +2496,8 @@
 
 @media (max-width: 640px) {
     .fullscreen-map-close {
-        top: 16px;
-        right: 16px;
+        top: 10px;
+        right: 60px;
         width: 40px;
         height: 40px;
     }

@@ -609,7 +609,7 @@ wp_add_inline_style('lebonresto-single-css', '
 
 ?>
 
-<div class="lebonresto-single-layout single-restaurant-template min-h-screen bg-gray-50">
+<div class="lebonresto-single-layout single-restaurant-template bg-gray-50">
     <?php while (have_posts()) : the_post(); ?>
         
         <?php
@@ -1109,7 +1109,7 @@ wp_add_inline_style('lebonresto-single-css', '
 <div class="flex flex-col lg:flex-row gap-4 lg:gap-0">
     
     <!-- Right Column: Google Reviews (30%) -->
-    <div class="w-full lg:w-3/10 bg-white rounded-lg shadow-lg overflow-hidden order-2 lg:order-2">
+    <div class="w-full lg:w-3/10 shadow-lg overflow-hidden order-2 lg:order-2">
         <!-- Add Review Button -->
         <?php if (!empty($google_place_id)): ?>
             <div class="add-review-button-container" style="margin-bottom: 1rem; text-align: center; padding: 0 1rem;">
