@@ -2519,7 +2519,7 @@
             mapToggleBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 // Open fullscreen map with all restaurants (matches single page behavior)
-                if (typeof openMapFullscreen === 'function') {
+                if (typeof openMapFullscreen === 'function' && googleMapsLoaded && window.google && window.google.maps) {
                     openMapFullscreen();
                 } else {
                     openMapWithAllRestaurants();
@@ -2626,7 +2626,6 @@
                 });
                 fullscreenGoogleLabels = [];
             }
-
             fullscreenMapMode = null;
         }
     };
@@ -2913,7 +2912,6 @@
         overlay.setMap(map);
         return overlay;
     }
-
     function resetFullscreenMapContainer(mapContainer) {
         if (!mapContainer) {
             return;
