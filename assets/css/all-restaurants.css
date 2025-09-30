@@ -2625,12 +2625,6 @@
     background: rgba(255, 255, 255, 0.97);
 }
 
-);
-}
-
-flow: ellipsis;
-    white-space: nowrap;
-}
 
 @keyframes currentMarkerPulse {
     0%, 100% {
