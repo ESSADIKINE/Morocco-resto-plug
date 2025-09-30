@@ -2456,6 +2456,56 @@
     height: 100%;
 }
 
+.fullscreen-map-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 9999px;
+    background: rgba(15, 23, 41, 0.85);
+    color: #f9fafb;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 30px rgba(15, 23, 41, 0.35);
+    z-index: 10001;
+}
+
+.fullscreen-map-close:hover,
+.fullscreen-map-close:focus {
+    background: rgba(30, 41, 59, 0.95);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.fullscreen-map-close:focus-visible {
+    outline: 3px solid rgba(254, 220, 0, 0.8);
+    outline-offset: 2px;
+}
+
+.fullscreen-map-close svg {
+    width: 22px;
+    height: 22px;
+}
+
+@media (max-width: 640px) {
+    .fullscreen-map-close {
+        top: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .fullscreen-map-close svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
 .leaflet-popup.fullscreen-map-popup .leaflet-popup-content-wrapper {
     background: rgba(255, 255, 255, 0.97);
     border-radius: 18px;
