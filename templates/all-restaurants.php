@@ -32,6 +32,9 @@ wp_enqueue_script('lebonresto-all-restaurants', LEBONRESTO_PLUGIN_URL . 'assets/
 
 // Get plugin options
 $options = get_option('lebonresto_options', array());
+$initial_restaurants_for_map = function_exists('lebonresto_get_all_restaurants_for_map')
+    ? lebonresto_get_all_restaurants_for_map()
+    : array();
 
 // Localize script
 wp_localize_script('lebonresto-all-restaurants', 'lebonrestoAll', array(
@@ -44,7 +47,9 @@ wp_localize_script('lebonresto-all-restaurants', 'lebonrestoAll', array(
         'defaultRadius' => isset($options['default_radius']) ? intval($options['default_radius']) : 25,
         'maxRadius' => isset($options['max_radius']) ? intval($options['max_radius']) : 100,
         'primaryColor' => isset($options['primary_color']) ? $options['primary_color'] : '#fedc00',
+        'siteUrl' => home_url('/'),
     ),
+    'initialRestaurants' => $initial_restaurants_for_map,
     'strings' => array(
         'loading' => __('Chargement...', 'le-bon-resto'),
         'noResults' => __('Aucun restaurant trouvé', 'le-bon-resto'),
