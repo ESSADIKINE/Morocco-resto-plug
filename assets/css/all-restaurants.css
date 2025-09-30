@@ -2456,6 +2456,22 @@
     height: 100%;
 }
 
+.leaflet-popup.fullscreen-map-popup .leaflet-popup-content-wrapper {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 18px;
+    box-shadow: 0 20px 45px rgba(15, 23, 41, 0.25);
+    padding: 0;
+}
+
+.leaflet-popup.fullscreen-map-popup .leaflet-popup-content {
+    margin: 0;
+    padding: 12px;
+}
+
+.leaflet-popup.fullscreen-map-popup .leaflet-popup-tip {
+    background: rgba(255, 255, 255, 0.97);
+}
+
 @media (max-width: 480px) {
     .popup-container {
         width: 100%;
