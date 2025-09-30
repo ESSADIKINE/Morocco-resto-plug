@@ -4,37 +4,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 
 :root {
-    --primary-color: #a8231a;
-    --primary-dark: #7f1d1d;
-    --primary-light: #c94d3d;
-    --text-primary: #2c1a12;
-    --text-secondary: #513126;
-    --text-muted: #7a5649;
-    --border-color: rgba(217, 164, 65, 0.35);
-    --border-light: rgba(217, 164, 65, 0.2);
-    --bg-white: #fff7ef;
-    --bg-gray-50: #f8f2ea;
-    --bg-gray-100: #f0e2d2;
-    --shadow-sm: 0 2px 6px rgba(47, 23, 18, 0.08);
-    --shadow-md: 0 10px 20px rgba(15, 79, 76, 0.12);
-    --shadow-lg: 0 20px 35px rgba(168, 35, 26, 0.18);
-    --radius-sm: 6px;
-    --radius-md: 12px;
-    --radius-lg: 18px;
+    --primary-color: #b3342b;
+    --primary-dark: #7d221c;
+    --primary-light: #d75e43;
+    --text-primary: #271714;
+    --text-secondary: #4e3129;
+    --text-muted: #826051;
+    --border-color: rgba(244, 193, 97, 0.4);
+    --border-light: rgba(244, 193, 97, 0.25);
+    --bg-white: #fffaf2;
+    --bg-gray-50: #faf4ed;
+    --bg-gray-100: #f1e4d6;
+    --shadow-sm: 0 2px 8px rgba(26, 24, 23, 0.08);
+    --shadow-md: 0 12px 28px rgba(15, 73, 63, 0.14);
+    --shadow-lg: 0 24px 45px rgba(179, 52, 43, 0.18);
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 22px;
     --transition: all 0.25s ease;
-    --success-color: #3ba58d;
+    --success-color: #2e8a72;
     --error-color: #c24141;
-    --accent-color: #d9a441;
-    --pattern-overlay: radial-gradient(circle at 10% 10%, rgba(255, 247, 239, 0.2) 6%, transparent 7%),
-        radial-gradient(circle at 90% 10%, rgba(255, 247, 239, 0.2) 6%, transparent 7%),
-        radial-gradient(circle at 10% 90%, rgba(255, 247, 239, 0.2) 6%, transparent 7%),
-        radial-gradient(circle at 90% 90%, rgba(255, 247, 239, 0.2) 6%, transparent 7%);
+    --accent-color: #f4c161;
+    --pattern-overlay: radial-gradient(circle at 12% 16%, rgba(255, 250, 242, 0.22) 6%, transparent 7%),
+        radial-gradient(circle at 88% 18%, rgba(255, 250, 242, 0.2) 6%, transparent 7%),
+        radial-gradient(circle at 14% 88%, rgba(255, 250, 242, 0.2) 6%, transparent 7%),
+        radial-gradient(circle at 86% 84%, rgba(255, 250, 242, 0.18) 6%, transparent 7%);
 }
 
 /* Main layout with improved background */
 .lebonresto-single-layout {
-    background: radial-gradient(circle at top left, rgba(168, 35, 26, 0.08), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(15, 79, 76, 0.08), transparent 55%),
+    background: radial-gradient(circle at 0% 0%, rgba(179, 52, 43, 0.08), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(15, 106, 88, 0.1), transparent 52%),
         var(--bg-gray-50) !important;
     min-height: 80vh !important;
     font-family: 'Manrope', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
@@ -47,8 +47,8 @@
     position: fixed;
     inset: 0;
     background-image: var(--pattern-overlay);
-    background-size: 150px 150px;
-    opacity: 0.35;
+    background-size: 170px 170px;
+    opacity: 0.3;
     pointer-events: none;
     z-index: -1;
 }
@@ -88,7 +88,7 @@
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    background: linear-gradient(45deg, transparent 30%, rgba(254, 220, 0, 0.1) 50%, transparent 70%) !important;
+    background: linear-gradient(45deg, transparent 30%, rgba(244, 193, 97, 0.16) 50%, transparent 70%) !important;
     pointer-events: none !important;
     z-index: -1 !important;
 }
