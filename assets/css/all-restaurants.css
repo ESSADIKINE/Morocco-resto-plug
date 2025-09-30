@@ -8,7 +8,7 @@
     --text-muted: #767676;
     --border-color: #e0e0e0;
     --border-light: #f0f0f0;
-    --bg-white: #1f2937;
+    --bg-white: #0f1729;
     --bg-gray-50: #fafafa;
     --bg-gray-100: #f5f5f5;
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -1396,7 +1396,6 @@
     right: 0 !important;
     bottom: 0 !important;
     background: rgba(0, 0, 0, 0.5) !important;
-    z-index: 9999 !important;
     display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
@@ -1494,7 +1493,7 @@
         visibility: visible !important;
         opacity: 1 !important;
         position: fixed !important;
-        bottom: 20px !important;
+        bottom: 70px !important;
         right: 20px !important;
         z-index: 1000 !important;
         pointer-events: auto !important;
@@ -1502,7 +1501,7 @@
     
     .mobile-filter-toggle button {
         background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-        color: #1f2937 !important;
+        color: #0f1729 !important;
         border: none !important;
         border-radius: 12px !important;
         padding: 12px 16px !important;
@@ -1538,7 +1537,7 @@
         width: 20px !important;
         height: 20px !important;
         fill: currentColor !important;
-        color: #1f2937 !important;
+        color: #0f1729 !important;
         flex-shrink: 0 !important;
     }
     
@@ -1549,7 +1548,7 @@
     /* Text styling */
     .mobile-filter-toggle .filter-text {
         display: block !important;
-        color: #1f2937 !important;
+        color: #0f1729 !important;
         font-weight: 600 !important;
         font-size: 14px !important;
         letter-spacing: 0.5px !important;
@@ -1586,7 +1585,7 @@
     padding: 14px 16px !important;
     font-size: 15px !important;
     font-weight: 500 !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
@@ -1663,7 +1662,7 @@
 /* Apply button specific styling */
 .mobile-filter-panel button[style*="background-color: #fedc00"] {
     background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     border: none !important;
 }
 
@@ -1698,7 +1697,7 @@
 }
 
 .mobile-filter-panel h3 {
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     font-size: 18px !important;
     font-weight: 700 !important;
     margin: 0 !important;
@@ -1717,7 +1716,7 @@
     border-radius: 50% !important;
     cursor: pointer !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     font-size: 18px !important;
     font-weight: bold !important;
     padding: 0 !important;
@@ -1733,7 +1732,7 @@
     stroke-width: 2.5 !important;
     stroke-linecap: round !important;
     stroke-linejoin: round !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     transition: all 0.3s ease !important;
 }
 
@@ -2017,7 +2016,7 @@
         --text-primary: #ffffff;
         --text-secondary: #d1d5db;
         --text-muted: #9ca3af;
-        --bg-white: #1f2937;
+        --bg-white: #0f1729;
         --bg-gray-50: #111827;
         --bg-gray-100: #374151;
         --border-color: #374151;
@@ -2213,7 +2212,6 @@
 @media (min-width: 768px) {
     .header-controls-section {
         flex-direction: row;
-        justify-content: flex-end;
         align-items: center;
         gap: 2rem;
     }
@@ -2299,7 +2297,7 @@
 .popup-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #1f2937;
+    color: #0f1729;
     margin: 0;
 }
 
@@ -2487,7 +2485,7 @@
 .marker-name {
     font-size: 0.75rem;
     font-weight: 600;
-    color: #1f2937;
+    color: #0f1729;
     margin-bottom: 2px;
     line-height: 1.2;
     max-width: 110px;
@@ -2513,7 +2511,7 @@
 .marker-rating-text {
     font-size: 0.7rem;
     font-weight: 600;
-    color: #1f2937;
+    color: #0f1729;
 }
 
 .marker-review-count {
@@ -2579,7 +2577,7 @@
     margin-top: 0.5rem;
     padding: 0.5rem 1rem;
     background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%);
-    color: #1f2937;
+    color: #0f1729;
     text-decoration: none;
     border-radius: 6px;
     font-weight: 600;

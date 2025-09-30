@@ -164,15 +164,28 @@
         console.log('Initializing mobile filters...', {
             btn: !!mobileFilterBtn,
             overlay: !!mobileFilterOverlay,
-            panel: !!mobileFilterPanel
+            panel: !!mobileFilterPanel,
+            closeBtn: !!closeMobileFilters
+        });
+        
+        // Debug: Log all mobile filter elements
+        console.log('Mobile filter elements:', {
+            button: mobileFilterBtn,
+            overlay: mobileFilterOverlay,
+            panel: mobileFilterPanel,
+            closeButton: closeMobileFilters
         });
         
         // Open mobile filters
         if (mobileFilterBtn) {
+            console.log('Adding click event listener to mobile filter button');
             mobileFilterBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-            showMobileFilters();
-        });
+                console.log('Mobile filter button clicked!');
+                showMobileFilters();
+            });
+        } else {
+            console.error('Mobile filter button not found!');
         }
 
         // Close on overlay click
@@ -1170,7 +1183,7 @@
         console.log('=== SHOWING MOBILE FILTERS ===');
         const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
         const mobileFilterPanel = document.querySelector('.mobile-filter-panel');
-        const mobileFilterToggle = document.querySelector('.mobile-filter-toggle1');
+        const mobileFilterToggle = document.querySelector('.mobile-filter-toggle');
         
         console.log('Mobile filter elements found:', {
             overlay: !!mobileFilterOverlay,
@@ -1239,7 +1252,7 @@
         console.log('=== HIDING MOBILE FILTERS ===');
         const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
         const mobileFilterPanel = document.querySelector('.mobile-filter-panel');
-        const mobileFilterToggle = document.querySelector('.mobile-filter-toggle1');
+        const mobileFilterToggle = document.querySelector('.mobile-filter-toggle');
         
         if (mobileFilterPanel && mobileFilterOverlay) {
             console.log('Starting hide animation...');
@@ -1621,7 +1634,7 @@
         return `
             <div class="restaurant-popup-content" style="min-width: 280px; max-width: 320px;">
                 <div style="margin-bottom: 1rem;">
-                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; font-weight: 700; color: #1f2937; line-height: 1.3;">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; font-weight: 700; color: #0f1729; line-height: 1.3;">
                         ${escapeHtml(title)}
                     </h3>
                     
@@ -1630,7 +1643,7 @@
                             <div style="display: flex; gap: 1px;">
                                 ${generateStars(rating)}
                             </div>
-                            <span style="font-weight: 600; color: #1f2937; font-size: 0.9rem;">${rating.toFixed(1)}</span>
+                            <span style="font-weight: 600; color: #0f1729; font-size: 0.9rem;">${rating.toFixed(1)}</span>
                             ${reviewCount > 0 ? `<span style="color: #6b7280; font-size: 0.8rem;">(${reviewCount} avis)</span>` : ''}
                         </div>
                     ` : ''}
@@ -2152,8 +2165,8 @@
                         icon: {
                             url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
                                 <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="20" cy="20" r="18" fill="#fedc00" stroke="#1f2937" stroke-width="2"/>
-                                    <path d="M20 8c-6.627 0-12 5.373-12 12 0 6.627 12 20 12 20s12-13.373 12-20c0-6.627-5.373-12-12-12zm0 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" fill="#1f2937"/>
+                                    <circle cx="20" cy="20" r="18" fill="#fedc00" stroke="#0f1729" stroke-width="2"/>
+                                    <path d="M20 8c-6.627 0-12 5.373-12 12 0 6.627 12 20 12 20s12-13.373 12-20c0-6.627-5.373-12-12-12zm0 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" fill="#0f1729"/>
                                 </svg>
                             `),
                             scaledSize: new google.maps.Size(40, 40),
@@ -2172,7 +2185,7 @@
                                              style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);" />
                                     </div>
                                     <div style="flex: 1; min-width: 0;">
-                                        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 4px 0; line-height: 1.3; color: #1f2937;">${restaurant.title}</h3>
+                                        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 4px 0; line-height: 1.3; color: #0f1729;">${restaurant.title}</h3>
                                         <p style="margin: 0 0 4px 0; font-size: 13px; line-height: 1.4; color: #6b7280;">${restaurant.address || ''}</p>
                                         <p style="margin: 0 0 8px 0; font-size: 13px; line-height: 1.4; color: #6b7280;">${restaurant.city || ''}</p>
                                         <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">

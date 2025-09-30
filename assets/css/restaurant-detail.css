@@ -5,9 +5,9 @@
     --primary-color: #fedc00;
     --primary-dark: #fedc00;
     --primary-light: #FFF8E1;
-    --secondary-color: #1f2937;
+    --secondary-color: #0f1729;
     --accent-color: #10b981;
-    --text-primary: #1f2937;
+    --text-primary: #0f1729;
     --text-secondary: #6b7280;
     --text-muted: #9ca3af;
     --bg-primary: #ffffff;
@@ -28,7 +28,7 @@
     --transition-normal: 0.3s ease;
     --transition-slow: 0.5s ease;
     --gradient-primary: linear-gradient(135deg, #fedc00 0%, #fedc00 100%);
-    --gradient-secondary: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    --gradient-secondary: linear-gradient(135deg, #0f1729 0%, #111827 100%);
     --gradient-accent: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
@@ -365,7 +365,7 @@
 }
 
 .breadcrumb-item.active {
-    color: #1f2937;
+    color: #0f1729;
     font-weight: 500;
 }
 
@@ -398,7 +398,7 @@
 
 .item-tool span:hover {
     background: #fedc00;
-    color: #1f2937;
+    color: #0f1729;
 }
 
 .dropdown-menu {
@@ -430,7 +430,7 @@
 
 .dropdown-item:hover {
     background: #f3f4f6;
-    color: #1f2937;
+    color: #0f1729;
 }
 
 /* Property Banner */
@@ -468,7 +468,7 @@
 .nav-link:hover,
 .nav-link.active {
     background: #fedc00;
-    color: #1f2937;
+    color: #0f1729;
 }
 
 .tab-content {
@@ -997,7 +997,7 @@
 
 .agent-name {
     font-weight: 600;
-    color: #1f2937;
+    color: #0f1729;
     font-size: 1.125rem;
 }
 
@@ -1032,7 +1032,7 @@
 .property-title-mobile {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #1f2937;
+    color: #0f1729;
     margin: 0.5rem 0;
 }
 
@@ -1078,7 +1078,7 @@
 .modal-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1f2937;
+    color: #0f1729;
     margin: 0;
 }
 
@@ -1091,7 +1091,7 @@
 }
 
 .close:hover {
-    color: #1f2937;
+    color: #0f1729;
 }
 
 .modal-body {

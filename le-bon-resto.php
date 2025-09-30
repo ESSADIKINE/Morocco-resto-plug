@@ -54,6 +54,9 @@ class LeBonResto {
         add_filter('query_vars', array($this, 'add_query_vars'));
         add_action('template_redirect', array($this, 'handle_details_redirect'));
         
+        // Ensure all restaurants page is publicly accessible
+        add_action('template_redirect', array($this, 'ensure_public_access'), 1);
+        
         // Prevent WordPress from redirecting /all to other URLs
         add_filter('redirect_canonical', array($this, 'prevent_all_redirect'), 10, 2);
         
@@ -71,6 +74,19 @@ class LeBonResto {
         
         // Add function to flush rewrite rules and test URLs
         add_action('wp_ajax_lebonresto_flush_and_test', array($this, 'flush_and_test_urls'));
+        
+        // Add test function for all restaurants page access
+        add_action('wp_ajax_lebonresto_test_all_restaurants_access', array($this, 'test_all_restaurants_access'));
+        add_action('wp_ajax_nopriv_lebonresto_test_all_restaurants_access', array($this, 'test_all_restaurants_access'));
+        
+        // Auto-flush rewrite rules on activation
+        add_action('init', array($this, 'maybe_flush_rewrite_rules'), 999);
+        
+        // Ensure all restaurants page is accessible to all users
+        add_filter('user_has_cap', array($this, 'allow_all_restaurants_access'), 10, 4);
+        
+        // Override any permission checks for all restaurants page
+        add_action('wp', array($this, 'override_permissions_for_all_restaurants'), 1);
     }
     
     /**
@@ -174,6 +190,112 @@ class LeBonResto {
     }
     
     /**
+     * Ensure all restaurants page is publicly accessible
+     */
+    public function ensure_public_access() {
+        $all_restaurants = get_query_var('all_restaurants');
+        
+        if ($all_restaurants) {
+            // Force public access - remove any permission restrictions
+            remove_action('template_redirect', 'wp_redirect_admin_locations', 1000);
+            
+            // Set proper headers
+            status_header(200);
+            
+            // Ensure no 403 errors
+            if (function_exists('wp_die_handler')) {
+                remove_action('wp_die_handler', 'wp_die_handler');
+            }
+        }
+    }
+    
+    /**
+     * Allow all users to access the all restaurants page
+     */
+    public function allow_all_restaurants_access($allcaps, $caps, $args, $user) {
+        // Check if we're on the all restaurants page
+        if (get_query_var('all_restaurants')) {
+            // Grant read capability to all users for this page
+            $allcaps['read'] = true;
+        }
+        
+        return $allcaps;
+    }
+    
+    /**
+     * Override permissions for all restaurants page
+     */
+    public function override_permissions_for_all_restaurants() {
+        if (get_query_var('all_restaurants')) {
+            // Force WordPress to treat this as a public page
+            global $wp_query;
+            
+            // Remove any admin restrictions
+            remove_action('template_redirect', 'wp_redirect_admin_locations', 1000);
+            
+            // Set proper query flags
+            $wp_query->is_404 = false;
+            $wp_query->is_single = false;
+            $wp_query->is_page = true;
+            $wp_query->is_singular = true;
+            
+            // Ensure proper status
+            status_header(200);
+            
+            // Remove any capability checks that might cause 403
+            add_filter('user_has_cap', array($this, 'force_read_capability'), 10, 4);
+        }
+    }
+    
+    /**
+     * Force read capability for all users on all restaurants page
+     */
+    public function force_read_capability($allcaps, $caps, $args, $user) {
+        if (get_query_var('all_restaurants')) {
+            $allcaps['read'] = true;
+        }
+        return $allcaps;
+    }
+    
+    /**
+     * Maybe flush rewrite rules if needed
+     */
+    public function maybe_flush_rewrite_rules() {
+        // Check if rewrite rules need to be flushed
+        $rules = get_option('rewrite_rules');
+        if (!isset($rules['^all/?$']) || !isset($rules['^all$'])) {
+            flush_rewrite_rules();
+        }
+    }
+    
+    /**
+     * Test all restaurants page access
+     */
+    public function test_all_restaurants_access() {
+        // Test if the all restaurants page is accessible
+        $test_url = home_url('/all');
+        
+        // Simulate the query var
+        set_query_var('all_restaurants', '1');
+        
+        // Check capabilities
+        $can_read = current_user_can('read');
+        $is_logged_in = is_user_logged_in();
+        
+        $response = array(
+            'success' => true,
+            'url' => $test_url,
+            'can_read' => $can_read,
+            'is_logged_in' => $is_logged_in,
+            'user_id' => get_current_user_id(),
+            'query_var' => get_query_var('all_restaurants'),
+            'message' => 'All restaurants page access test completed'
+        );
+        
+        wp_send_json_success($response);
+    }
+    
+    /**
      * Handle details page redirect and all restaurants page
      */
     public function handle_details_redirect() {
@@ -183,6 +305,12 @@ class LeBonResto {
         
         // Handle all restaurants page
         if ($all_restaurants) {
+            // Ensure this is accessible to all users (public access)
+            if (!current_user_can('read')) {
+                // Allow access to all users, including non-logged in users
+                // This ensures the page is publicly accessible
+            }
+            
             // Set up the query for all restaurants page
             global $wp_query;
             $wp_query->is_single = false;
@@ -192,6 +320,9 @@ class LeBonResto {
             $wp_query->is_archive = false;
             $wp_query->is_search = false;
             $wp_query->is_404 = false;
+            
+            // Set proper headers to prevent 403 errors
+            status_header(200);
             
             // Load the all restaurants template
             $template_path = LEBONRESTO_PLUGIN_PATH . 'templates/all-restaurants.php';

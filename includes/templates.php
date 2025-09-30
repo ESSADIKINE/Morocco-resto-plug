@@ -304,6 +304,44 @@ add_action('init', 'lebonresto_create_detail_css');
 add_action('init', 'lebonresto_create_detail_js');
 
 /**
+ * Ensure all restaurants page is publicly accessible
+ */
+function lebonresto_ensure_public_access() {
+    if (get_query_var('all_restaurants')) {
+        // Force public access
+        global $wp_query;
+        
+        // Set proper query flags
+        $wp_query->is_404 = false;
+        $wp_query->is_single = false;
+        $wp_query->is_page = true;
+        $wp_query->is_singular = true;
+        
+        // Set proper status
+        status_header(200);
+        
+        // Remove any admin restrictions
+        remove_action('template_redirect', 'wp_redirect_admin_locations', 1000);
+    }
+}
+
+// Hook to ensure public access
+add_action('template_redirect', 'lebonresto_ensure_public_access', 1);
+
+/**
+ * Force read capability for all users on all restaurants page
+ */
+function lebonresto_force_public_read_capability($allcaps, $caps, $args, $user) {
+    if (get_query_var('all_restaurants')) {
+        $allcaps['read'] = true;
+    }
+    return $allcaps;
+}
+
+// Add capability filter
+add_filter('user_has_cap', 'lebonresto_force_public_read_capability', 10, 4);
+
+/**
  * Create All Restaurants page on plugin activation
  */
 function lebonresto_create_all_restaurants_page() {

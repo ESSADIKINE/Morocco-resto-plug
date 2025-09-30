@@ -86,7 +86,7 @@ wp_add_inline_style('tailwind-css', '
 .bg-yellow-400 { background-color: #fedc00; }
 .bg-yellow-500 { background-color: #fedc00; }
 .text-gray-700 { color: #374151; }
-.text-gray-800 { color: #1f2937; }
+.text-gray-800 { color: #0f1729; }
 .text-gray-600 { color: #4b5563; }
 .text-yellow-600 { color: #fedc00; }
 .border { border-width: 1px; }
@@ -258,7 +258,7 @@ add_action('wp_head', function() {
 }
 
 .restaurant-name a {
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     text-decoration: none !important;
     font-weight: 600 !important;
 }
@@ -308,7 +308,7 @@ add_action('wp_head', function() {
 
 .map-fullscreen-icon i,
 .virtual-tour-fullscreen-icon i {
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     font-size: 16px !important;
 }
 
@@ -318,7 +318,7 @@ add_action('wp_head', function() {
     align-items: center !important;
     padding: 12px 24px !important;
     background-color: #fedc00 !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     font-weight: 600 !important;
     border-radius: 8px !important;
     text-decoration: none !important;
@@ -336,7 +336,7 @@ add_action('wp_head', function() {
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
     text-decoration: none !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
 }
 
 .add-review-button:active {
@@ -375,7 +375,7 @@ wp_add_inline_style('lebonresto-single-css', '
     --text-muted: #767676;
     --border-color: #e0e0e0;
     --border-light: #f0f0f0;
-    --bg-white: #ffffff;
+    --bg-white: #0f1729;
     --bg-gray-50: #fafafa;
     --bg-gray-100: #f5f5f5;
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -405,860 +405,15 @@ wp_add_inline_style('lebonresto-single-css', '
 @media (max-width: 1023px) {
     .two-column-layout {
         grid-template-columns: 1fr !important;
-    }
-}
-
-#restaurants-map {
-    border-radius: 0px !important;
-    width: 100% !important;
-    background-color: var(--bg-white) !important;
-    border-right: 3px solid var(--bg-white) !important;
-    min-height: 65vh;
-}
-
-@media (max-width: 1023px) {
-    #restaurants-map {
-        border-right: none !important;
-        border-bottom: 3px solid var(--bg-white) !important;
+        flex-direction: column !important;
+        gap: 16px !important;
         max-height: 65vh;
+        height: 65vh;
+        min-height: 65vh;
     }
 }
 
-.virtual-tour-section {
-    height: 65vh !important;
-    border-bottom: 3px solid var(--bg-white) !important;
-    background: linear-gradient(135deg, var(--bg-white) 0%, var(--bg-white) 100%) !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
 
-@media (max-width: 1023px) {
-    .virtual-tour-section {
-        height: 50vh !important;
-        min-height: 50vh !important;
-    }
-}
-
-.virtual-tour-section iframe {
-    width: 100% !important;
-}
-
-/* MOBILE FILTER STYLES - INLINE FOR IMMEDIATE APPLICATION */
-.mobile-filter-toggle1 {
-    position: fixed !important;
-    buttom: 70px !important;
-    right: 20px !important;
-    z-index: 50 !important;
-    display: block !important;
-    transition: all 0.3s ease !important;
-}
-
-/* When filter is open, move icon to top-right */
-.mobile-filter-toggle1.filter-open {
-    buttom: 70px !important;
-    left: auto !important;
-    right: 20px !important;
-}
-
-.mobile-filter-toggle1 button {
-    background: rgba(255, 255, 255, 0.95) !important;
-    border: 2px solid var(--primary-color) !important;
-    border-radius: var(--radius-lg) !important;
-    padding: 12px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    transition: var(--transition) !important;
-    cursor: pointer !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 120px !important;
-    height: 48px !important;
-}
-
-.mobile-filter-toggle1 button:hover {
-    background: var(--primary-color) !important;
-    transform: scale(1.05) !important;
-}
-
-.filter-icon {
-    display: none !important;
-}
-
-.filter-line {
-    display: none !important;
-}
-
-.mobile-filter-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background: rgba(0, 0, 0, 0.5) !important;
-    z-index: 999 !important;
-    display: none !important;
-    opacity: 0 !important;
-    transition: opacity 0.3s ease !important;
-}
-
-.mobile-filter-overlay.show {
-    display: block !important;
-    opacity: 1 !important;
-}
-
-.mobile-filter-overlay:not(.hidden) {
-    display: block !important;
-    opacity: 0 !important;
-}
-
-/* Mobile Filter Panel - Essential Styles Only */
-.mobile-filter-panel {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-}
-
-.mobile-filter-panel .space-y-4 > div {
-    margin-bottom: 20px !important;
-}
-
-.mobile-filter-panel input,
-.mobile-filter-panel select {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
-    border: 2px solid #e5e7eb !important;
-    border-radius: 12px !important;
-    padding: 14px 16px !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #1f2937 !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-}
-
-.mobile-filter-panel input:focus,
-.mobile-filter-panel select:focus {
-    outline: none !important;
-    border-color: #fedc00 !important;
-    box-shadow: 0 0 0 4px rgba(254, 220, 0, 0.15), 0 4px 12px rgba(254, 220, 0, 0.1) !important;
-    background: #ffffff !important;
-    transform: translateY(-1px) !important;
-}
-
-.mobile-filter-panel input::placeholder {
-    color: #9ca3af !important;
-    font-weight: 400 !important;
-}
-
-.mobile-filter-panel input:hover,
-.mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
-    box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
-}
-
-.mobile-filter-panel input[type="checkbox"] {
-    width: 20px !important;
-    height: 20px !important;
-    accent-color: #fedc00 !important;
-    margin-right: 12px !important;
-    cursor: pointer !important;
-}
-
-.mobile-filter-panel .flex.items-center {
-    padding: 12px 0 !important;
-}
-
-.mobile-filter-panel .flex.items-center span {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #374151 !important;
-}
-
-.mobile-filter-panel button {
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border-radius: 12px !important;
-    font-size: 14px !important;
-    padding: 16px 20px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-}
-
-.mobile-filter-panel button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
-}
-
-.mobile-filter-panel button:active {
-    transform: translateY(0) !important;
-}
-
-.mobile-filter-panel button[style*="background-color: #fedc00"] {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #1f2937 !important;
-    border: none !important;
-}
-
-.mobile-filter-panel button[style*="background-color: #fedc00"]:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
-    box-shadow: 0 4px 16px rgba(254, 220, 0, 0.3) !important;
-}
-
-.mobile-filter-panel .bg-gray-200 {
-    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
-    color: #4b5563 !important;
-    border: 2px solid #d1d5db !important;
-}
-
-.mobile-filter-panel .bg-gray-200:hover {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-    color: white !important;
-    border-color: #ef4444 !important;
-}
-
-.mobile-filter-panel .flex.items-center.justify-between {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    padding: 20px !important;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1) !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 10 !important;
-    display: flex;
-    gap: 170px;
-}
-
-.mobile-filter-panel h3 {
-    color: #1f2937 !important;
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    margin: 0 !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-}
-
-#close-mobile-filters {
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 50% !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    color: #1f2937 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-#close-mobile-filters:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    transform: scale(1.1) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-#close-mobile-filters:active {
-    transform: scale(0.95) !important;
-}
-
-#close-mobile-filters svg {
-    width: 24px !important;
-    height: 24px !important;
-    stroke: currentColor !important;
-    stroke-width: 2.5 !important;
-    fill: none !important;
-}
-
-.mobile-filter-panel .p-4 {
-    padding: 24px !important;
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
-}
-
-.mobile-filter-panel .space-y-4 > div {
-    animation: slideInUp 0.3s ease-out !important;
-    animation-fill-mode: both !important;
-}
-
-.mobile-filter-panel .space-y-4 > div:nth-child(1) { animation-delay: 0.1s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(2) { animation-delay: 0.15s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(3) { animation-delay: 0.2s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(4) { animation-delay: 0.25s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(5) { animation-delay: 0.3s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(6) { animation-delay: 0.35s !important; }
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.mobile-filter-panel::-webkit-scrollbar {
-    width: 6px !important;
-}
-
-.mobile-filter-panel::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05) !important;
-    border-radius: 3px !important;
-}
-
-.mobile-filter-panel::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    border-radius: 3px !important;
-}
-
-.mobile-filter-panel::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
-}
-
-.mobile-filter-panel .space-y-4 > div {
-    margin-bottom: 20px !important;
-}
-
-.mobile-filter-panel input,
-.mobile-filter-panel select {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
-    border: 2px solid #e5e7eb !important;
-    border-radius: 12px !important;
-    padding: 14px 16px !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #1f2937 !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-}
-
-.mobile-filter-panel input:focus,
-.mobile-filter-panel select:focus {
-    outline: none !important;
-    border-color: #fedc00 !important;
-    box-shadow: 0 0 0 4px rgba(254, 220, 0, 0.15), 0 4px 12px rgba(254, 220, 0, 0.1) !important;
-    background: #ffffff !important;
-    transform: translateY(-1px) !important;
-}
-
-.mobile-filter-panel input::placeholder {
-    color: #9ca3af !important;
-    font-weight: 400 !important;
-}
-
-.mobile-filter-panel select {
-    cursor: pointer !important;
-    background-position: right 12px center !important;
-    background-repeat: no-repeat !important;
-    background-size: 16px !important;
-    padding-right: 40px !important;
-}
-
-.mobile-filter-panel input:hover,
-.mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
-    box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
-}
-
-/* Checkbox styling */
-.mobile-filter-panel input[type="checkbox"] {
-    width: 20px !important;
-    height: 20px !important;
-    accent-color: #fedc00 !important;
-    margin-right: 12px !important;
-    cursor: pointer !important;
-}
-
-.mobile-filter-panel .flex.items-center {
-    padding: 12px 0 !important;
-}
-
-.mobile-filter-panel .flex.items-center span {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #374151 !important;
-}
-
-/* Button styling */
-.mobile-filter-panel button {
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border-radius: 12px !important;
-    font-size: 14px !important;
-    padding: 16px 20px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-}
-
-.mobile-filter-panel button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
-}
-
-.mobile-filter-panel button:active {
-    transform: translateY(0) !important;
-}
-
-/* Apply button specific styling */
-.mobile-filter-panel button[style*="background-color: #fedc00"] {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #1f2937 !important;
-    border: none !important;
-}
-
-.mobile-filter-panel button[style*="background-color: #fedc00"]:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
-    box-shadow: 0 4px 16px rgba(254, 220, 0, 0.3) !important;
-}
-
-/* Clear button specific styling */
-.mobile-filter-panel .bg-gray-200 {
-    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
-    color: #4b5563 !important;
-    border: 2px solid #d1d5db !important;
-}
-
-.mobile-filter-panel .bg-gray-200:hover {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-    color: white !important;
-    border-color: #ef4444 !important;
-}
-
-/* Mobile Filter Panel Header */
-.mobile-filter-panel .flex.items-center.justify-between {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    padding: 20px !important;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1) !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 10 !important;
-    display: flex;
-    gap: 170px;
-}
-
-.mobile-filter-panel h3 {
-    color: #1f2937 !important;
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    margin: 0 !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Close button styling */
-#close-mobile-filters {
-    width: 40px !important;
-    height: 40px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-#close-mobile-filters:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-    transform: scale(1.1) !important;
-}
-
-/* Mobile Filter Panel - Essential Styles Only */
-.mobile-filter-panel {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-}
-
-.mobile-filter-panel .space-y-4 > div {
-    margin-bottom: 20px !important;
-}
-
-.mobile-filter-panel input,
-.mobile-filter-panel select {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
-    border: 2px solid #e5e7eb !important;
-    border-radius: 12px !important;
-    padding: 14px 16px !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #1f2937 !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-}
-
-.mobile-filter-panel input:focus,
-.mobile-filter-panel select:focus {
-    outline: none !important;
-    border-color: #fedc00 !important;
-    box-shadow: 0 0 0 4px rgba(254, 220, 0, 0.15), 0 4px 12px rgba(254, 220, 0, 0.1) !important;
-    background: #ffffff !important;
-    transform: translateY(-1px) !important;
-}
-
-.mobile-filter-panel input::placeholder {
-    color: #9ca3af !important;
-    font-weight: 400 !important;
-}
-
-.mobile-filter-panel select {
-    cursor: pointer !important;
-    background-position: right 12px center !important;
-    background-repeat: no-repeat !important;
-    background-size: 16px !important;
-    padding-right: 40px !important;
-}
-
-.mobile-filter-panel input:hover,
-.mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
-    box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
-}
-
-.mobile-filter-panel input[type="checkbox"] {
-    width: 20px !important;
-    height: 20px !important;
-    accent-color: #fedc00 !important;
-    margin-right: 12px !important;
-    cursor: pointer !important;
-}
-
-.mobile-filter-panel .flex.items-center {
-    padding: 12px 0 !important;
-}
-
-.mobile-filter-panel .flex.items-center span {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #374151 !important;
-}
-
-.mobile-filter-panel button {
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border-radius: 12px !important;
-    font-size: 14px !important;
-    padding: 16px 20px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-}
-
-.mobile-filter-panel button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
-}
-
-.mobile-filter-panel button:active {
-    transform: translateY(0) !important;
-}
-
-.mobile-filter-panel button[style*="background-color: #fedc00"] {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #1f2937 !important;
-    border: none !important;
-}
-
-.mobile-filter-panel button[style*="background-color: #fedc00"]:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
-    box-shadow: 0 4px 16px rgba(254, 220, 0, 0.3) !important;
-}
-
-.mobile-filter-panel .bg-gray-200 {
-    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
-    color: #4b5563 !important;
-    border: 2px solid #d1d5db !important;
-}
-
-.mobile-filter-panel .bg-gray-200:hover {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-    color: white !important;
-    border-color: #ef4444 !important;
-}
-
-.mobile-filter-panel .flex.items-center.justify-between {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    padding: 20px !important;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1) !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 10 !important;
-    display: flex;
-    gap: 170px;
-}
-
-.mobile-filter-panel h3 {
-    color: #1f2937 !important;
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    margin: 0 !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-}
-
-#close-mobile-filters {
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 50% !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    color: #1f2937 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-#close-mobile-filters:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    transform: scale(1.1) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-#close-mobile-filters:active {
-    transform: scale(0.95) !important;
-}
-
-#close-mobile-filters svg {
-    width: 24px !important;
-    height: 24px !important;
-    stroke: currentColor !important;
-    stroke-width: 2.5 !important;
-    fill: none !important;
-}
-
-.mobile-filter-panel .p-4 {
-    padding: 24px !important;
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
-}
-
-.mobile-filter-panel .space-y-4 > div {
-    animation: slideInUp 0.3s ease-out !important;
-    animation-fill-mode: both !important;
-}
-
-.mobile-filter-panel .space-y-4 > div:nth-child(1) { animation-delay: 0.1s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(2) { animation-delay: 0.15s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(3) { animation-delay: 0.2s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(4) { animation-delay: 0.25s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(5) { animation-delay: 0.3s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(6) { animation-delay: 0.35s !important; }
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.mobile-filter-panel::-webkit-scrollbar {
-    width: 6px !important;
-}
-
-.mobile-filter-panel::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05) !important;
-    border-radius: 3px !important;
-}
-
-.mobile-filter-panel::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    border-radius: 3px !important;
-}
-
-.mobile-filter-panel::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
-}
-
-.mobile-filter-panel .space-y-4 > div {
-    margin-bottom: 20px !important;
-}
-
-.mobile-filter-panel input,
-.mobile-filter-panel select {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
-    border: 2px solid #e5e7eb !important;
-    border-radius: 12px !important;
-    padding: 14px 16px !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #1f2937 !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-}
-
-.mobile-filter-panel input:focus,
-.mobile-filter-panel select:focus {
-    outline: none !important;
-    border-color: #fedc00 !important;
-    box-shadow: 0 0 0 4px rgba(254, 220, 0, 0.15), 0 4px 12px rgba(254, 220, 0, 0.1) !important;
-    background: #ffffff !important;
-    transform: translateY(-1px) !important;
-}
-
-.mobile-filter-panel input::placeholder {
-    color: #9ca3af !important;
-    font-weight: 400 !important;
-}
-
-.mobile-filter-panel select {
-    cursor: pointer !important;
-    background-position: right 12px center !important;
-    background-repeat: no-repeat !important;
-    background-size: 16px !important;
-    padding-right: 40px !important;
-}
-
-.mobile-filter-panel input:hover,
-.mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
-    box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
-}
-
-/* Checkbox styling */
-.mobile-filter-panel input[type="checkbox"] {
-    width: 20px !important;
-    height: 20px !important;
-    accent-color: #fedc00 !important;
-    margin-right: 12px !important;
-    cursor: pointer !important;
-}
-
-.mobile-filter-panel .flex.items-center {
-    padding: 12px 0 !important;
-}
-
-.mobile-filter-panel .flex.items-center span {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #374151 !important;
-}
-
-/* Button styling */
-.mobile-filter-panel button {
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border-radius: 12px !important;
-    font-size: 14px !important;
-    padding: 16px 20px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-}
-
-.mobile-filter-panel button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
-}
-
-.mobile-filter-panel button:active {
-    transform: translateY(0) !important;
-}
-
-/* Apply button specific styling */
-.mobile-filter-panel button[style*="background-color: #fedc00"] {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #1f2937 !important;
-    border: none !important;
-}
-
-.mobile-filter-panel button[style*="background-color: #fedc00"]:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
-    box-shadow: 0 4px 16px rgba(254, 220, 0, 0.3) !important;
-}
-
-/* Clear button specific styling */
-.mobile-filter-panel .bg-gray-200 {
-    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
-    color: #4b5563 !important;
-    border: 2px solid #d1d5db !important;
-}
-
-.mobile-filter-panel .bg-gray-200:hover {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-    color: white !important;
-    border-color: #ef4444 !important;
-}
-
-/* Mobile Filter Panel Header */
-.mobile-filter-panel .flex.items-center.justify-between {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    padding: 20px !important;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1) !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 10 !important;
-    display: flex;
-    gap: 170px;
-}
-
-.mobile-filter-panel h3 {
-    color: #1f2937 !important;
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    margin: 0 !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-}
-
-.mobile-filter-header {
-    background: linear-gradient(135deg, var(--bg-gray-50) 0%, var(--border-color) 100%) !important;
-    border-bottom: 2px solid var(--border-color) !important;
-    padding: 20px !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
-}
-
-.mobile-filter-title {
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    margin: 0 !important;
-    color: var(--text-primary) !important;
-    display: flex !important;
-    align-items: center !important;
-}
-
-.mobile-filter-close {
-    background: linear-gradient(135deg, var(--bg-gray-100) 0%, var(--border-color) 100%) !important;
-    border: 2px solid var(--border-color) !important;
-    color: var(--text-secondary) !important;
-    font-size: 18px !important;
-    cursor: pointer !important;
-    padding: 8px !important;
-    width: 36px !important;
-    height: 36px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: var(--radius-lg) !important;
-    transition: var(--transition) !important;
-    box-shadow: var(--shadow-md) !important;
-}
-
-.mobile-filter-close:hover {
-    background: linear-gradient(135deg, var(--border-color) 0%, var(--border-color) 100%) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: var(--shadow-lg) !important;
-}
-
-.mobile-filter-content {
-    padding: 20px !important;
-    background: linear-gradient(135deg, var(--bg-white) 0%, var(--bg-gray-50) 100%) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    min-height: 100% !important;
-}
-
-.mobile-filter-group {
-    margin-bottom: 20px !important;
-}
-
-.mobile-filter-label {
-    display: block !important;
-    font-weight: 600 !important;
-    color: var(--text-secondary) !important;
-    margin-bottom: 8px !important;
-    font-size: 14px !important;
-}
 
 /* Form container styling - match desktop filter form */
 .mobile-filter-content .space-y-4 {
@@ -1271,9 +426,9 @@ wp_add_inline_style('lebonresto-single-css', '
 
 /* IMPORTANT: Hide mobile filter button completely on desktop */
 @media (min-width: 1024px) {
-    .mobile-filter-toggle1,
-    .mobile-filter-toggle1.lg\:hidden,
-    div.mobile-filter-toggle1 {
+    .mobile-filter-toggle,
+    .mobile-filter-toggle.lg\:hidden,
+    div.mobile-filter-toggle {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -1283,33 +438,55 @@ wp_add_inline_style('lebonresto-single-css', '
 
 /* Show mobile filter button only on mobile/tablet */
 @media (max-width: 1023px) {
-    .mobile-filter-toggle1 {
+    .mobile-filter-toggle {
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
         position: fixed !important;
-        bottom: 70px !important;
+        bottom: 20px !important;
         right: 20px !important;
         z-index: 1000 !important;
         pointer-events: auto !important;
     }
     
-    .mobile-filter-toggle1 button {
-        background: var(--primary-color) !important;
-        color: var(--text-primary) !important;
+    .mobile-filter-toggle button {
+        background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
+        color: #0f1729 !important;
         border: none !important;
-        height: 50px !important;
+        border-radius: 12px !important;
+        padding: 12px 16px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        box-shadow: 0 4px 12px rgba(254, 220, 0, 0.4) !important;
+        gap: 8px !important;
+        box-shadow: 0 4px 16px rgba(254, 220, 0, 0.4) !important;
         cursor: pointer !important;
         transition: all 0.3s ease !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
     }
     
-    .mobile-filter-toggle1 button:hover {
-        transform: scale(1.1) !important;
-        box-shadow: 0 6px 16px rgba(254, 220, 0, 0.6) !important;
+    .mobile-filter-toggle button:hover {
+        background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
+        transform: scale(1.05) translateY(-2px) !important;
+        box-shadow: 0 8px 24px rgba(254, 220, 0, 0.6) !important;
+    }
+    
+    .mobile-filter-toggle .filter-icon {
+        display: block !important;
+        width: 20px !important;
+        height: 20px !important;
+        fill: currentColor !important;
+        color: #0f1729 !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .mobile-filter-toggle .filter-text {
+        display: block !important;
+        color: #0f1729 !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        letter-spacing: 0.5px !important;
     }
 }
 
@@ -1552,7 +729,7 @@ wp_add_inline_style('lebonresto-single-css', '
         ?>
 
         <!-- Mobile Filter Toggle Button -->
-        <div class="mobile-filter-toggle1 lg:hidden fixed z-9999">
+        <div class="mobile-filter-toggle lg:hidden">
         <button type="button" id="mobile-filter-btn" class="mobile-filter-button">
             <svg viewBox="0 0 24 24" width="20" height="20" class="filter-icon">
                 <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path>
@@ -1940,7 +1117,7 @@ wp_add_inline_style('lebonresto-single-css', '
                    target="_blank" 
                    rel="noopener" 
                    class="add-review-button"
-                   style="display: inline-flex; align-items: center; padding: 12px 24px; background-color: #fedc00; color: #1f2937; font-weight: 600; border-radius: 8px; text-decoration: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); transition: all 0.2s ease-in-out; border: none; cursor: pointer; font-size: 14px; line-height: 1.4;">
+                   style="display: inline-flex; align-items: center; padding: 12px 24px; background-color: #fedc00; color: #0f1729; font-weight: 600; border-radius: 8px; text-decoration: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); transition: all 0.2s ease-in-out; border: none; cursor: pointer; font-size: 14px; line-height: 1.4;">
                     <svg style="width: 16px; height: 16px; margin-right: 8px; fill: currentColor;" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.365 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.365-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                     </svg>
@@ -2657,7 +1834,165 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize mobile filter functionality
     console.log('🔧 [MOBILE DEBUG] Calling initializeMobileFilters...');
+    
+    // Debug: Check if elements exist
+    console.log('🔧 [MOBILE DEBUG] Checking elements:', {
+        button: document.getElementById('mobile-filter-btn'),
+        overlay: document.getElementById('mobile-filter-overlay'),
+        panel: document.querySelector('.mobile-filter-panel'),
+        toggle: document.querySelector('.mobile-filter-toggle')
+    });
+    
     initializeMobileFilters();
+    
+    /**
+     * Initialize mobile filters
+     */
+    function initializeMobileFilters() {
+        const mobileFilterBtn = document.getElementById('mobile-filter-btn');
+        const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
+        const closeMobileFilters = document.getElementById('close-mobile-filters');
+        const mobileFilterPanel = document.querySelector('.mobile-filter-panel');
+        
+        console.log('Initializing mobile filters...', {
+            btn: !!mobileFilterBtn,
+            overlay: !!mobileFilterOverlay,
+            panel: !!mobileFilterPanel,
+            closeBtn: !!closeMobileFilters
+        });
+        
+        // Open mobile filters
+        if (mobileFilterBtn) {
+            console.log('Adding click event listener to mobile filter button');
+            
+            // Test if button is visible and clickable
+            console.log('Button styles:', {
+                display: window.getComputedStyle(mobileFilterBtn).display,
+                visibility: window.getComputedStyle(mobileFilterBtn).visibility,
+                opacity: window.getComputedStyle(mobileFilterBtn).opacity,
+                pointerEvents: window.getComputedStyle(mobileFilterBtn).pointerEvents
+            });
+            
+            mobileFilterBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Mobile filter button clicked!');
+                showMobileFilters();
+            });
+            
+            // Also add a test click handler
+            mobileFilterBtn.addEventListener('mousedown', function() {
+                console.log('Button mousedown detected');
+            });
+            
+        } else {
+            console.error('Mobile filter button not found!');
+        }
+
+        // Close on overlay click
+        if (mobileFilterOverlay) {
+            mobileFilterOverlay.addEventListener('click', function(e) {
+                if (e.target === mobileFilterOverlay) {
+                    hideMobileFilters();
+                }
+            });
+        }
+        
+        // Close button handler
+        if (closeMobileFilters) {
+            closeMobileFilters.addEventListener('click', function(e) {
+                e.preventDefault();
+                hideMobileFilters();
+            });
+        }
+        
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && mobileFilterOverlay && mobileFilterOverlay.classList.contains('show')) {
+                hideMobileFilters();
+            }
+        });
+    }
+    
+    /**
+     * Show mobile filters
+     */
+    function showMobileFilters() {
+        console.log('=== SHOWING MOBILE FILTERS ===');
+        const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
+        const mobileFilterPanel = document.querySelector('.mobile-filter-panel');
+        const mobileFilterToggle = document.querySelector('.mobile-filter-toggle');
+        
+        console.log('Mobile filter elements found:', {
+            overlay: !!mobileFilterOverlay,
+            panel: !!mobileFilterPanel,
+            toggle: !!mobileFilterToggle
+        });
+        
+        if (mobileFilterOverlay && mobileFilterPanel) {
+            // Hide the filter button
+            if (mobileFilterToggle) {
+                mobileFilterToggle.classList.add('filter-open');
+                console.log('Filter button hidden');
+            }
+            
+            // Show overlay with proper styling
+            mobileFilterOverlay.style.display = 'block';
+            mobileFilterOverlay.style.visibility = 'visible';
+            mobileFilterOverlay.style.opacity = '1';
+            mobileFilterOverlay.classList.add('show');
+            mobileFilterOverlay.classList.remove('hidden');
+            
+            // Show panel with animation
+            mobileFilterPanel.style.transform = 'translateX(0)';
+            mobileFilterPanel.style.opacity = '1';
+            mobileFilterPanel.style.visibility = 'visible';
+            mobileFilterPanel.classList.add('show');
+            mobileFilterPanel.classList.remove('-translate-x-full');
+            
+            console.log('Mobile filters shown successfully');
+        } else {
+            console.error('Mobile filter elements not found:', {
+                overlay: !!mobileFilterOverlay,
+                panel: !!mobileFilterPanel
+            });
+        }
+    }
+    
+    /**
+     * Hide mobile filters
+     */
+    function hideMobileFilters() {
+        console.log('=== HIDING MOBILE FILTERS ===');
+        const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
+        const mobileFilterPanel = document.querySelector('.mobile-filter-panel');
+        const mobileFilterToggle = document.querySelector('.mobile-filter-toggle');
+        
+        if (mobileFilterPanel && mobileFilterOverlay) {
+            console.log('Starting hide animation...');
+            
+            // Start panel slide-out animation
+            mobileFilterPanel.style.transform = 'translateX(-100%)';
+            mobileFilterPanel.classList.remove('show');
+            mobileFilterPanel.classList.add('-translate-x-full');
+            
+            setTimeout(() => {
+                // Hide overlay
+                mobileFilterOverlay.style.display = 'none';
+                mobileFilterOverlay.style.opacity = '0';
+                mobileFilterOverlay.style.visibility = 'hidden';
+                mobileFilterOverlay.classList.add('hidden');
+                mobileFilterOverlay.classList.remove('show');
+                
+                // Show the filter button again
+                if (mobileFilterToggle) {
+                    mobileFilterToggle.classList.remove('filter-open');
+                    console.log('Filter button shown again');
+                }
+                
+                console.log('Mobile filters hidden successfully');
+            }, 300);
+        }
+    }
     
     // Handle window resize to update scroll behavior and tab visibility
     window.addEventListener('resize', function() {
@@ -2787,600 +2122,12 @@ wp_localize_script(
 <!-- DEBUG MARKER: Line reference for JavaScript error debugging -->
 
 <style>
-/* Clean Mobile Filter Panel CSS - No Duplicates */
-/* Main Layout Styles */
-.lebonresto-single-layout {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
-    background: linear-gradient(135deg, var(--bg-gray-50) 0%, var(--border-color) 100%) !important;
-    min-height: 100vh !important;
-}
 
-.two-column-layout {
-    display: grid !important;
-    grid-template-columns: 4fr 5fr !important;
-    gap: 0 !important;
-    max-height: 65vh;
-}
 
-@media (max-width: 1023px) {
-    .two-column-layout {
-        grid-template-columns: 1fr !important;
-        max-height: 65vh;
-    }
-}
 
-/* Map Container */
-#restaurants-map {
-    width: 100% !important;
-    height: 65vh !important;
-    background-color: var(--bg-white) !important;
-    border-right: 3px solid var(--border-color) !important;
-    position: relative !important;
-    z-index: 1 !important;
-    max-height: 65vh;
-}
 
-@media (max-width: 1023px) {
-    #restaurants-map {
-        border-right: none !important;
-        border-bottom: 3px solid var(--bg-white) !important;
-        max-height: 65vh;
-    }
-}
 
-/* Virtual Tour Section */
-.virtual-tour-section {
-    height: 65vh !important;
-    border-bottom: 3px solid var(--bg-white) !important;
-    background: linear-gradient(135deg, var(--bg-white) 0%, var(--bg-white) 100%) !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
 
-@media (max-width: 1023px) {
-    .virtual-tour-section {
-        height: 40vh !important;
-        min-height: 40vh !important;
-    }
-}
-
-.virtual-tour-section iframe {
-    width: 100% !important;
-    height: 100% !important;
-    border: none !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Filter Form */
-.filter-form {
-    background: linear-gradient(135deg, var(--bg-white) 0%, var(--bg-white) 100%) !important;
-    border-radius: var(--radius-lg) !important;
-    box-shadow: var(--shadow-lg) !important;
-    padding: 20px !important;
-    border: 2px solid rgba(254, 220, 0, 0.1) !important;
-}
-
-.filter-form input,
-.filter-form select {
-    height: 48px !important;
-    border: 2px solid var(--border-color) !important;
-    border-radius: var(--radius-lg) !important;
-    font-size: 16px !important;
-    padding: 12px 16px !important;
-    transition: var(--transition) !important;
-    background-color: #fdffb9 !important;
-    color: var(--text-primary) !important;
-}
-
-.filter-form input:focus,
-.filter-form select:focus {
-    border-color: var(--primary-color) !important;
-    box-shadow: 0 0 0 3px rgba(254, 220, 0, 0.1) !important;
-    outline: none !important;
-    transform: translateY(-1px) !important;
-}
-
-.filter-form button {
-    height: 48px !important;
-    border-radius: var(--radius-lg) !important;
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    padding: 14px 24px !important;
-    transition: var(--transition) !important;
-    border: none !important;
-    cursor: pointer !important;
-    box-shadow: var(--shadow-md) !important;
-}
-
-#search-restaurants {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
-    color: var(--text-primary) !important;
-    font-weight: 700 !important;
-}
-
-#search-restaurants:hover {
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-dark) 100%) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 16px rgba(254, 220, 0, 0.4) !important;
-}
-
-#clear-filters {
-    background: linear-gradient(135deg, var(--bg-gray-100) 0%, var(--border-color) 100%) !important;
-    color: var(--text-secondary) !important;
-    border: 2px solid var(--bg-white) !important;
-}
-
-#clear-filters:hover {
-    background: linear-gradient(135deg, var(--border-color) 0%, var(--border-color) 100%) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: var(--shadow-lg) !important;
-}
-
-/* Restaurant Cards */
-.restaurant-card {
-    background: linear-gradient(135deg, var(--bg-white) 0%, var(--bg-gray-50) 100%) !important;
-    border-radius: var(--radius-lg) !important;
-    box-shadow: var(--shadow-md) !important;
-    margin-bottom: 16px !important;
-    border: 2px solid var(--bg-white) !important;
-    transition: all 0.4s ease !important;
-    cursor: pointer !important;
-    position: relative !important;
-    overflow: hidden !important;
-    width: 90% !important;
-}
-
-.restaurant-card:hover {
-    box-shadow: var(--shadow-lg) !important;
-    transform: translateY(-4px) scale(1.02) !important;
-    border-color: var(--primary-color) !important;
-}
-
-
-/* Loading Spinner */
-.loading-spinner {
-    border: 4px solid var(--bg-gray-100) !important;
-    border-top: 4px solid var(--primary-color) !important;
-    border-right: 4px solid var(--primary-color) !important;
-    border-radius: 50% !important;
-    width: 32px !important;
-    height: 32px !important;
-    animation: spin 1.2s ease-in-out infinite !important;
-    display: inline-block !important;
-    box-shadow: 0 2px 8px rgba(254, 220, 0, 0.3) !important;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Map Controls */
-#center-current-restaurant {
-    padding: 12px 18px !important;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
-    color: var(--text-primary) !important;
-    border: none !important;
-    border-radius: var(--radius-md) !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    transition: var(--transition) !important;
-    box-shadow: 0 2px 8px rgba(254, 220, 0, 0.3) !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-height: 44px !important;
-}
-
-#center-current-restaurant:hover {
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-dark) 100%) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 16px rgba(254, 220, 0, 0.4) !important;
-}
-
-#map-results-count {
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(10px) !important;
-    padding: 8px 16px !important;
-    border-radius: var(--radius-md) !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    color: var(--text-secondary) !important;
-    box-shadow: var(--shadow-lg) !important;
-    border: 2px solid rgba(254, 220, 0, 0.2) !important;
-}
-
-/* Custom scrollbar */
-#restaurants-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-#restaurants-list::-webkit-scrollbar-track {
-    background: var(--bg-gray-100);
-    border-radius: var(--radius-sm);
-}
-
-#restaurants-list::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: var(--radius-sm);
-}
-
-#restaurants-list::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-dark);
-}
-
-.current-restaurant-marker {
-    z-index: 1000 !important;
-}
-
-
-
-
-/* FontAwesome CDN */
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
-
-/* Fallback for FontAwesome icons */
-.fas, .fab {
-    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "FontAwesome", sans-serif !important;
-    font-weight: 900 !important;
-    font-style: normal !important;
-    font-variant: normal !important;
-    text-rendering: auto !important;
-    line-height: 1 !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-}
-
-.fab {
-    font-family: "Font Awesome 6 Brands", "FontAwesome", sans-serif !important;
-    font-weight: 400 !important;
-}
-
-/* Map marker custom styles */
-.current-restaurant-marker,
-.featured-restaurant-marker,
-.regular-restaurant-marker {
-    border: none !important;
-    background: transparent !important;
-}
-
-.current-restaurant-marker div {
-    animation: current-pulse 2s infinite;
-}
-
-@keyframes current-pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-/* Leaflet popup enhancements */
-.restaurant-popup-content {
-    font-size: 14px;
-    line-height: 1.4;
-    min-width: 200px;
-}
-
-.current-popup .leaflet-popup-content-wrapper {
-    border: 2px solid #fedc00;
-    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
-}
-
-.leaflet-popup-content-wrapper {
-    border-radius: 8px;
-}
-
-/* Button hover effects */
-.bg-yellow-400:hover {
-    background-color: #fedc00 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-}
-
-
-/* Focus states for accessibility */
-input:focus,
-select:focus,
-button:focus {
-    outline: 0px solid #fedc00 !important;
-    outline-offset: 0px;
-}
-
-
-
-/* Mobile Tab Navigation Styles */
-.mobile-tab-navigation {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 9999 !important;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
-    border-top: 3px solid #e5e7eb !important;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12) !important;
-    backdrop-filter: blur(20px) !important;
-    pointer-events: auto !important;
-    animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-/* Slide up animation for tab bar */
-@keyframes slideUp {
-    from {
-        transform: translateY(100%) !important;
-        opacity: 0 !important;
-    }
-    to {
-        transform: translateY(0) !important;
-        opacity: 1 !important;
-    }
-}
-
-.mobile-tab-navigation .flex {
-    display: flex !important;
-    width: 100% !important;
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.mobile-tab-btn {
-    position: relative !important;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border: none !important;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
-    cursor: pointer !important;
-    color: #6b7280 !important;
-    font-weight: 600 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 10px !important;
-    pointer-events: auto !important;
-    z-index: 101 !important;
-    user-select: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-    flex: 1 !important;
-    width: 50% !important;
-    min-width: 0 !important;
-    height: 100% !important;
-    padding: 18px 16px !important;
-    margin: 0 !important;
-    text-align: center !important;
-    font-size: 14px !important;
-    line-height: 1.4 !important;
-    border-radius: 0 !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
-    overflow: hidden !important;
-    animation: buttonPulse 3s ease-in-out infinite, colorShift 4s ease-in-out infinite !important;
-}
-
-/* Color shifting animation */
-@keyframes colorShift {
-    0%, 100% {
-        color: #6b7280 !important;
-    }
-    25% {
-        color: #3b82f6 !important;
-    }
-    50% {
-        color: #8b5cf6 !important;
-    }
-    75% {
-        color: #06b6d4 !important;
-    }
-}
-
-/* Continuous shimmer effect */
-.mobile-tab-btn::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: -100% !important;
-    width: 100% !important;
-    height: 100% !important;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent) !important;
-    animation: shimmer 2s ease-in-out infinite !important;
-    z-index: 1 !important;
-}
-
-/* Button pulse animation */
-@keyframes buttonPulse {
-    0%, 100% {
-        transform: scale(1) !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
-    }
-    50% {
-        transform: scale(1.02) !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    }
-}
-
-/* Shimmer animation */
-@keyframes shimmer {
-    0% {
-        left: -100% !important;
-    }
-    100% {
-        left: 100% !important;
-    }
-}
-
-.mobile-tab-btn.active {
-    color: #1f2937 !important;
-    background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%) !important;
-    border-bottom: 4px solid #fedc00 !important;
-    font-weight: 700 !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3) !important;
-    animation: activePulse 2s ease-in-out infinite !important;
-}
-
-.mobile-tab-btn:hover:not(.active) {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
-    color: #374151 !important;
-    transform: translateY(-3px) !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
-}
-
-.mobile-tab-btn:active {
-    transform: translateY(-1px) !important;
-    transition: transform 0.1s ease !important;
-}
-
-/* Active button pulse animation */
-@keyframes activePulse {
-    0%, 100% {
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3) !important;
-    }
-    50% {
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5) !important;
-    }
-}
-
-.mobile-tab-btn i {
-    font-size: 18px !important;
-    flex-shrink: 0 !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    position: relative !important;
-    z-index: 2 !important;
-    animation: iconFloat 2.5s ease-in-out infinite !important;
-}
-
-/* Icon floating animation */
-@keyframes iconFloat {
-    0%, 100% {
-        transform: translateY(0px) !important;
-    }
-    50% {
-        transform: translateY(-2px) !important;
-    }
-}
-
-.mobile-tab-btn:hover i {
-    transform: scale(1.1) !important;
-    color: #3b82f6 !important;
-}
-
-.mobile-tab-btn.active i {
-    transform: scale(1.15) !important;
-    color:rgb(255, 255, 255) !important;
-    animation: iconBounce 1.5s ease-in-out infinite !important;
-}
-
-/* Icon bounce animation for active button */
-@keyframes iconBounce {
-    0%, 100% {
-        transform: scale(1.15) !important;
-    }
-    50% {
-        transform: scale(1.25) !important;
-    }
-}
-
-/* Ensure text doesn't wrap and buttons stay equal width */
-.mobile-tab-btn span,
-.mobile-tab-btn .tab-text {
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    max-width: 100% !important;
-    position: relative !important;
-    z-index: 2 !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.mobile-tab-btn:hover .tab-text {
-    color: #1e40af !important;
-    font-weight: 700 !important;
-}
-
-.mobile-tab-btn.active .tab-text {
-    color:rgb(255, 255, 255) !important;
-    font-weight: 800 !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Force equal width distribution */
-.mobile-tab-navigation .flex > * {
-    flex: 1 1 0% !important;
-    min-width: 0 !important;
-    max-width: 50% !important;
-}
-
-/* Ensure buttons are perfectly aligned */
-.mobile-tab-btn {
-    box-sizing: border-box !important;
-    border-radius: 0 !important;
-    outline: none !important;
-}
-
-/* Remove any default button styles that might interfere */
-.mobile-tab-btn:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-.mobile-tab-btn:focus-visible {
-    outline: 2px solid #fedc00 !important;
-    outline-offset: -2px !important;
-}
-
-/* Loading state animation */
-.mobile-tab-btn.loading {
-    pointer-events: none !important;
-    opacity: 0.7 !important;
-}
-
-.mobile-tab-btn.loading::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 20px !important;
-    height: 20px !important;
-    margin: -10px 0 0 -10px !important;
-    border: 2px solid #f3f3f3 !important;
-    border-top: 2px solid #fedc00 !important;
-    border-radius: 50% !important;
-    animation: spin 1s linear infinite !important;
-    z-index: 3 !important;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg) !important; }
-    100% { transform: rotate(360deg) !important; }
-}
-
-/* Ripple effect on click */
-.mobile-tab-btn::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-radius: 50% !important;
-    background: rgba(251, 191, 36, 0.3) !important;
-    transform: translate(-50%, -50%) !important;
-    transition: width 0.6s, height 0.6s !important;
-    z-index: 1 !important;
-}
-
-.mobile-tab-btn:active::after {
-    width: 300px !important;
-    height: 300px !important;
-}
-
-/* Hide filter on mobile, tablet, and iPad - Show only on desktop */
-.filter-header1 {
-    display: none !important;
-}
-
-@media (min-width: 1280px) {
-    .filter-header1 {
-        display: block !important;
-    }
-}
 
 /* Mobile Content Visibility */
 @media (max-width: 1023px) {
@@ -3479,9 +2226,9 @@ button:focus {
         max-height: 65vh;
     }
 
-.mobile-filter-toggle1 button {
+.mobile-filter-toggle button {
     background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%) !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     padding: 12px !important;
     border-radius: 50% !important;
     box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4) !important;
@@ -3497,15 +2244,20 @@ button:focus {
     font-weight: bold !important;
 }
 
-.mobile-filter-toggle1 button:hover {
+.mobile-filter-toggle button:hover {
     background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%) !important;
     transform: scale(1.05) !important;
     box-shadow: 0 6px 16px rgba(251, 191, 36, 0.6) !important;
 }
 
-/* Custom Filter Icon - Hidden, using CSS fallback instead */
+/* Custom Filter Icon - Visible */
 .filter-icon {
-    display: none;
+    display: block !important;
+    width: 20px !important;
+    height: 20px !important;
+    fill: currentColor !important;
+    color: #0f1729 !important;
+    flex-shrink: 0 !important;
 }
 
 .filter-line {
@@ -3537,7 +2289,7 @@ button:focus {
     padding: 14px 16px !important;
     font-size: 15px !important;
     font-weight: 500 !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
@@ -3611,7 +2363,7 @@ button:focus {
 
 .mobile-filter-panel button[style*="background-color: #fedc00"] {
     background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     border: none !important;
 }
 
@@ -3644,7 +2396,7 @@ button:focus {
 }
 
 .mobile-filter-panel h3 {
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     font-size: 18px !important;
     font-weight: 700 !important;
     margin: 0 !important;
@@ -3657,7 +2409,7 @@ button:focus {
     border-radius: 50% !important;
     background: rgba(255, 255, 255, 0.2) !important;
     border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -3743,7 +2495,7 @@ button:focus {
     padding: 14px 16px !important;
     font-size: 15px !important;
     font-weight: 500 !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
@@ -3820,7 +2572,7 @@ button:focus {
 /* Apply button specific styling */
 .mobile-filter-panel button[style*="background-color: #fedc00"] {
     background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     border: none !important;
 }
 
@@ -3855,7 +2607,7 @@ button:focus {
 }
 
 .mobile-filter-panel h3 {
-    color: #1f2937 !important;
+    color: #0f1729 !important;
     font-size: 18px !important;
     font-weight: 700 !important;
     margin: 0 !important;
@@ -4235,7 +2987,7 @@ button:focus {
 }
 
 .restaurant-card .text-gray-800 {
-    color: #1f2937 !important;
+    color: #0f1729 !important;
 }
 
 .restaurant-card .text-green-600 {
@@ -4915,7 +3667,7 @@ function createRestaurantPopupContent(restaurant) {
     return `
         <div class="restaurant-popup-content" style="min-width: 280px; max-width: 320px;">
             <div style="margin-bottom: 1rem;">
-                <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; font-weight: 700; color: #1f2937; line-height: 1.3;">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; font-weight: 700; color: #0f1729; line-height: 1.3;">
                     ${title}
                 </h3>
                 
@@ -4924,7 +3676,7 @@ function createRestaurantPopupContent(restaurant) {
                         <div style="display: flex; gap: 1px;">
                             ${ratingStars}
                         </div>
-                        <span style="font-weight: 600; color: #1f2937; font-size: 0.9rem;">${rating.toFixed(1)}</span>
+                        <span style="font-weight: 600; color: #0f1729; font-size: 0.9rem;">${rating.toFixed(1)}</span>
                         <span style="color: #6b7280; font-size: 0.8rem;">(${reviewCount} avis)</span>
                     </div>
                 ` : ''}
@@ -4970,7 +3722,7 @@ function createRestaurantPopupContent(restaurant) {
             
             ${slug ? `
                 <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
-                    <a href="${window.location.origin}/restaurant/${slug}/" class="popup-link" style="display: inline-block; width: 100%; text-align: center; background-color: #fedc00; color: #1f2937; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none; font-weight: 600; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f59e0b'" onmouseout="this.style.backgroundColor='#fedc00'">
+                    <a href="${window.location.origin}/restaurant/${slug}/" class="popup-link" style="display: inline-block; width: 100%; text-align: center; background-color: #fedc00; color: #0f1729; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none; font-weight: 600; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f59e0b'" onmouseout="this.style.backgroundColor='#fedc00'">
                         Plus d'informations
                     </a>
                 </div>

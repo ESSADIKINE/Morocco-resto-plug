@@ -323,7 +323,7 @@
         
         // Title with badges
         content += `<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">`;
-        content += `<h3 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0; flex: 1;">${escapeHtml(title)}</h3>`;
+        content += `<h3 style="font-size: 16px; font-weight: 600; color: #0f1729; margin: 0; flex: 1;">${escapeHtml(title)}</h3>`;
         content += `<div style="display: flex; gap: 4px;">`;
         if (isFeatured) {
             content += `<span style="padding: 2px 6px; background-color: #fedc00; color: #fedc00; font-size: 10px; border-radius: 12px; font-weight: bold;">★</span>`;
@@ -365,7 +365,7 @@
             content += `Current Restaurant`;
             content += `</span>`;
         } else {
-            content += `<a href="${restaurant.link}" style="display: inline-block; padding: 6px 12px; background-color: #fedc00; color: #1f2937; font-size: 12px; font-weight: 500; border-radius: 6px; text-decoration: none; transition: all 0.2s ease;">`;
+            content += `<a href="${restaurant.link}" style="display: inline-block; padding: 6px 12px; background-color: #fedc00; color: #0f1729; font-size: 12px; font-weight: 500; border-radius: 6px; text-decoration: none; transition: all 0.2s ease;">`;
             content += `Voir Détails`;
             content += `</a>`;
         }

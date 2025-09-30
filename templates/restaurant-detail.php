@@ -459,7 +459,7 @@ html.lebonresto-detail-page {
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: #1f2937;
+    color: #0f1729;
 }
 
 .property-navigation {
@@ -485,7 +485,7 @@ html.lebonresto-detail-page {
 .blog-title {
     font-size: 2.5rem;
     font-weight: 800;
-    color: #1f2937;
+    color: #0f1729;
     margin-bottom: 0.5rem;
 }
 
@@ -501,7 +501,7 @@ html.lebonresto-detail-page {
 
 .cuisine-badge {
     background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%);
-    color: #1f2937;
+    color: #0f1729;
     padding: 0.5rem 1.5rem;
     border-radius: 25px;
     font-weight: 600;
@@ -533,7 +533,7 @@ html.lebonresto-detail-page {
 .contact-btn:hover {
     background: #f9fafb;
     border-color: #fedc00;
-    color: #1f2937;
+    color: #0f1729;
 }
 
 .contact-btn i {
@@ -1562,7 +1562,7 @@ html.lebonresto-detail-page {
                             Le restaurant que vous recherchez n'existe pas ou a été supprimé.
                         </p>
                         <a href="<?php echo home_url('/restaurants/'); ?>" 
-                           style="display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%); color: #1f2937; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease;">
+                           style="display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%); color: #0f1729; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease;">
                             <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>
                             Retour aux restaurants
                         </a>
@@ -1771,7 +1771,7 @@ html.lebonresto-detail-page {
                                     font-weight: 600;
                                     margin: 0 0 4px 0;
                                     line-height: 1.3;
-                                    color: #1f2937;
+                                    color: #0f1729;
                                 "><?php echo esc_html($blog_title ?: get_the_title()); ?></h3>
                                 <p style="
                                     margin: 0 0 4px 0;
@@ -2090,7 +2090,7 @@ html.lebonresto-detail-page {
                                     font-weight: 600;
                                     margin: 0 0 4px 0;
                                     line-height: 1.3;
-                                    color: #1f2937;
+                                    color: #0f1729;
                                 "><?php echo esc_html($blog_title ?: get_the_title()); ?></h3>
                                 <p style="
                                     margin: 0 0 8px 0;
