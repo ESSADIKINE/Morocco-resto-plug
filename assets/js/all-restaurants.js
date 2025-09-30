@@ -19,15 +19,10 @@
     let googleMapsLoaded = false;
     let fullscreenLeafletMap = null;
     let fullscreenLeafletMarkers = [];
+    let fullscreenGoogleLabels = [];
     let fullscreenMapMode = null;
     let restaurantsLoadPromise = null;
     let hasBootstrappedInitialData = false;
-
-    const MOROCCO_CENTER = {
-        lat: 31.7917,
-        lng: -7.0926,
-        zoom: 6
-    };
 
     const MOROCCO_CENTER = {
         lat: 31.7917,
@@ -913,17 +908,15 @@
         const distance = restaurant.calculatedDistance;
         
         // Get primary image
-        let imageUrl = 'data:image/svg+xml;base64,' + btoa(`
-            <svg width="240" height="160" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100%" height="100%" fill="#f3f4f6"/>
-                <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-family="Arial" font-size="14">${title}</text>
-            </svg>
-        `);
-        
-        if (meta.principal_image && meta.principal_image.full) {
-            imageUrl = meta.principal_image.full;
-        } else if (meta.gallery_images && meta.gallery_images.length > 0) {
-            imageUrl = meta.gallery_images[0].full;
+        let imageUrl = getRestaurantPrimaryImageUrl(restaurant, 'medium');
+
+        if (!imageUrl) {
+            imageUrl = 'data:image/svg+xml;base64,' + btoa(`
+                <svg width="240" height="160" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" fill="#f3f4f6"/>
+                    <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-family="Arial" font-size="14">${title}</text>
+                </svg>
+            `);
         }
 
         const $card = $(`
@@ -1572,6 +1565,114 @@
         return baseFromSettings || '#';
     }
 
+    function getRestaurantPrimaryImageUrl(restaurant, preferredSize = 'thumbnail', fallback = '') {
+        if (!restaurant) {
+            return fallback;
+        }
+
+        const meta = restaurant.restaurant_meta || {};
+        const sizeCandidates = Array.from(new Set([
+            preferredSize,
+            'medium',
+            'full',
+            'large',
+            'thumbnail'
+        ].filter(Boolean)));
+
+        const pickFromImageObject = (imageObj) => {
+            if (!imageObj || typeof imageObj !== 'object') {
+                return '';
+            }
+
+            for (const sizeKey of sizeCandidates) {
+                if (imageObj[sizeKey]) {
+                    return imageObj[sizeKey];
+                }
+            }
+
+            const fallbackKeys = ['url', 'source', 'src'];
+            for (const key of fallbackKeys) {
+                if (imageObj[key]) {
+                    return imageObj[key];
+                }
+            }
+
+            for (const value of Object.values(imageObj)) {
+                if (typeof value === 'string' && value) {
+                    return value;
+                }
+            }
+
+            return '';
+        };
+
+        const principalImage = meta.principal_image || restaurant.principal_image;
+        if (principalImage) {
+            if (typeof principalImage === 'string' && /^https?:\/\//i.test(principalImage)) {
+                return principalImage;
+            }
+
+            const pickedPrincipal = pickFromImageObject(principalImage);
+            if (pickedPrincipal) {
+                return pickedPrincipal;
+            }
+        }
+
+        if (restaurant.principal_image_url) {
+            return restaurant.principal_image_url;
+        }
+
+        const galleryImages = Array.isArray(meta.gallery_images) ? meta.gallery_images : restaurant.gallery_images;
+        if (Array.isArray(galleryImages)) {
+            for (const galleryImage of galleryImages) {
+                if (typeof galleryImage === 'string' && /^https?:\/\//i.test(galleryImage)) {
+                    return galleryImage;
+                }
+
+                const pickedGallery = pickFromImageObject(galleryImage);
+                if (pickedGallery) {
+                    return pickedGallery;
+                }
+            }
+        }
+
+        if (meta.listing_image) {
+            return meta.listing_image;
+        }
+
+        if (meta.featured_image) {
+            return meta.featured_image;
+        }
+
+        if (restaurant.featured_image_url) {
+            return restaurant.featured_image_url;
+        }
+
+        if (restaurant.featured_image) {
+            return restaurant.featured_image;
+        }
+
+        if (restaurant.image) {
+            return restaurant.image;
+        }
+
+        return fallback;
+    }
+
+    function getMarkerLabelText(restaurant) {
+        const title = (getRestaurantTitle(restaurant) || '').trim();
+
+        if (!title) {
+            return '';
+        }
+
+        if (title.length <= 22) {
+            return title;
+        }
+
+        return `${title.slice(0, 21).trim()}…`;
+    }
+
     function buildFullscreenPopupContent(restaurant, coords) {
         const meta = restaurant?.restaurant_meta || {};
         const ratingData = getRestaurantRatingData(restaurant);
@@ -1580,7 +1681,11 @@
         const combinedMeta = [ratingData.cuisines, ratingData.specialties, ratingData.priceRange]
             .filter(Boolean)
             .join(' • ');
-        const image = meta.listing_image || restaurant?.principal_image || meta.featured_image || 'https://via.placeholder.com/80x80?text=Resto';
+        const image = getRestaurantPrimaryImageUrl(
+            restaurant,
+            'medium',
+            'https://via.placeholder.com/80x80?text=Resto'
+        );
         const restaurantTitle = getRestaurantTitle(restaurant) || '';
         const phone = meta.phone || restaurant?.phone || '';
         const phoneDigits = phone ? phone.replace(/[^0-9]/g, '') : '';
@@ -1633,26 +1738,29 @@
     function buildLeafletMarkerIcon(restaurant) {
         const ratingData = getRestaurantRatingData(restaurant);
         const ratingHtml = ratingData.rating > 0
-            ? `<div class="marker-stars" style="display: flex; align-items: center; gap: 6px;">${generateStarIcons(ratingData.rating)} <span style="font-size: 0.75rem; color: #0f1729; font-weight: 600;">${ratingData.rating.toFixed(1)}</span></div>`
+            ? `<div class="marker-stars" style="display: flex; align-items: center; gap: 4px; justify-content: center; margin-top: 4px;">${generateStarIcons(ratingData.rating)} <span style="font-size: 0.7rem; color: #0f1729; font-weight: 600;">${ratingData.rating.toFixed(1)}</span></div>`
             : '';
+        const labelText = getMarkerLabelText(restaurant);
 
         return `
             <div class="marker-with-label">
-                <div class="marker-icon regular">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+                ${labelText ? `
+                    <div class="marker-label" style="text-align: center; background: rgba(255, 255, 255, 0.96); padding: 6px 10px; border-radius: 999px; box-shadow: 0 12px 25px rgba(15, 23, 41, 0.18); border: 1px solid rgba(15, 23, 41, 0.08);">
+                        <div class="marker-title" style="font-size: 0.8rem; font-weight: 600; color: #0f1729; white-space: nowrap; max-width: 160px; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(labelText)}</div>
+                        ${ratingHtml}
+                    </div>
+                ` : ''}
+                <div class="marker-icon small">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 44" width="32" height="44">
                         <defs>
-                            <linearGradient id="markerGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <linearGradient id="markerGradientSmall" x1="0%" y1="0%" x2="0%" y2="100%">
                                 <stop offset="0%" stop-color="#fedc00" />
                                 <stop offset="100%" stop-color="#f59e0b" />
                             </linearGradient>
                         </defs>
-                        <path d="M20 2C11.716 2 5 8.716 5 17c0 9.5 13.063 21.063 14.104 22.01a1.5 1.5 0 0 0 1.792 0C21.937 38.063 35 26.5 35 17 35 8.716 28.284 2 20 2z" fill="url(#markerGradient)" stroke="#0f1729" stroke-width="2" />
-                        <circle cx="20" cy="17" r="6" fill="#0f1729" />
+                        <path d="M16 2C9.373 2 4 7.373 4 14c0 7.875 9.73 18.373 11.019 19.705a1.5 1.5 0 0 0 2.254 0C18.27 32.373 28 21.875 28 14 28 7.373 22.627 2 16 2z" fill="url(#markerGradientSmall)" stroke="#0f1729" stroke-width="1.5" />
+                        <circle cx="16" cy="14" r="5" fill="#0f1729" />
                     </svg>
-                </div>
-                <div class="marker-label" style="text-align: center; background: rgba(255, 255, 255, 0.95); padding: 8px 10px; border-radius: 10px; box-shadow: 0 10px 25px rgba(15, 23, 41, 0.15);">
-                    <div class="marker-title" style="font-size: 0.85rem; font-weight: 600; color: #0f1729; white-space: nowrap; max-width: 160px; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(getRestaurantTitle(restaurant) || '')}</div>
-                    ${ratingHtml}
                 </div>
             </div>
         `;
@@ -2419,6 +2527,14 @@
             });
         }
 
+        const mapCloseBtn = document.getElementById('fullscreen-map-close');
+        if (mapCloseBtn) {
+            mapCloseBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeMapFullscreen();
+            });
+        }
+
         // Enhanced sticky sidebar behavior
         const filtersSidebar = document.querySelector('.filters-sidebar');
         if (filtersSidebar) {
@@ -2500,6 +2616,16 @@
                 resetFullscreenMapContainer(fullscreenMap);
             }
 
+            if (fullscreenGoogleLabels.length) {
+                fullscreenGoogleLabels.forEach(label => {
+                    try {
+                        label.setMap(null);
+                    } catch (err) {
+                        // Ignore cleanup errors
+                    }
+                });
+                fullscreenGoogleLabels = [];
+            }
             fullscreenMapMode = null;
         }
     };
@@ -2556,6 +2682,17 @@
 
         resetFullscreenMapContainer(mapContainer);
 
+        if (fullscreenGoogleLabels.length) {
+            fullscreenGoogleLabels.forEach(label => {
+                try {
+                    label.setMap(null);
+                } catch (err) {
+                    // Ignore cleanup errors
+                }
+            });
+            fullscreenGoogleLabels = [];
+        }
+
         const canUseGoogle = googleMapsLoaded && window.google && window.google.maps;
 
         if (canUseGoogle) {
@@ -2599,19 +2736,20 @@
 
             const position = { lat: coords.lat, lng: coords.lng };
             const infoContent = buildFullscreenPopupContent(restaurant, coords);
+            const labelText = getMarkerLabelText(restaurant);
             const markerIconSvg = `
-                <svg width="44" height="56" viewBox="0 0 44 56" xmlns="http://www.w3.org/2000/svg">
+                <svg width="32" height="44" viewBox="0 0 32 44" xmlns="http://www.w3.org/2000/svg">
                     <defs>
-                        <linearGradient id="markerGradientGoogle" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <linearGradient id="markerGradientGoogleSmall" x1="0%" y1="0%" x2="0%" y2="100%">
                             <stop offset="0%" stop-color="#fedc00" />
                             <stop offset="100%" stop-color="#f59e0b" />
                         </linearGradient>
-                        <filter id="markerShadow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="rgba(15, 23, 41, 0.3)" />
+                        <filter id="markerShadowGoogleSmall" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="rgba(15, 23, 41, 0.25)" />
                         </filter>
                     </defs>
-                    <path d="M22 2C11.402 2 3 10.402 3 21c0 12.171 13.507 27.084 17.447 31.275a2 2 0 0 0 3.106 0C31.493 48.084 45 33.171 45 21 45 10.402 36.598 2 26 2z" transform="translate(-3)" fill="url(#markerGradientGoogle)" stroke="#0f1729" stroke-width="2" filter="url(#markerShadow)" />
-                    <circle cx="22" cy="20" r="7" fill="#0f1729" />
+                    <path d="M16 2C9.373 2 4 7.373 4 14c0 7.875 9.73 18.373 11.019 19.705a1.5 1.5 0 0 0 2.254 0C18.27 32.373 28 21.875 28 14 28 7.373 22.627 2 16 2z" fill="url(#markerGradientGoogleSmall)" stroke="#0f1729" stroke-width="1.5" filter="url(#markerShadowGoogleSmall)" />
+                    <circle cx="16" cy="14" r="5" fill="#0f1729" />
                 </svg>
             `;
 
@@ -2621,8 +2759,8 @@
                 title: getRestaurantTitle(restaurant) || '',
                 icon: {
                     url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(markerIconSvg),
-                    scaledSize: new google.maps.Size(44, 56),
-                    anchor: new google.maps.Point(22, 56)
+                    scaledSize: new google.maps.Size(32, 44),
+                    anchor: new google.maps.Point(16, 44)
                 }
             });
 
@@ -2638,6 +2776,13 @@
                 infoWindow.open(window.fullscreenMapInstance, marker);
                 activeInfoWindow = infoWindow;
             });
+
+            if (labelText) {
+                const labelOverlay = createGoogleMarkerLabel(window.fullscreenMapInstance, position, labelText);
+                if (labelOverlay) {
+                    fullscreenGoogleLabels.push(labelOverlay);
+                }
+            }
 
             bounds.extend(position);
             markersCount += 1;
@@ -2677,9 +2822,9 @@
                 icon: L.divIcon({
                     className: 'custom-marker-with-label',
                     html: buildLeafletMarkerIcon(restaurant),
-                    iconSize: [44, 56],
-                    iconAnchor: [22, 56],
-                    popupAnchor: [0, -50]
+                    iconSize: [32, 44],
+                    iconAnchor: [16, 44],
+                    popupAnchor: [0, -70]
                 })
             }).addTo(fullscreenLeafletMap);
 
@@ -2705,6 +2850,68 @@
         }, 200);
     }
 
+    function createGoogleMarkerLabel(map, position, text) {
+        if (!map || !position || !text || !window.google || !window.google.maps || !google.maps.OverlayView) {
+            return null;
+        }
+
+        const latLng = position instanceof google.maps.LatLng
+            ? position
+            : new google.maps.LatLng(position.lat, position.lng);
+
+        class MarkerLabel extends google.maps.OverlayView {
+            constructor(labelPosition, labelText) {
+                super();
+                this.position = labelPosition;
+                this.text = labelText;
+                this.div = null;
+            }
+
+            onAdd() {
+                const div = document.createElement('div');
+                div.className = 'google-marker-label';
+                div.textContent = this.text;
+                div.style.position = 'absolute';
+                div.style.pointerEvents = 'none';
+                div.style.zIndex = '1000';
+                this.div = div;
+                const panes = this.getPanes();
+                panes.overlayImage.appendChild(div);
+            }
+
+            draw() {
+                if (!this.div) {
+                    return;
+                }
+
+                const projection = this.getProjection();
+                if (!projection) {
+                    return;
+                }
+
+                const point = projection.fromLatLngToDivPixel(this.position);
+                if (!point) {
+                    return;
+                }
+
+                const left = point.x - (this.div.offsetWidth / 2);
+                const top = point.y - this.div.offsetHeight - 20;
+                this.div.style.left = `${left}px`;
+                this.div.style.top = `${top}px`;
+            }
+
+            onRemove() {
+                if (this.div && this.div.parentNode) {
+                    this.div.parentNode.removeChild(this.div);
+                }
+                this.div = null;
+            }
+        }
+
+        const overlay = new MarkerLabel(latLng, text);
+        overlay.setMap(map);
+        return overlay;
+    }
     function resetFullscreenMapContainer(mapContainer) {
         if (!mapContainer) {
             return;
