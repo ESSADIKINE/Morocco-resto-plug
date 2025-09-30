@@ -2029,8 +2029,13 @@
         if (mapToggleBtn) {
             mapToggleBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                // Open popup with all restaurants (no specific restaurant selected)
-                openMapWithAllRestaurants();
+                // Open fullscreen map with all restaurants (matches single page behavior)
+                if (typeof openMapFullscreen === 'function') {
+                    openMapFullscreen();
+                } else {
+                    // Fallback to popup if fullscreen unavailable
+                    openMapWithAllRestaurants();
+                }
             });
         }
 

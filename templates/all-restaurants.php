@@ -470,6 +470,11 @@ Menus, photos culinaires professionnelles, avis clients et localisation Google M
         </div>
     </div>
 
+    <!-- Fullscreen Map Modal -->
+    <div id="fullscreen-map-modal" class="fullscreen-modal">
+        <div id="fullscreen-map"></div>
+    </div>
+
     <?php wp_footer(); ?>
 </body>
 </html>
