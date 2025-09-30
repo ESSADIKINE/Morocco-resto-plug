@@ -94,9 +94,10 @@ function lebonresto_clear_restaurant_cache() {
     global $wpdb;
     $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_lebonresto_restaurants_%'");
     $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_lebonresto_restaurants_%'");
-    
+
     // Clear cuisine types cache
     delete_transient('lebonresto_cuisine_types');
+    delete_transient('lebonresto_all_restaurants_for_map');
 }
 
 // Clear cache when restaurants are saved, updated, or deleted
@@ -372,7 +373,8 @@ function lebonresto_prepare_restaurant_data($post_id) {
         '_restaurant_google_price_level',
         '_restaurant_google_api_reviews',
         '_restaurant_google_opening_hours',
-        '_restaurant_google_current_opening_hours'
+        '_restaurant_google_current_opening_hours',
+        '_restaurant_google_maps_link'
     );
     
     $meta_data = get_post_meta($post_id);
@@ -418,11 +420,14 @@ function lebonresto_prepare_restaurant_data($post_id) {
     
     return array(
         'id' => $post_id,
+        'slug' => get_post_field('post_name', $post_id),
         'title' => array(
             'rendered' => get_the_title($post_id)
         ),
+        'title_plain' => get_the_title($post_id),
         'link' => home_url('/details/' . get_post_field('post_name', $post_id) . '/'),
         'single_link' => get_permalink($post_id),
+        'permalink' => get_permalink($post_id),
         'restaurant_meta' => array(
             'description' => $restaurant_meta['description'],
             'address' => $restaurant_meta['address'],
@@ -443,8 +448,41 @@ function lebonresto_prepare_restaurant_data($post_id) {
             'google_rating' => $restaurant_meta['google_rating'],
             'google_review_count' => $restaurant_meta['google_review_count'],
             'google_price_level' => $restaurant_meta['google_price_level'],
+            'google_maps_link' => $restaurant_meta['google_maps_link'],
         ),
     );
+}
+
+/**
+ * Retrieve a lightweight list of all restaurants for bootstrapping maps client-side.
+ */
+function lebonresto_get_all_restaurants_for_map() {
+    $cache_key = 'lebonresto_all_restaurants_for_map';
+    $cached = get_transient($cache_key);
+
+    if ($cached !== false) {
+        return $cached;
+    }
+
+    $restaurant_ids = get_posts(array(
+        'post_type' => 'restaurant',
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        'fields' => 'ids',
+        'no_found_rows' => true,
+    ));
+
+    $restaurants = array();
+
+    if (!empty($restaurant_ids)) {
+        foreach ($restaurant_ids as $restaurant_id) {
+            $restaurants[] = lebonresto_prepare_restaurant_data($restaurant_id);
+        }
+    }
+
+    set_transient($cache_key, $restaurants, 5 * MINUTE_IN_SECONDS);
+
+    return $restaurants;
 }
 
 /**
