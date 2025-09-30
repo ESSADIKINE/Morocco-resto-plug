@@ -2504,19 +2504,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 8px;
     cursor: pointer;
 }
 
 .marker-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
     cursor: pointer;
-    margin-bottom: 4px;
+}
+
+.marker-icon--custom {
+    width: 40px;
+    height: 40px;
 }
 
 .marker-label {
@@ -2529,26 +2531,47 @@
     min-width: 120px;
     text-align: center;
     transition: all 0.3s ease;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    pointer-events: none;
+    margin-bottom: 4px;
 }
 
+.marker-label::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.96);
+    border-left: 1px solid rgba(15, 23, 41, 0.08);
+    border-bottom: 1px solid rgba(15, 23, 41, 0.08);
+    transform: translateX(-50%) rotate(45deg);
+    box-shadow: 0 8px 16px rgba(15, 23, 41, 0.18);
+}
+
+.marker-label .marker-title,
 .marker-name {
     font-size: 0.75rem;
     font-weight: 600;
     color: #0f1729;
-    margin-bottom: 2px;
-    line-height: 1.2;
-    max-width: 110px;
+    white-space: nowrap;
+    max-width: 160px;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 1.2;
 }
 
 .marker-rating {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 3px;
-    flex-wrap: wrap;
+    gap: 4px;
 }
 
 .marker-stars {
@@ -2580,12 +2603,17 @@
 
 .marker-icon:hover {
     transform: scale(1.1);
-popup-tip {
-    background: rgba(255, 255, 255, 0.97.leaflet-popup.fullscreen-map-popup .leaflet-popup-content-wrapper {
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 18px;
-    box-shadow: 0 20px 45px rgba(15, 23, 41, 0.25);
-    padding: 0;
+}
+
+.google-marker-label {
+    position: absolute;
+    pointer-events: none;
+    transform-origin: center bottom;
+    z-index: 1000;
+}
+
+.google-marker-label .marker-label {
+    pointer-events: none;
 }
 
 .leaflet-popup.fullscreen-map-popup .leaflet-popup-content {
