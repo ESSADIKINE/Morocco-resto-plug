@@ -1,34 +1,56 @@
 /* Enhanced CSS for Single Restaurant Page - Better Component Styling - UPDATED */
 /* Cache busting: v2.0 - Force application with !important */
 
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
+
 :root {
-    --primary-color: #fedc00;
-    --primary-dark: #e6c200;
-    --text-primary: #1a1a1a;
-    --text-secondary: #4a4a4a;
-    --text-muted: #767676;
-    --border-color: #e0e0e0;
-    --border-light: #f0f0f0;
-    --bg-white: #0f1729;
-    --bg-gray-50: #fafafa;
-    --bg-gray-100: #f5f5f5;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --transition: all 0.2s ease;
-    --success-color: #10b981;
-    --error-color: #ef4444;
+    --primary-color: #b3342b;
+    --primary-dark: #7d221c;
+    --primary-light: #d75e43;
+    --text-primary: #271714;
+    --text-secondary: #4e3129;
+    --text-muted: #826051;
+    --border-color: rgba(244, 193, 97, 0.4);
+    --border-light: rgba(244, 193, 97, 0.25);
+    --bg-white: #fffaf2;
+    --bg-gray-50: #faf4ed;
+    --bg-gray-100: #f1e4d6;
+    --shadow-sm: 0 2px 8px rgba(26, 24, 23, 0.08);
+    --shadow-md: 0 12px 28px rgba(15, 73, 63, 0.14);
+    --shadow-lg: 0 24px 45px rgba(179, 52, 43, 0.18);
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 22px;
+    --transition: all 0.25s ease;
+    --success-color: #2e8a72;
+    --error-color: #c24141;
+    --accent-color: #f4c161;
+    --pattern-overlay: radial-gradient(circle at 12% 16%, rgba(255, 250, 242, 0.22) 6%, transparent 7%),
+        radial-gradient(circle at 88% 18%, rgba(255, 250, 242, 0.2) 6%, transparent 7%),
+        radial-gradient(circle at 14% 88%, rgba(255, 250, 242, 0.2) 6%, transparent 7%),
+        radial-gradient(circle at 86% 84%, rgba(255, 250, 242, 0.18) 6%, transparent 7%);
 }
 
 /* Main layout with improved background */
 .lebonresto-single-layout {
-    background: linear-gradient(135deg, var(--bg-gray-50) 0%, var(--border-color) 100%) !important;
+    background: radial-gradient(circle at 0% 0%, rgba(179, 52, 43, 0.08), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(15, 106, 88, 0.1), transparent 52%),
+        var(--bg-gray-50) !important;
     min-height: 80vh !important;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
+    font-family: 'Manrope', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
     line-height: 1.6 !important;
+    position: relative !important;
+}
+
+.lebonresto-single-layout::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: var(--pattern-overlay);
+    background-size: 170px 170px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: -1;
 }
 
 
@@ -66,7 +88,7 @@
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    background: linear-gradient(45deg, transparent 30%, rgba(254, 220, 0, 0.1) 50%, transparent 70%) !important;
+    background: linear-gradient(45deg, transparent 30%, rgba(244, 193, 97, 0.16) 50%, transparent 70%) !important;
     pointer-events: none !important;
     z-index: -1 !important;
 }
@@ -661,8 +683,8 @@ input[type="checkbox"]:checked {
 /* Enhanced Loading Spinner - Bigger and Better */
 .loading-spinner {
     border: 4px solid #f3f4f6 !important;
-    border-top: 4px solid #fedc00 !important;
-    border-right: 4px solid #fedc00 !important;
+    border-top: 4px solid var(--primary-color) !important;
+    border-right: 4px solid var(--primary-color) !important;
     border-radius: 50% !important;
     width: 32px !important;
     height: 32px !important;
@@ -691,8 +713,8 @@ input[type="checkbox"]:checked {
 .map-control-button,
 #center-current-restaurant {
     padding: 12px 18px !important;
-    background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%) !important;
-    color: #0f1729 !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
+    color: var(--primary-dark) !important;
     border: none !important;
     border-radius: 10px !important;
     font-size: 14px !important;
@@ -708,7 +730,7 @@ input[type="checkbox"]:checked {
 
 .map-control-button:hover,
 #center-current-restaurant:hover {
-    background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 4px 16px rgba(251, 191, 36, 0.4) !important;
 }
@@ -779,11 +801,11 @@ input[type="checkbox"]:checked {
 }
 
 .text-gray-800 {
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
 }
 
 .text-yellow-600 {
-    color: #fedc00 !important;
+    color: var(--primary-color) !important;
 }
 
 .font-semibold {
@@ -1118,7 +1140,7 @@ input[type="checkbox"]:checked {
 
 .filter-form input:focus,
 .filter-form select:focus {
-    border-color: #fedc00 !important;
+    border-color: var(--primary-color) !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1) !important;
     outline: none !important;
 }
@@ -1144,14 +1166,14 @@ input[type="checkbox"]:checked {
 }
 
 #search-restaurants {
-    background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
     color: white !important;
     font-weight: 600 !important;
     padding: 12px 24px !important;
 }
 
 #search-restaurants:hover {
-    background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
 }
 
 #clear-filters {
@@ -1171,12 +1193,12 @@ input[type="checkbox"]:checked {
     height: 20px !important;
     border-radius: 4px !important;
     border: 2px solid #d1d5db !important;
-    accent-color: #fedc00 !important;
+    accent-color: var(--primary-color) !important;
 }
 
 .filter-form input[type="checkbox"]:checked {
-    background-color: #fedc00 !important;
-    border-color: #fedc00 !important;
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
 }
 
 /* Responsive improvements */
@@ -1254,7 +1276,7 @@ input[type="checkbox"]:checked {
 .filter-form input:focus,
 .filter-form select:focus,
 .filter-form button:focus {
-    outline: 2px solid #fedc00 !important;
+    outline: 2px solid var(--primary-color) !important;
     outline-offset: 2px !important;
 }
 
@@ -1299,7 +1321,7 @@ input[type="checkbox"]:checked {
     width: 28px !important;
     height: 28px !important;
     border-radius: 50% !important;
-    background: #fedc00 !important;
+    background: var(--primary-color) !important;
     color: #000 !important;
     display: flex !important;
     align-items: center !important;
@@ -1311,7 +1333,7 @@ input[type="checkbox"]:checked {
 
 .single-restaurant-template .review-author {
     font-weight: 600 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     font-size: 11px !important;
     line-height: 1.2 !important;
 }
@@ -1335,8 +1357,8 @@ input[type="checkbox"]:checked {
 
 /* Fix star colors */
 .single-restaurant-template .review-rating svg.text-yellow-400 {
-    color: #fedc00 !important;
-    fill: #fedc00 !important;
+    color: var(--primary-color) !important;
+    fill: var(--primary-color) !important;
 }
 
 .single-restaurant-template .review-rating svg.text-gray-300 {
@@ -1371,7 +1393,7 @@ input[type="checkbox"]:checked {
 }
 
 .single-restaurant-template .review-badge {
-    background: #fedc00 !important;
+    background: var(--primary-color) !important;
     color: #000 !important;
     padding: 2px 6px !important;
     border-radius: 4px !important;
@@ -1477,9 +1499,9 @@ input[type="checkbox"]:checked {
 }
 
 .pagination-btn.active {
-    background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
     color: white !important;
-    border-color: #fedc00 !important;
+    border-color: var(--primary-color) !important;
     font-weight: 600 !important;
 }
 
@@ -1626,7 +1648,7 @@ input[type="checkbox"]:checked {
 
 .filter-form input,
 .filter-form select {
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
 }
 
 /* Fix for button text color */
@@ -1644,7 +1666,7 @@ input[type="checkbox"]:checked {
     border-radius: 50% !important;
     background: rgba(255, 255, 255, 0.2) !important;
     border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -1682,7 +1704,7 @@ input[type="checkbox"]:checked {
 /* Focus ring improvements */
 .filter-form input:focus,
 .filter-form select:focus {
-    box-shadow: 0 0 0 2px #fedc00 !important;
+    box-shadow: 0 0 0 2px var(--primary-color) !important;
 }
 
 /* Mobile Filter Styles */
@@ -1719,8 +1741,8 @@ input[type="checkbox"]:checked {
 }
 
 .mobile-filter-toggle1 button {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #0f1729 !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+    color: var(--primary-dark) !important;
     border: none !important;
     border-radius: 12px !important;
     padding: 12px 16px !important;
@@ -1744,7 +1766,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-toggle1 button:hover {
     transform: scale(1.05) translateY(-2px);
     box-shadow: 0 8px 24px rgba(254, 220, 0, 0.6);
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%);
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
 }
 
 .mobile-filter-toggle1 button:active {
@@ -1757,7 +1779,7 @@ input[type="checkbox"]:checked {
     width: 20px !important;
     height: 20px !important;
     fill: currentColor !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     flex-shrink: 0 !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -1770,7 +1792,7 @@ input[type="checkbox"]:checked {
 
 .mobile-filter-toggle1 .filter-text {
     display: block !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     font-weight: 600 !important;
     font-size: 14px !important;
     letter-spacing: 0.5px !important;
@@ -1800,7 +1822,7 @@ input[type="checkbox"]:checked {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     font-weight: 600 !important;
     font-size: 14px !important;
 }
@@ -1817,14 +1839,14 @@ input[type="checkbox"]:checked {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
 }
 
 /* Ensure SVG is visible */
 .mobile-filter-toggle1 button svg {
     width: 20px !important;
     height: 20px !important;
-    fill: #0f1729 !important;
+    fill: var(--primary-dark) !important;
     stroke: none !important;
     display: inline-block !important;
 }
@@ -1906,7 +1928,7 @@ input[type="checkbox"]:checked {
 
 
 .mobile-filter-panel::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%) !important;
 }
 
 .mobile-filter-panel input,
@@ -1917,7 +1939,7 @@ input[type="checkbox"]:checked {
     padding: 14px 16px !important;
     font-size: 15px !important;
     font-weight: 500 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
@@ -1925,7 +1947,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-panel input:focus,
 .mobile-filter-panel select:focus {
     outline: none !important;
-    border-color: #fedc00 !important;
+    border-color: var(--primary-color) !important;
     box-shadow: 0 0 0 4px rgba(254, 220, 0, 0.15), 0 4px 12px rgba(254, 220, 0, 0.1) !important;
     background: #ffffff !important;
     transform: translateY(-1px) !important;
@@ -1946,7 +1968,7 @@ input[type="checkbox"]:checked {
 
 .mobile-filter-panel input:hover,
 .mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
+    border-color: var(--accent-color) !important;
     box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
 }
 
@@ -1954,7 +1976,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-panel input[type="checkbox"] {
     width: 20px !important;
     height: 20px !important;
-    accent-color: #fedc00 !important;
+    accent-color: var(--primary-color) !important;
     margin-right: 12px !important;
     cursor: pointer !important;
 }
@@ -1991,14 +2013,14 @@ input[type="checkbox"]:checked {
 }
 
 /* Apply button specific styling */
-.mobile-filter-panel button[style*="background-color: #fedc00"] {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #0f1729 !important;
+.mobile-filter-panel button[style*="background-color: var(--primary-color)"] {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+    color: var(--primary-dark) !important;
     border: none !important;
 }
 
-.mobile-filter-panel button[style*="background-color: #fedc00"]:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
+.mobile-filter-panel button[style*="background-color: var(--primary-color)"]:hover {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%) !important;
     box-shadow: 0 4px 16px rgba(254, 220, 0, 0.3) !important;
 }
 
@@ -2017,7 +2039,7 @@ input[type="checkbox"]:checked {
 
 /* Mobile Filter Panel Header */
 .mobile-filter-panel .flex.items-center.justify-between {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
     padding: 20px !important;
     border-bottom: 2px solid rgba(0, 0, 0, 0.1) !important;
     position: sticky !important;
@@ -2028,7 +2050,7 @@ input[type="checkbox"]:checked {
 }
 
 .mobile-filter-panel h3 {
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     font-size: 18px !important;
     font-weight: 700 !important;
     margin: 0 !important;
@@ -2056,14 +2078,14 @@ input[type="checkbox"]:checked {
 
 .mobile-filter-panel input:hover,
 .mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
+    border-color: var(--accent-color) !important;
     box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
 }
 
 .mobile-filter-panel input[type="checkbox"] {
     width: 20px !important;
     height: 20px !important;
-    accent-color: #fedc00 !important;
+    accent-color: var(--primary-color) !important;
     margin-right: 12px !important;
     cursor: pointer !important;
 }
@@ -2098,14 +2120,14 @@ input[type="checkbox"]:checked {
     transform: translateY(0) !important;
 }
 
-.mobile-filter-panel button[style*="background-color: #fedc00"] {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #0f1729 !important;
+.mobile-filter-panel button[style*="background-color: var(--primary-color)"] {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+    color: var(--primary-dark) !important;
     border: none !important;
 }
 
-.mobile-filter-panel button[style*="background-color: #fedc00"]:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
+.mobile-filter-panel button[style*="background-color: var(--primary-color)"]:hover {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%) !important;
     box-shadow: 0 4px 16px rgba(254, 220, 0, 0.3) !important;
 }
 
@@ -2122,7 +2144,7 @@ input[type="checkbox"]:checked {
 }
 
 .mobile-filter-panel .flex.items-center.justify-between {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
     padding: 20px !important;
     border-bottom: 2px solid rgba(0, 0, 0, 0.1) !important;
     position: sticky !important;
@@ -2152,7 +2174,7 @@ input[type="checkbox"]:checked {
 }
 
 .mobile-filter-panel::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
     border-radius: 3px !important;
 }
 
@@ -2169,7 +2191,7 @@ input[type="checkbox"]:checked {
     padding: 14px 16px !important;
     font-size: 15px !important;
     font-weight: 500 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
@@ -2177,7 +2199,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-panel input:focus,
 .mobile-filter-panel select:focus {
     outline: none !important;
-    border-color: #fedc00 !important;
+    border-color: var(--primary-color) !important;
     box-shadow: 0 0 0 4px rgba(254, 220, 0, 0.15), 0 4px 12px rgba(254, 220, 0, 0.1) !important;
     background: #ffffff !important;
     transform: translateY(-1px) !important;
@@ -2198,7 +2220,7 @@ input[type="checkbox"]:checked {
 
 .mobile-filter-panel input:hover,
 .mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
+    border-color: var(--accent-color) !important;
     box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
 }
 
@@ -2206,7 +2228,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-panel input[type="checkbox"] {
     width: 20px !important;
     height: 20px !important;
-    accent-color: #fedc00 !important;
+    accent-color: var(--primary-color) !important;
     margin-right: 12px !important;
     cursor: pointer !important;
 }
@@ -2243,14 +2265,14 @@ input[type="checkbox"]:checked {
 }
 
 /* Apply button specific styling */
-.mobile-filter-panel button[style*="background-color: #fedc00"] {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
-    color: #0f1729 !important;
+.mobile-filter-panel button[style*="background-color: var(--primary-color)"] {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+    color: var(--primary-dark) !important;
     border: none !important;
 }
 
-.mobile-filter-panel button[style*="background-color: #fedc00"]:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #fedc00 100%) !important;
+.mobile-filter-panel button[style*="background-color: var(--primary-color)"]:hover {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%) !important;
     box-shadow: 0 4px 16px rgba(254, 220, 0, 0.3) !important;
 }
 
@@ -2269,7 +2291,7 @@ input[type="checkbox"]:checked {
 
 /* Mobile Filter Panel Header */
 .mobile-filter-panel .flex.items-center.justify-between {
-    background: linear-gradient(135deg, #fedc00 0%, #f59e0b 100%) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
     padding: 20px !important;
     border-bottom: 2px solid rgba(0, 0, 0, 0.1) !important;
     position: sticky !important;
@@ -2286,7 +2308,7 @@ input[type="checkbox"]:checked {
 }
 
 .mobile-filter-header {
-    background: #fedc00;
+    background: var(--primary-color);
     color: white;
     padding: 20px;
     display: flex;
@@ -2347,7 +2369,7 @@ input[type="checkbox"]:checked {
 
 .mobile-filter-input:focus {
     outline: none;
-    border-color: #fedc00;
+    border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
 }
 
@@ -2361,7 +2383,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-checkbox input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: #fedc00;
+    accent-color: var(--primary-color);
 }
 
 .mobile-filter-checkbox label {
@@ -2388,12 +2410,12 @@ input[type="checkbox"]:checked {
 }
 
 .mobile-filter-btn-primary {
-    background: #fedc00;
+    background: var(--primary-color);
     color: white;
 }
 
 .mobile-filter-btn-primary:hover {
-    background: #fedc00;
+    background: var(--primary-color);
     transform: translateY(-1px);
 }
 
@@ -2448,7 +2470,7 @@ input[type="checkbox"]:checked {
     justify-content: center !important;
     width: 32px !important;
     height: 32px !important;
-    background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
     border: none !important;
     border-radius: 50% !important;
     color: #ffffff !important;
@@ -2475,7 +2497,7 @@ input[type="checkbox"]:checked {
 
 .action-icon:hover {
     background: #ffffff !important;
-    color: #fedc00 !important;
+    color: var(--primary-color) !important;
     transform: scale(1.15) translateY(-2px) !important;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
     text-decoration: none !important;
@@ -2563,7 +2585,7 @@ input[type="checkbox"]:checked {
 }
 
 .current-popup .leaflet-popup-content-wrapper {
-    border: 2px solid #fedc00;
+    border: 2px solid var(--primary-color);
     box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
 }
 
@@ -2573,7 +2595,7 @@ input[type="checkbox"]:checked {
 input:focus,
 select:focus,
 button:focus {
-    outline: 0px solid #fedc00 !important;
+    outline: 0px solid var(--primary-color) !important;
     outline-offset: 0px;
 }
 
@@ -2697,9 +2719,9 @@ button:focus {
 }
 
 .mobile-tab-btn.active {
-    color: #0f1729 !important;
-    background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%) !important;
-    border-bottom: 4px solid #fedc00 !important;
+    color: var(--primary-dark) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
+    border-bottom: 4px solid var(--primary-color) !important;
     font-weight: 700 !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3) !important;
@@ -2812,7 +2834,7 @@ button:focus {
 }
 
 .mobile-tab-btn:focus-visible {
-    outline: 2px solid #fedc00 !important;
+    outline: 2px solid var(--primary-color) !important;
     outline-offset: -2px !important;
 }
 
@@ -2831,7 +2853,7 @@ button:focus {
     height: 20px !important;
     margin: -10px 0 0 -10px !important;
     border: 2px solid #f3f3f3 !important;
-    border-top: 2px solid #fedc00 !important;
+    border-top: 2px solid var(--primary-color) !important;
     border-radius: 50% !important;
     animation: spin 1s linear infinite !important;
     z-index: 3 !important;
@@ -2884,7 +2906,7 @@ button:focus {
 .restaurant-popup-content h3 {
     font-size: 1.1rem !important;
     font-weight: 700 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     margin: 0 0 0.5rem 0 !important;
     line-height: 1.3 !important;
 }
@@ -2897,7 +2919,7 @@ button:focus {
 .restaurant-popup-content h6 {
     font-size: 1.1rem !important;
     font-weight: 700 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     margin: 0 0 0.5rem 0 !important;
     line-height: 1.3 !important;
     display: inline !important;
@@ -2906,7 +2928,7 @@ button:focus {
 .restaurant-popup-content .restaurant-title {
     font-size: 1.1rem !important;
     font-weight: 700 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     margin: 0 0 0.5rem 0 !important;
     line-height: 1.3 !important;
     display: inline !important;
@@ -2915,8 +2937,8 @@ button:focus {
 .restaurant-popup-content .popup-link {
     display: inline-block !important;
     text-align: center !important;
-    background-color: #fedc00 !important;
-    color: #0f1729 !important;
+    background-color: var(--primary-color) !important;
+    color: var(--primary-dark) !important;
     padding: 0.5rem 1rem !important;
     border-radius: 0.375rem !important;
     text-decoration: none !important;
@@ -2927,13 +2949,13 @@ button:focus {
 }
 
 .restaurant-popup-content .popup-link:hover {
-    background-color: #f59e0b !important;
-    color: #0f1729 !important;
+    background-color: var(--accent-color) !important;
+    color: var(--primary-dark) !important;
     text-decoration: none !important;
 }
 
 .restaurant-popup-content .popup-link:focus {
-    outline: 2px solid #f59e0b !important;
+    outline: 2px solid var(--accent-color) !important;
     outline-offset: 2px !important;
 }
 
@@ -3019,7 +3041,7 @@ button:focus {
 
 .restaurant-popup-content .rating-value {
     font-weight: 600 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     font-size: 0.9rem !important;
 }
 
@@ -3033,7 +3055,7 @@ button:focus {
         --text-primary: #ffffff;
         --text-secondary: #d1d5db;
         --text-muted: #9ca3af;
-        --bg-white: #0f1729;
+        --bg-white: var(--primary-dark);
         --bg-gray-50: #111827;
         --bg-gray-100: #374151;
         --border-color: #374151;
@@ -3085,7 +3107,7 @@ button:focus {
 
 .map-fullscreen-icon:hover i,
 .virtual-tour-fullscreen-icon:hover i {
-    color: #0f1729;
+    color: var(--primary-dark);
     transform: scale(1.1);
 }
 
@@ -3140,8 +3162,8 @@ button:focus {
 }
 
 .fullscreen-modal-header {
-    background: linear-gradient(135deg, #fedc00 0%, #fbbf24 100%);
-    color: #0f1729;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: var(--primary-dark);
     padding: 15px 20px;
     display: flex;
     align-items: center;
@@ -3153,7 +3175,7 @@ button:focus {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: #0f1729;
+    color: var(--primary-dark);
 }
 
 .fullscreen-close-icon {
@@ -3176,7 +3198,7 @@ button:focus {
 }
 
 .fullscreen-close-icon i {
-    color: #0f1729;
+    color: var(--primary-dark);
     font-size: 14px;
     transition: all 0.3s ease;
 }
@@ -3217,7 +3239,7 @@ button:focus {
     margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
     font-weight: 700;
-    color: #0f1729;
+    color: var(--primary-dark);
     line-height: 1.3;
 }
 
@@ -3225,8 +3247,8 @@ button:focus {
     display: inline-block;
     width: 100%;
     text-align: center;
-    background: linear-gradient(135deg, #fedc00 0%, #fbbf24 100%);
-    color: #0f1729;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: var(--primary-dark);
     padding: 8px 16px;
     border-radius: 6px;
     text-decoration: none;
@@ -3236,7 +3258,7 @@ button:focus {
 }
 
 .restaurant-popup-content .popup-link:hover {
-    background: linear-gradient(135deg, #e6c200 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-color) 100%);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(254, 220, 0, 0.3);
 }
@@ -3327,7 +3349,7 @@ button:focus {
 .marker-name {
     font-size: 9px;
     font-weight: 600;
-    color: #0f1729;
+    color: var(--primary-dark);
     line-height: 1.2;
     margin-bottom: 2px;
     white-space: nowrap;
@@ -3344,7 +3366,7 @@ button:focus {
 .marker-name h6 {
     font-size: 9px !important;
     font-weight: 600 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1.2 !important;
@@ -3354,7 +3376,7 @@ button:focus {
 .marker-name * {
     font-size: 9px !important;
     font-weight: 600 !important;
-    color: #0f1729 !important;
+    color: var(--primary-dark) !important;
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1.2 !important;
@@ -3376,7 +3398,7 @@ button:focus {
 .marker-rating-text {
     font-size: 8px;
     font-weight: 600;
-    color: #0f1729;
+    color: var(--primary-dark);
 }
 
 .marker-review-count {
@@ -3441,7 +3463,7 @@ button:focus {
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
     .fullscreen-modal-content {
-        background: #0f1729;
+        background: var(--primary-dark);
     }
     
     .fullscreen-modal-header {

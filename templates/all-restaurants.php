@@ -97,15 +97,20 @@ $cuisine_types = lebonresto_get_cuisine_types();
                 <div class="header-content">
                     <!-- Title Section -->
                     <div class="header-title-section">
-                    <h1 class="main-title">
-                        <?php _e('Meilleurs Restaurants au Maroc', 'le-bon-resto'); ?>
-                    </h1>
+                        <h1 class="main-title">
+                            <?php _e('Meilleurs Restaurants au Maroc', 'le-bon-resto'); ?>
+                        </h1>
                         <h3 class="main-subtitle">
                             <?php _e('Découvrez les meilleurs restaurants au Maroc avec Le Bon Resto, la plateforme digitale qui révolutionne la gastronomie.', 'le-bon-resto'); ?><br>
                             <?php _e('Explorez vos adresses préférées en visite virtuelle 360° immersive, comme si vous y étiez.', 'le-bon-resto'); ?><br>
-                            <?php _e('Retrouvez des restaurants à Casablanca, Marrakech, Rabat, Tanger, Agadir, Fès et partout au Maroc.
-Menus, photos culinaires professionnelles, avis clients et localisation Google Maps à portée de clic.', 'le-bon-resto'); ?>
+                            <?php _e('Retrouvez des restaurants à Casablanca, Marrakech, Rabat, Tanger, Agadir, Fès et partout au Maroc. Menus, photos culinaires professionnelles, avis clients et localisation Google Maps à portée de clic.', 'le-bon-resto'); ?>
                         </h3>
+                        <div class="moroccan-ornament" aria-hidden="true">
+                            <svg viewBox="0 0 512 128" xmlns="http://www.w3.org/2000/svg" focusable="false" class="moroccan-ornament-svg">
+                                <path d="M64 64L32 32 0 64l32 32 32-32zm128 0l-32-32-32 32 32 32 32-32zm128 0l-32-32-32 32 32 32 32-32zm128 0l-32-32-32 32 32 32 32-32z" fill="currentColor" opacity="0.35" />
+                            </svg>
+                        </div>
+
                     </div>
                     
                     <!-- Search and Map Section -->
