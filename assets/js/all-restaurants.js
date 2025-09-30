@@ -29,6 +29,12 @@
         zoom: 6
     };
 
+    const MOROCCO_CENTER = {
+        lat: 31.7917,
+        lng: -7.0926,
+        zoom: 6
+    };
+
     // Initialize when document is ready
     $(document).ready(function() {
         initializeApp();
@@ -2405,7 +2411,7 @@
             mapToggleBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 // Open fullscreen map with all restaurants (matches single page behavior)
-                if (typeof openMapFullscreen === 'function') {
+                if (typeof openMapFullscreen === 'function' && googleMapsLoaded && window.google && window.google.maps) {
                     openMapFullscreen();
                 } else {
                     openMapWithAllRestaurants();
