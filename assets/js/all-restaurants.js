@@ -17,6 +17,18 @@
     let hasMoreResults = true;
     let userLocation = null;
     let googleMapsLoaded = false;
+    let fullscreenLeafletMap = null;
+    let fullscreenLeafletMarkers = [];
+    let fullscreenGoogleLabels = [];
+    let fullscreenMapMode = null;
+    let restaurantsLoadPromise = null;
+    let hasBootstrappedInitialData = false;
+
+    const MOROCCO_CENTER = {
+        lat: 31.7917,
+        lng: -7.0926,
+        zoom: 6
+    };
 
     // Initialize when document is ready
     $(document).ready(function() {
@@ -32,8 +44,25 @@
         initializeMobileFilters();
         initializeGeolocation();
         loadGoogleMapsAPI();
+        bootstrapInitialRestaurants();
         loadRestaurants();
-        
+
+    }
+
+    function bootstrapInitialRestaurants() {
+        if (hasBootstrappedInitialData) {
+            return;
+        }
+
+        const initialData = normalizeRestaurantsResponse(lebonrestoAll?.initialRestaurants);
+
+        if (!initialData.length) {
+            return;
+        }
+
+        allRestaurants = mergeRestaurants(allRestaurants, initialData);
+        hasBootstrappedInitialData = true;
+        applyFilters();
     }
 
     /**
@@ -431,43 +460,92 @@
      * Load restaurants from API
      */
     function loadRestaurants(append = false) {
-        if (isLoading) return;
-        
-        showLoadingState(!append);
+        if (isLoading && restaurantsLoadPromise) {
+            return restaurantsLoadPromise;
+        }
+
+        if (isLoading) {
+            return Promise.resolve(allRestaurants);
+        }
+
+        showLoadingState(!append && !allRestaurants.length);
         isLoading = true;
 
-        const queryParams = new URLSearchParams({
-            per_page: 100, // Load all restaurants for client-side filtering
-            page: 1
-        });
+        const perPage = 100;
 
-        const apiUrl = `${lebonrestoAll.apiUrl}?${queryParams.toString()}`;
-        
+        const request = (async () => {
+            const aggregated = [];
+            let page = 1;
 
-        fetch(apiUrl, {
-            headers: {
-                'X-WP-Nonce': lebonrestoAll.nonce
+            try {
+                while (true) {
+                    const queryParams = new URLSearchParams({
+                        per_page: perPage,
+                        page
+                    });
+
+                    const response = await fetch(`${lebonrestoAll.apiUrl}?${queryParams.toString()}`, {
+                        headers: {
+                            'X-WP-Nonce': lebonrestoAll.nonce
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const pageData = normalizeRestaurantsResponse(await response.json());
+
+                    if (!pageData.length) {
+                        break;
+                    }
+
+                    aggregated.push(...pageData);
+
+                    if (pageData.length < perPage) {
+                        break;
+                    }
+
+                    page += 1;
+                }
+
+                if (aggregated.length) {
+                    allRestaurants = mergeRestaurants(allRestaurants, aggregated);
+                    applyFilters();
+                } else if (!allRestaurants.length) {
+                    showErrorState();
+                }
+
+                return allRestaurants;
+            } catch (error) {
+                console.error('Error loading restaurants:', error);
+
+                if (!allRestaurants.length) {
+                    showErrorState();
+                }
+
+                throw error;
+            } finally {
+                isLoading = false;
+                hideLoadingState();
+                restaurantsLoadPromise = null;
             }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(restaurants => {
-            allRestaurants = Array.isArray(restaurants) ? restaurants : [];
-            
-            applyFilters();
-        })
-        .catch(error => {
-            console.error('Error loading restaurants:', error);
-            showErrorState();
-        })
-        .finally(() => {
-            isLoading = false;
-            hideLoadingState();
-        });
+        })();
+
+        restaurantsLoadPromise = request;
+        return restaurantsLoadPromise;
+    }
+
+    function ensureRestaurantsDataLoaded() {
+        if (Array.isArray(allRestaurants) && allRestaurants.length > 0) {
+            return Promise.resolve(allRestaurants);
+        }
+
+        if (restaurantsLoadPromise) {
+            return restaurantsLoadPromise;
+        }
+
+        return loadRestaurants();
     }
 
     /**
@@ -494,7 +572,9 @@
         // Update UI
         updateResultsCount();
         displayRestaurants();
-        
+
+        refreshPopupMapMarkers();
+
     }
 
     /**
@@ -555,7 +635,7 @@
     function filterRestaurants(restaurants, filters) {
         return restaurants.filter(restaurant => {
             const meta = restaurant.restaurant_meta || {};
-            const title = restaurant.title?.rendered || '';
+            const title = getRestaurantTitle(restaurant) || '';
             
             // Search by name filter
             if (filters.search) {
@@ -698,8 +778,8 @@
                 
             case 'name':
                 return sorted.sort((a, b) => {
-                    const aName = a.title?.rendered || '';
-                    const bName = b.title?.rendered || '';
+                    const aName = getRestaurantTitle(a);
+                    const bName = getRestaurantTitle(b);
                     return aName.localeCompare(bName);
                 });
                 
@@ -773,7 +853,7 @@
      */
     function createRestaurantCard(restaurant, ranking) {
         const meta = restaurant.restaurant_meta || {};
-        const title = restaurant.title?.rendered || 'Restaurant';
+        const title = getRestaurantTitle(restaurant) || 'Restaurant';
         
         // Use Google rating if available, fallback to local rating
         const googleRating = parseFloat(meta.google_rating) || 0;
@@ -793,13 +873,7 @@
         const isOpen = meta.is_open === '1';
         const isFeatured = meta.is_featured === '1';
         
-        // Create custom URL for single restaurant page
-        const restaurantSlug = title.toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-            .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/-+/g, '-') // Replace multiple hyphens with single
-            .trim();
-        const link = `${window.location.origin}/restaurant/${restaurantSlug}/`;
+        const link = getRestaurantDetailUrl(restaurant);
         
         // Get Google opening hours data
         const openingHours = meta.google_opening_hours || {};
@@ -821,18 +895,8 @@
         }
         
         // Build Google Maps URL (prefer place_id, then lat/lng, then address)
-        const placeId = meta.google_place_id;
-        const latitude = parseFloat(meta.latitude);
-        const longitude = parseFloat(meta.longitude);
-        const address = meta.address || '';
-        let mapsUrl = '';
-        if (placeId) {
-            mapsUrl = `https://www.google.com/maps/search/?api=1&query_place_id=${encodeURIComponent(placeId)}&query=${encodeURIComponent(title)}`;
-        } else if (latitude && longitude) {
-            mapsUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-        } else if (address) {
-            mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-        }
+        const coordsForCard = getRestaurantCoordinates(restaurant);
+        const mapsUrl = getRestaurantMapsUrl(restaurant, coordsForCard);
         
         // Calculate price range
         const minPrice = parseFloat(meta.min_price) || 0;
@@ -844,17 +908,15 @@
         const distance = restaurant.calculatedDistance;
         
         // Get primary image
-        let imageUrl = 'data:image/svg+xml;base64,' + btoa(`
-            <svg width="240" height="160" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100%" height="100%" fill="#f3f4f6"/>
-                <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-family="Arial" font-size="14">${title}</text>
-            </svg>
-        `);
-        
-        if (meta.principal_image && meta.principal_image.full) {
-            imageUrl = meta.principal_image.full;
-        } else if (meta.gallery_images && meta.gallery_images.length > 0) {
-            imageUrl = meta.gallery_images[0].full;
+        let imageUrl = getRestaurantPrimaryImageUrl(restaurant, 'medium');
+
+        if (!imageUrl) {
+            imageUrl = 'data:image/svg+xml;base64,' + btoa(`
+                <svg width="240" height="160" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" fill="#f3f4f6"/>
+                    <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-family="Arial" font-size="14">${title}</text>
+                </svg>
+            `);
         }
 
         const $card = $(`
@@ -923,7 +985,7 @@
                                 </div>
                             </div>
                             
-                            <a ${mapsUrl ? `href="${mapsUrl}" target="_blank" rel="noopener"` : ''} class="detail-row" ${mapsUrl ? '' : 'style="pointer-events: none;"'}>
+                            <a ${mapsUrl ? `href="${mapsUrl}" target="_blank" rel="noopener noreferrer"` : ''} class="detail-row" ${mapsUrl ? '' : 'style="pointer-events: none;"'}>
                                 <svg viewBox="0 0 24 24" width="16" height="16" class="detail-icon">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 6.75c0-.414.336-.75.75-.75h.243l4.716 1.886 5.5-2.2.051-.02H15c.081 0 .161.013.236.038l4.514 1.505c.304.101.5.384.5.702v9.75a.75.75 0 0 1-.514.712l-4.486 1.495a.75.75 0 0 1-.472 0l-5.528-1.992-4.756 1.902A.75.75 0 0 1 3.5 18.75zM9 7.89v9.22l5 1.8V9.69zM8 7.89 5 6.75v9.36l3-.12zm11 1.16-3-1v9.36l3-1.02z"></path>
                                 </svg>
@@ -957,7 +1019,7 @@
                                 </a>
                             ` : ''}
                             ${meta.phone ? `
-                                <a href="https://wa.me/${meta.phone.replace(/[^0-9]/g, '')}" class="action-btn" target="_blank" rel="noopener" title="WhatsApp">
+                                <a href="https://wa.me/${meta.phone.replace(/[^0-9]/g, '')}" class="action-btn" target="_blank" rel="noopener noreferrer" title="WhatsApp">
                                     <svg viewBox="0 0 24 24" width="16" height="16">
                                         <path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"></path>
                                     </svg>
@@ -1302,6 +1364,560 @@
         return text.replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
+    function getRestaurantTitle(restaurant) {
+        if (!restaurant) return '';
+
+        if (typeof restaurant.title === 'string') {
+            return restaurant.title;
+        }
+
+        if (restaurant.title && typeof restaurant.title.rendered === 'string') {
+            return restaurant.title.rendered;
+        }
+
+        if (typeof restaurant.title_plain === 'string') {
+            return restaurant.title_plain;
+        }
+
+        if (typeof restaurant.name === 'string') {
+            return restaurant.name;
+        }
+
+        return '';
+    }
+
+    function normalizeRestaurant(restaurant) {
+        if (!restaurant || typeof restaurant !== 'object') {
+            return null;
+        }
+
+        const normalized = { ...restaurant };
+
+        if (!normalized.restaurant_meta && normalized.meta) {
+            normalized.restaurant_meta = { ...normalized.meta };
+        } else if (normalized.restaurant_meta && typeof normalized.restaurant_meta === 'object') {
+            normalized.restaurant_meta = { ...normalized.restaurant_meta };
+        } else {
+            normalized.restaurant_meta = {};
+        }
+
+        const meta = normalized.restaurant_meta;
+
+        if (typeof meta.latitude === 'string') {
+            meta.latitude = meta.latitude.trim();
+        }
+
+        if (typeof meta.longitude === 'string') {
+            meta.longitude = meta.longitude.trim();
+        }
+
+        if (!normalized.slug && typeof normalized.post_name === 'string') {
+            normalized.slug = normalized.post_name;
+        }
+
+        if (!normalized.permalink && typeof normalized.single_link === 'string') {
+            normalized.permalink = normalized.single_link;
+        }
+
+        return normalized;
+    }
+
+    function normalizeRestaurantsResponse(restaurants) {
+        if (!restaurants) {
+            return [];
+        }
+
+        const list = Array.isArray(restaurants)
+            ? restaurants
+            : (Array.isArray(restaurants?.data) ? restaurants.data : []);
+
+        return list
+            .map(normalizeRestaurant)
+            .filter(Boolean);
+    }
+
+    function mergeRestaurants(existing, incoming) {
+        const merged = new Map();
+
+        (existing || []).forEach(item => {
+            if (item && typeof item === 'object') {
+                merged.set(String(item.id || merged.size), item);
+            }
+        });
+
+        (incoming || []).forEach(item => {
+            if (item && typeof item === 'object') {
+                merged.set(String(item.id || merged.size), item);
+            }
+        });
+
+        return Array.from(merged.values());
+    }
+
+    function getRestaurantCoordinates(restaurant) {
+        if (!restaurant) return null;
+        const meta = restaurant.restaurant_meta || {};
+        const lat = meta.latitude ?? restaurant.latitude;
+        const lng = meta.longitude ?? restaurant.longitude;
+        const latNum = parseFloat(lat);
+        const lngNum = parseFloat(lng);
+
+        if (Number.isFinite(latNum) && Number.isFinite(lngNum)) {
+            return { lat: latNum, lng: lngNum };
+        }
+
+        const mapLinks = [
+            meta.restaurant_google_maps_link,
+            meta.google_maps_link,
+            meta.google_maps_url,
+            meta.maps_link,
+            meta.map_link,
+            restaurant.google_maps_link,
+            restaurant.google_maps_url,
+            restaurant.maps_link,
+            restaurant.map_link
+        ].filter(link => typeof link === 'string' && link.trim().length);
+
+        const uniqueLinks = Array.from(new Set(mapLinks));
+
+        for (const link of uniqueLinks) {
+            const coordsFromLink = extractCoordinatesFromMapsLink(link);
+            if (coordsFromLink) {
+                return coordsFromLink;
+            }
+        }
+
+        return null;
+    }
+
+    function extractCoordinatesFromMapsLink(link) {
+        if (!link || typeof link !== 'string') {
+            return null;
+        }
+
+        const trimmed = link.trim();
+        if (!trimmed) {
+            return null;
+        }
+
+        const baseOrigin = (typeof window !== 'undefined' && window.location && window.location.origin)
+            ? window.location.origin
+            : 'https://www.google.com';
+
+        const candidates = [trimmed];
+
+        try {
+            const decodedOnce = decodeURIComponent(trimmed);
+            if (decodedOnce && !candidates.includes(decodedOnce)) {
+                candidates.push(decodedOnce);
+            }
+        } catch (error) {
+            // Ignore decoding errors
+        }
+
+        try {
+            const lastCandidate = candidates[candidates.length - 1];
+            const decodedTwice = decodeURIComponent(lastCandidate);
+            if (decodedTwice && !candidates.includes(decodedTwice)) {
+                candidates.push(decodedTwice);
+            }
+        } catch (error) {
+            // Ignore decoding errors
+        }
+
+        const coordPatterns = [
+            /@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/,
+            /!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/,
+            /[?&](?:ll|center|query|q)=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/,
+            /%40(-?\d+(?:\.\d+)?)%2C(-?\d+(?:\.\d+)?)/i
+        ];
+
+        for (const candidate of candidates) {
+            for (const pattern of coordPatterns) {
+                const match = candidate.match(pattern);
+                if (match) {
+                    const latCandidate = parseFloat(match[1]);
+                    const lngCandidate = parseFloat(match[2]);
+                    if (Number.isFinite(latCandidate) && Number.isFinite(lngCandidate)) {
+                        return { lat: latCandidate, lng: lngCandidate };
+                    }
+                }
+            }
+
+            try {
+                const url = new URL(candidate, baseOrigin);
+                const paramKeys = ['ll', 'center', 'query', 'q'];
+                for (const key of paramKeys) {
+                    const value = url.searchParams.get(key);
+                    if (value) {
+                        const parts = value.split(/[;, ]/).filter(Boolean);
+                        if (parts.length >= 2) {
+                            const latCandidate = parseFloat(parts[0]);
+                            const lngCandidate = parseFloat(parts[1]);
+                            if (Number.isFinite(latCandidate) && Number.isFinite(lngCandidate)) {
+                                return { lat: latCandidate, lng: lngCandidate };
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                // Ignore invalid URLs that cannot be parsed
+            }
+        }
+
+        return null;
+    }
+
+    function getRestaurantRatingData(restaurant) {
+        const meta = restaurant?.restaurant_meta || {};
+        const googleRating = parseFloat(meta.google_rating);
+        const localRating = parseFloat(meta.average_rating || restaurant?.average_rating);
+        const rating = (!Number.isNaN(googleRating) && googleRating > 0)
+            ? googleRating
+            : (!Number.isNaN(localRating) && localRating > 0 ? localRating : 0);
+
+        const googleReviews = parseInt(meta.google_review_count, 10);
+        const localReviews = parseInt(meta.review_count || restaurant?.review_count, 10);
+        const reviewCount = (!Number.isNaN(googleReviews) && googleReviews > 0)
+            ? googleReviews
+            : (!Number.isNaN(localReviews) && localReviews > 0 ? localReviews : 0);
+
+        const priceRange = meta.price_range || restaurant?.price_range || '';
+        let cuisines = '';
+        if (Array.isArray(meta.cuisine_types)) {
+            cuisines = meta.cuisine_types.filter(Boolean).slice(0, 3).join(', ');
+        } else if (typeof meta.cuisine_types === 'string') {
+            cuisines = meta.cuisine_types.split(',').map(str => str.trim()).filter(Boolean).slice(0, 3).join(', ');
+        }
+
+        const specialties = Array.isArray(meta.specialties)
+            ? meta.specialties.filter(Boolean).slice(0, 3).join(', ')
+            : (meta.specialties || meta.speciality || '');
+
+        return {
+            rating,
+            reviewCount,
+            priceRange,
+            cuisines,
+            specialties
+        };
+    }
+
+    function getRestaurantPlaceId(restaurant) {
+        if (!restaurant) {
+            return '';
+        }
+
+        const meta = restaurant.restaurant_meta || {};
+        return meta.google_place_id || restaurant.google_place_id || '';
+    }
+
+    function getRestaurantMapsUrl(restaurant, coords = null) {
+        const placeId = getRestaurantPlaceId(restaurant);
+        if (placeId) {
+            return `https://www.google.com/maps/search/?api=1&query_place_id=${encodeURIComponent(placeId)}&query=${encodeURIComponent(getRestaurantTitle(restaurant) || '')}`;
+        }
+
+        const meta = restaurant?.restaurant_meta || {};
+        const adminLink = [
+            meta.restaurant_google_maps_link,
+            meta.google_maps_link,
+            meta.google_maps_url,
+            restaurant?.google_maps_link,
+            restaurant?.google_maps_url
+        ].find(link => typeof link === 'string' && link.trim().length);
+
+        if (adminLink) {
+            return adminLink.trim();
+        }
+
+        if (coords && Number.isFinite(coords.lat) && Number.isFinite(coords.lng)) {
+            return `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`;
+        }
+
+        const address = meta.address || restaurant?.address;
+        if (address) {
+            return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+        }
+
+        return '';
+    }
+
+    function generateStarIcons(rating) {
+        if (!rating || rating <= 0) {
+            return '';
+        }
+
+        const rounded = Math.round(rating * 2) / 2;
+        let starsHtml = '';
+
+        for (let i = 1; i <= 5; i++) {
+            if (rounded >= i) {
+                starsHtml += '<span style="color: #fbbf24;">★</span>';
+            } else if (rounded >= i - 0.5) {
+                starsHtml += '<span style="color: #fbbf24;">☆</span>';
+            } else {
+                starsHtml += '<span style="color: #d1d5db;">★</span>';
+            }
+        }
+
+        return starsHtml;
+    }
+
+    function getRestaurantDetailUrl(restaurant) {
+        if (!restaurant) return '#';
+        if (restaurant.permalink) return restaurant.permalink;
+
+        const baseFromSettings = (typeof lebonrestoAll !== 'undefined'
+            && lebonrestoAll.settings
+            && lebonrestoAll.settings.siteUrl)
+            ? lebonrestoAll.settings.siteUrl
+            : (typeof window !== 'undefined' ? window.location.origin : '');
+
+        if (restaurant.slug) {
+            const normalizedBase = baseFromSettings ? baseFromSettings.replace(/\/$/, '') : '';
+            return `${normalizedBase}/details/${restaurant.slug}/`;
+        }
+
+        return baseFromSettings || '#';
+    }
+
+    function getRestaurantPrimaryImageUrl(restaurant, preferredSize = 'thumbnail', fallback = '') {
+        if (!restaurant) {
+            return fallback;
+        }
+
+        const meta = restaurant.restaurant_meta || {};
+        const sizeCandidates = Array.from(new Set([
+            preferredSize,
+            'medium',
+            'full',
+            'large',
+            'thumbnail'
+        ].filter(Boolean)));
+
+        const pickFromImageObject = (imageObj) => {
+            if (!imageObj || typeof imageObj !== 'object') {
+                return '';
+            }
+
+            for (const sizeKey of sizeCandidates) {
+                if (imageObj[sizeKey]) {
+                    return imageObj[sizeKey];
+                }
+            }
+
+            const fallbackKeys = ['url', 'source', 'src'];
+            for (const key of fallbackKeys) {
+                if (imageObj[key]) {
+                    return imageObj[key];
+                }
+            }
+
+            for (const value of Object.values(imageObj)) {
+                if (typeof value === 'string' && value) {
+                    return value;
+                }
+            }
+
+            return '';
+        };
+
+        const principalImage = meta.principal_image || restaurant.principal_image;
+        if (principalImage) {
+            if (typeof principalImage === 'string' && /^https?:\/\//i.test(principalImage)) {
+                return principalImage;
+            }
+
+            const pickedPrincipal = pickFromImageObject(principalImage);
+            if (pickedPrincipal) {
+                return pickedPrincipal;
+            }
+        }
+
+        if (restaurant.principal_image_url) {
+            return restaurant.principal_image_url;
+        }
+
+        const galleryImages = Array.isArray(meta.gallery_images) ? meta.gallery_images : restaurant.gallery_images;
+        if (Array.isArray(galleryImages)) {
+            for (const galleryImage of galleryImages) {
+                if (typeof galleryImage === 'string' && /^https?:\/\//i.test(galleryImage)) {
+                    return galleryImage;
+                }
+
+                const pickedGallery = pickFromImageObject(galleryImage);
+                if (pickedGallery) {
+                    return pickedGallery;
+                }
+            }
+        }
+
+        if (meta.listing_image) {
+            return meta.listing_image;
+        }
+
+        if (meta.featured_image) {
+            return meta.featured_image;
+        }
+
+        if (restaurant.featured_image_url) {
+            return restaurant.featured_image_url;
+        }
+
+        if (restaurant.featured_image) {
+            return restaurant.featured_image;
+        }
+
+        if (restaurant.image) {
+            return restaurant.image;
+        }
+
+        return fallback;
+    }
+
+    function getMarkerLabelText(restaurant) {
+        const title = (getRestaurantTitle(restaurant) || '').trim();
+
+        if (!title) {
+            return '';
+        }
+
+        if (title.length <= 22) {
+            return title;
+        }
+
+        return `${title.slice(0, 21).trim()}…`;
+    }
+
+    function buildMarkerLabelMarkup(restaurant) {
+        const labelText = getMarkerLabelText(restaurant);
+        if (!labelText) {
+            return '';
+        }
+
+        const ratingData = getRestaurantRatingData(restaurant);
+        const ratingMarkup = ratingData.rating > 0
+            ? `<div class="marker-rating">${generateStarIcons(ratingData.rating)}<span class="marker-rating-text">${escapeHtml(ratingData.rating.toFixed(1))}</span></div>`
+            : '';
+        const reviewMarkup = ratingData.reviewCount > 0
+            ? `<div class="marker-review-count">${escapeHtml(`${ratingData.reviewCount} avis`)}</div>`
+            : '';
+
+        const labelSegments = [
+            `<div class="marker-title">${escapeHtml(labelText)}</div>`,
+            ratingMarkup,
+            reviewMarkup
+        ].filter(Boolean).join('');
+
+        return `<div class="marker-label marker-label--bubble">${labelSegments}</div>`;
+    }
+
+    function getCustomMarkerSvg(size = 40) {
+        const dimension = Number.isFinite(size) ? size : 40;
+        return `
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="${dimension}" height="${dimension}" viewBox="0 0 713.343 713.343" class="marker-svg" role="img" aria-hidden="true" focusable="false">
+                <g>
+                    <path fill="#ff5252" d="M646.467 289.796c1.226 76.016-30.317 152.811-89.168 211.774L356.672 702.197 156.044 501.569C97.193 442.607 65.65 365.811 66.876 289.796c1.226-70.108 30.651-139.548 84.932-193.717 56.499-56.622 130.742-84.932 204.863-84.932s148.353 28.311 204.863 84.932c54.282 54.169 83.707 123.608 84.933 193.717zm-66.876 11.146c0-123.163-99.757-222.92-222.92-222.92s-222.92 99.757-222.92 222.92 99.757 222.92 222.92 222.92 222.92-99.757 222.92-222.92z" opacity="1" data-original="#ff5252"></path>
+                    <path fill="#323232" d="M490.312 234.066c1.783 88.834-33.438 89.168-33.438 89.168V178.336s32.658 15.381 33.438 55.73zM378.964 312.088c0-21.289-33.438-47.259-33.438-78.022s14.936-55.73 33.438-55.73 33.438 24.967 33.438 55.73-33.438 56.064-33.438 78.022z" opacity="1" data-original="#323232"></path>
+                    <path fill="#ffd438" d="M378.964 312.088c0-21.958 33.438-47.259 33.438-78.022s-14.936-55.73-33.438-55.73-33.438 24.967-33.438 55.73 33.438 56.733 33.438 78.022zm77.91 11.146s35.221-.334 33.438-89.168c-.78-40.348-33.438-55.73-33.438-55.73zM356.672 78.022c123.163 0 222.92 99.757 222.92 222.92s-99.757 222.92-222.92 222.92-222.92-99.757-222.92-222.92 99.757-222.92 222.92-222.92z" opacity="1" data-original="#ffd438"></path>
+                    <path fill="#323232" d="M356.672 713.343a11.145 11.145 0 0 1-7.881-3.264L148.163 509.451c-60.028-60.142-93.715-140.266-92.431-219.835 1.301-74.434 32.626-145.964 88.204-201.427C200.675 31.326 276.232 0 356.672 0 437.1 0 512.657 31.325 569.423 88.205c55.563 55.448 86.886 126.977 88.188 201.397 1.283 79.585-32.404 159.709-92.424 219.842l-.007.008-200.627 200.627a11.145 11.145 0 0 1-7.881 3.264zm0-691.051c-74.476 0-144.429 29-196.973 81.659-51.478 51.372-80.479 117.436-81.678 186.039-1.187 73.561 30.127 147.814 85.912 203.705l192.739 192.739L549.41 493.696c55.784-55.891 87.098-130.144 85.912-203.72-1.199-68.588-30.201-134.653-81.662-186.008-52.57-52.675-122.522-81.676-196.988-81.676zm200.627 479.277h.014z" opacity="1" data-original="#323232"></path>
+                    <path fill="#323232" d="M356.672 535.007c-129.064 0-234.066-105.001-234.066-234.066S227.608 66.876 356.672 66.876s234.065 105.001 234.065 234.066-105.001 234.065-234.065 234.065zm0-445.839c-116.772 0-211.774 95.001-211.774 211.774s95.001 211.774 211.774 211.774 211.773-95.001 211.773-211.774S473.444 89.168 356.672 89.168z" opacity="1" data-original="#323232"></path>
+                    <path fill="#323232" d="M267.504 423.548c-6.156 0-11.146-4.991-11.146-11.146V278.65c0-6.156 4.99-11.146 11.146-11.146s11.146 4.99 11.146 11.146v133.752c0 6.155-4.99 11.146-11.146 11.146z" opacity="1" data-original="#323232"></path>
+                    <path fill="#323232" d="M267.504 289.796c-11.89 0-23.08-4.643-31.511-13.073-8.43-8.429-13.073-19.62-13.073-31.511v-55.73c0-6.156 4.99-11.146 11.146-11.146s11.146 4.99 11.146 11.146v55.73c0 5.936 2.324 11.528 6.543 15.748 4.221 4.221 9.814 6.544 15.749 6.544 12.292 0 22.292-10 22.292-22.292v-55.73c0-6.156 4.99-11.146 11.146-11.146s11.146 4.99 11.146 11.146v55.73c0 24.584-20 44.584-44.584 44.584z" opacity="1" data-original="#323232"></path>
+                    <path fill="#323232" d="M267.504 289.796c-6.156 0-11.146-4.99-11.146-11.146v-89.168c0-6.156 4.99-11.146 11.146-11.146s11.146 4.99 11.146 11.146v89.168c0 6.156-4.99 11.146-11.146 11.146zM378.963 423.548c-6.155 0-11.146-4.991-11.146-11.146V289.796c0-6.156 4.991-11.146 11.146-11.146s11.146 4.99 11.146 11.146v122.606c0 6.155-4.99 11.146-11.146 11.146z" opacity="1" data-original="#323232"></path>
+                    <path fill="#323232" d="M378.963 323.234c-6.155 0-11.146-4.99-11.146-11.146 0-6.37-6.421-16.27-12.629-25.845-9.753-15.04-20.808-32.086-20.808-52.177 0-37.501 19.583-66.876 44.583-66.876 25.001 0 44.584 29.375 44.584 66.876 0 19.988-10.961 36.801-20.632 51.636-6.585 10.102-12.806 19.643-12.806 26.386 0 6.156-4.99 11.146-11.146 11.146zm0-133.752c-10.523 0-22.291 19.067-22.291 44.584 0 13.496 8.753 26.994 17.219 40.048 1.701 2.622 3.381 5.213 4.98 7.788 1.716-2.769 3.532-5.556 5.37-8.374 8.365-12.831 17.014-26.099 17.014-39.462 0-25.518-11.769-44.584-22.292-44.584zM456.874 334.38a11.146 11.146 0 0 1-11.146-11.146V178.336a11.144 11.144 0 0 1 15.896-10.083c1.588.748 38.929 18.867 39.833 65.598.867 43.225-6.591 73.282-22.167 89.326-10.251 10.559-20.383 11.185-22.31 11.203h-.106zm11.146-132.397v99.251c6.193-10.788 11.87-31.038 11.149-66.944-.28-14.439-5.417-24.988-11.149-32.307z" opacity="1" data-original="#323232"></path>
+                    <path fill="#323232" d="M456.874 423.548c-6.155 0-11.146-4.991-11.146-11.146v-89.168c0-6.156 4.991-11.146 11.146-11.146s11.146 4.99 11.146 11.146v89.168c0 6.155-4.991 11.146-11.146 11.146z" opacity="1" data-original="#323232"></path>
+                </g>
+            </svg>
+        `.trim();
+    }
+
+    function buildFullscreenPopupContent(restaurant, coords) {
+        const meta = restaurant?.restaurant_meta || {};
+        const ratingData = getRestaurantRatingData(restaurant);
+        const ratingText = ratingData.rating > 0 ? ratingData.rating.toFixed(1) : '';
+        const reviewText = ratingData.reviewCount > 0 ? `${ratingData.reviewCount} avis` : '';
+        const combinedMeta = [ratingData.cuisines, ratingData.specialties, ratingData.priceRange]
+            .filter(Boolean)
+            .join(' • ');
+        const image = getRestaurantPrimaryImageUrl(
+            restaurant,
+            'medium',
+            'https://via.placeholder.com/80x80?text=Resto'
+        );
+        const restaurantTitle = getRestaurantTitle(restaurant) || '';
+        const phone = meta.phone || restaurant?.phone || '';
+        const phoneDigits = phone ? phone.replace(/[^0-9]/g, '') : '';
+        const mapsUrl = getRestaurantMapsUrl(restaurant, coords);
+        const detailUrl = getRestaurantDetailUrl(restaurant);
+        const city = meta.city || restaurant?.city || '';
+        const address = meta.address || restaurant?.address || '';
+        const placeId = getRestaurantPlaceId(restaurant);
+        const coordsText = (coords && Number.isFinite(coords.lat) && Number.isFinite(coords.lng))
+            ? `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`
+            : '';
+
+        return `
+            <div style="display: flex; gap: 12px; align-items: flex-start; max-width: 320px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                <div style="flex-shrink: 0; border-radius: 12px; overflow: hidden; width: 80px; height: 80px; box-shadow: 0 8px 20px rgba(15, 23, 41, 0.2);">
+                    <img src="${escapeHtml(image)}" alt="${escapeHtml(restaurantTitle)}" style="width: 100%; height: 100%; object-fit: cover;" />
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <h3 style="margin: 0 0 6px 0; font-size: 18px; font-weight: 600; color: #0f1729; line-height: 1.3;">${escapeHtml(restaurantTitle)}</h3>
+                    ${address ? `<p style="margin: 0; font-size: 13px; color: #4b5563;">${escapeHtml(address)}</p>` : ''}
+                    ${city ? `<p style="margin: 4px 0 0 0; font-size: 13px; color: #6b7280;">${escapeHtml(city)}</p>` : ''}
+                    ${combinedMeta ? `<p style="margin: 8px 0 0 0; font-size: 12px; color: #6b7280;">${escapeHtml(combinedMeta)}</p>` : ''}
+                    ${(coordsText || placeId) ? `
+                        <div style="margin: 10px 0 0 0; font-size: 12px; color: #4b5563; display: grid; gap: 4px;">
+                            ${coordsText ? `<div><span style="font-weight: 600; color: #0f1729;">Coordonnées :</span> ${escapeHtml(coordsText)}</div>` : ''}
+                            ${placeId ? `<div><span style="font-weight: 600; color: #0f1729;">Place ID :</span> <span style="font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">${escapeHtml(placeId)}</span></div>` : ''}
+                        </div>
+                    ` : ''}
+                    ${ratingText ? `
+                        <div style="margin: 12px 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                            <div style="display: flex; gap: 2px; font-size: 14px;">${generateStarIcons(ratingData.rating)}</div>
+                            <div style="font-weight: 600; font-size: 14px; color: #0f1729;">${escapeHtml(ratingText)}</div>
+                            ${reviewText ? `<div style="font-size: 12px; color: #6b7280;">(${escapeHtml(reviewText)})</div>` : ''}
+                        </div>
+                    ` : ''}
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;">
+                        ${phoneDigits ? `
+                            <a href="https://wa.me/${phoneDigits}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #fff; text-decoration: none; box-shadow: 0 8px 20px rgba(18, 140, 126, 0.3);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347" />
+                                </svg>
+                            </a>
+                        ` : ''}
+                        ${mapsUrl ? `
+                            <a href="${escapeHtml(mapsUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir ${escapeHtml(restaurantTitle)} sur Google Maps" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #4285F4 0%, #3367D6 100%); color: #fff; text-decoration: none; box-shadow: 0 8px 20px rgba(66, 133, 244, 0.3);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                </svg>
+                            </a>
+                        ` : ''}
+                        <a href="${escapeHtml(detailUrl)}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; height: 36px; border-radius: 18px; padding: 0 16px; background: linear-gradient(135deg, #fedc00 0%, #fbbf24 100%); color: #0f1729; font-weight: 600; font-size: 13px; text-decoration: none; box-shadow: 0 10px 25px rgba(251, 191, 36, 0.35);">
+                            Voir le détail
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function buildLeafletMarkerIcon(restaurant) {
+        const labelMarkup = buildMarkerLabelMarkup(restaurant);
+
+        return `
+            <div class="marker-with-label">
+                ${labelMarkup}
+                <div class="marker-icon marker-icon--custom">
+                    ${getCustomMarkerSvg()}
+                </div>
+            </div>
+        `.trim();
+    }
+
     // Make functions globally available for debugging
     window.lebonrestoAllRedesigned = {
         loadRestaurants,
@@ -1431,10 +2047,10 @@
         const mapContainer = document.getElementById('popup-restaurants-map');
         if (!mapContainer || popupMap) return;
 
-        // Default center (Casablanca)
-        let centerLat = 33.5731;
-        let centerLng = -7.5898;
-        let zoom = 12;
+        // Default center (Morocco)
+        let centerLat = MOROCCO_CENTER.lat;
+        let centerLng = MOROCCO_CENTER.lng;
+        let zoom = MOROCCO_CENTER.zoom;
 
         // Use current restaurant location if available
         if (currentPopupRestaurant && currentPopupRestaurant.restaurant_meta) {
@@ -1454,6 +2070,10 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(popupMap);
+
+        setTimeout(() => {
+            popupMap.invalidateSize();
+        }, 200);
 
         // Add markers for all restaurants
         addRestaurantMarkersToPopup();
@@ -1475,7 +2095,7 @@
 
         // Add markers for filtered restaurants
         filteredRestaurants.forEach(restaurant => {
-        const meta = restaurant.restaurant_meta || {};
+            const meta = restaurant.restaurant_meta || {};
             const lat = parseFloat(meta.latitude);
             const lng = parseFloat(meta.longitude);
             
@@ -1525,7 +2145,7 @@
                             </div>
                         </div>
                         <div class="marker-label">
-                            <div class="marker-name">${escapeHtml(restaurant.title?.rendered || 'Restaurant')}</div>
+                            <div class="marker-name">${escapeHtml(getRestaurantTitle(restaurant) || 'Restaurant')}</div>
                             ${rating > 0 ? `
                                 <div class="marker-rating">
                                     <div class="marker-stars">${generateStars(rating)}</div>
@@ -1561,6 +2181,8 @@
         if (popupMarkers.length > 0) {
             const group = new L.featureGroup(popupMarkers);
             popupMap.fitBounds(group.getBounds().pad(0.1));
+        } else {
+            popupMap.setView([MOROCCO_CENTER.lat, MOROCCO_CENTER.lng], MOROCCO_CENTER.zoom);
         }
     }
 
@@ -1569,28 +2191,15 @@
      */
     function createRestaurantPopupContent(restaurant) {
         const meta = restaurant.restaurant_meta || {};
-        const title = restaurant.title?.rendered || 'Restaurant';
+        const title = getRestaurantTitle(restaurant) || 'Restaurant';
         const address = meta.address || '';
         const city = meta.city || '';
         const cuisineType = meta.cuisine_type || '';
         const phone = meta.phone || '';
         const email = meta.email || '';
         
-        // Build Google Maps URL for popup (prefer admin-provided link)
-        const adminMapsLink = meta.restaurant_google_maps_link || meta.google_maps_link || '';
-        const placeIdPopup = meta.google_place_id || '';
-        const latPopup = parseFloat(meta.latitude);
-        const lngPopup = parseFloat(meta.longitude);
-        let mapsUrlPopup = '';
-        if (adminMapsLink) {
-            mapsUrlPopup = adminMapsLink;
-        } else if (placeIdPopup) {
-            mapsUrlPopup = `https://www.google.com/maps/search/?api=1&query_place_id=${encodeURIComponent(placeIdPopup)}&query=${encodeURIComponent(title)}`;
-        } else if (latPopup && lngPopup) {
-            mapsUrlPopup = `https://www.google.com/maps/search/?api=1&query=${latPopup},${lngPopup}`;
-        } else if (address) {
-            mapsUrlPopup = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-        }
+        const coordsPopup = getRestaurantCoordinates(restaurant);
+        const mapsUrlPopup = getRestaurantMapsUrl(restaurant, coordsPopup);
         
         // Rating information
         const googleRating = parseFloat(meta.google_rating) || 0;
@@ -1672,7 +2281,7 @@
                     
                     ${address ? `
                         ${mapsUrlPopup ? `
-                            <a href="${escapeHtml(mapsUrlPopup)}" target="_blank" rel="noopener" style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.25rem; text-decoration: none;">
+                            <a href="${escapeHtml(mapsUrlPopup)}" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.25rem; text-decoration: none;">
                                 <svg viewBox="0 0 24 24" width="14" height="14" style="color: #6b7280; margin-top: 0.1rem;">
                                     <path fill="currentColor" d="M4.25 9.799c0-4.247 3.488-7.707 7.75-7.707s7.75 3.46 7.75 7.707c0 2.28-1.138 4.477-2.471 6.323-1.31 1.813-2.883 3.388-3.977 4.483l-.083.083-.002.002-1.225 1.218-1.213-1.243-.03-.03-.012-.013c-1.1-1.092-2.705-2.687-4.035-4.53-1.324-1.838-2.452-4.024-2.452-6.293"></path>
                                 </svg>
@@ -1735,6 +2344,27 @@
     }
 
     /**
+     * Refresh popup map markers when filters change
+     */
+    function refreshPopupMapMarkers() {
+        if (!popupMap) return;
+
+        if (currentPopupRestaurant) {
+            addRestaurantMarkersToPopup();
+        } else {
+            addAllRestaurantMarkersToPopup();
+        }
+
+        updatePopupResultsCount();
+
+        if (!popupMarkers.length) {
+            popupMap.setView([MOROCCO_CENTER.lat, MOROCCO_CENTER.lng], MOROCCO_CENTER.zoom);
+        }
+
+        updateCenterButtonText();
+    }
+
+    /**
      * Center popup map on current restaurant or fit all restaurants
      */
     function centerPopupOnCurrent() {
@@ -1778,11 +2408,17 @@
         if (popup) {
             popup.classList.add('show');
             document.body.style.overflow = 'hidden';
-            
-            // Initialize map after popup is shown
-            setTimeout(() => {
-                initializePopupMapWithAllRestaurants();
-            }, 100);
+
+            ensureRestaurantsDataLoaded()
+                .catch(error => {
+                    console.error('Failed to load restaurants before opening popup map:', error);
+                })
+                .finally(() => {
+                    // Initialize map after popup is shown
+                    setTimeout(() => {
+                        initializePopupMapWithAllRestaurants();
+                    }, 100);
+                });
         }
     }
 
@@ -1793,10 +2429,10 @@
         const mapContainer = document.getElementById('popup-restaurants-map');
         if (!mapContainer || popupMap) return;
 
-        // Default center (Casablanca)
-        let centerLat = 33.5731;
-        let centerLng = -7.5898;
-        let zoom = 11;
+        // Default center (Morocco)
+        let centerLat = MOROCCO_CENTER.lat;
+        let centerLng = MOROCCO_CENTER.lng;
+        let zoom = MOROCCO_CENTER.zoom;
 
         // Initialize map
         popupMap = L.map('popup-restaurants-map').setView([centerLat, centerLng], zoom);
@@ -1806,11 +2442,14 @@
             attribution: '© OpenStreetMap contributors'
         }).addTo(popupMap);
 
+        setTimeout(() => {
+            popupMap.invalidateSize();
+        }, 200);
+
         // Add markers for all restaurants
-        addAllRestaurantMarkersToPopup();
+        refreshPopupMapMarkers();
 
         // Update results counter and button text
-        updatePopupResultsCount();
         updateCenterButtonText();
     }
 
@@ -1874,7 +2513,7 @@
                             </div>
                         </div>
                         <div class="marker-label">
-                            <div class="marker-name">${escapeHtml(restaurant.title?.rendered || 'Restaurant')}</div>
+                            <div class="marker-name">${escapeHtml(getRestaurantTitle(restaurant) || 'Restaurant')}</div>
                             ${rating > 0 ? `
                                 <div class="marker-rating">
                                     <div class="marker-stars">${generateStars(rating)}</div>
@@ -1905,6 +2544,8 @@
         if (popupMarkers.length > 0) {
             const group = new L.featureGroup(popupMarkers);
             popupMap.fitBounds(group.getBounds().pad(0.1));
+        } else {
+            popupMap.setView([MOROCCO_CENTER.lat, MOROCCO_CENTER.lng], MOROCCO_CENTER.zoom);
         }
     }
 
@@ -1928,7 +2569,7 @@
                 <div class="popup-overlay"></div>
                 <div class="popup-container">
                     <div class="popup-header">
-                        <h3>Visite Virtuelle - ${escapeHtml(restaurant.title?.rendered || 'Restaurant')}</h3>
+                        <h3>Visite Virtuelle - ${escapeHtml(getRestaurantTitle(restaurant) || 'Restaurant')}</h3>
                         <button id="close-virtual-tour" class="popup-close" aria-label="Fermer">
                             <svg viewBox="0 0 24 24" width="24" height="24">
                                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -1964,7 +2605,7 @@
         }
         
         if (title) {
-            title.textContent = `Visite Virtuelle - ${restaurant.title?.rendered || 'Restaurant'}`;
+            title.textContent = `Visite Virtuelle - ${getRestaurantTitle(restaurant) || 'Restaurant'}`;
         }
         
         popup.classList.add('show');
@@ -2033,9 +2674,16 @@
                 if (typeof openMapFullscreen === 'function') {
                     openMapFullscreen();
                 } else {
-                    // Fallback to popup if fullscreen unavailable
                     openMapWithAllRestaurants();
                 }
+            });
+        }
+
+        const mapCloseBtn = document.getElementById('fullscreen-map-close');
+        if (mapCloseBtn) {
+            mapCloseBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeMapFullscreen();
             });
         }
 
@@ -2074,11 +2722,17 @@
         if (modal) {
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
-            
-            // Initialize fullscreen map after modal is shown
-            setTimeout(() => {
-                initializeFullscreenMap();
-            }, 100);
+
+            ensureRestaurantsDataLoaded()
+                .catch(error => {
+                    console.error('Failed to load restaurants before opening fullscreen map:', error);
+                })
+                .finally(() => {
+                    // Initialize fullscreen map after modal is shown
+                    setTimeout(() => {
+                        initializeFullscreenMap();
+                    }, 100);
+                });
         }
     };
 
@@ -2090,13 +2744,42 @@
         if (modal) {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
-            
-            // Clean up fullscreen map
+
             const fullscreenMap = document.getElementById('fullscreen-map');
-            if (fullscreenMap && window.fullscreenMapInstance) {
-                window.fullscreenMapInstance.remove();
-                window.fullscreenMapInstance = null;
+            if (fullscreenMap) {
+                if (fullscreenLeafletMap) {
+                    fullscreenLeafletMap.remove();
+                    fullscreenLeafletMap = null;
+                }
+
+                fullscreenLeafletMarkers = [];
+
+                if (window.fullscreenMapInstance) {
+                    try {
+                        if (window.google && window.google.maps && window.google.maps.event) {
+                            window.google.maps.event.clearInstanceListeners(window.fullscreenMapInstance);
+                        }
+                    } catch (err) {
+                        // Ignore errors during cleanup
+                    }
+                    window.fullscreenMapInstance = null;
+                }
+
+                resetFullscreenMapContainer(fullscreenMap);
             }
+
+            if (fullscreenGoogleLabels.length) {
+                fullscreenGoogleLabels.forEach(label => {
+                    try {
+                        label.setMap(null);
+                    } catch (err) {
+                        // Ignore cleanup errors
+                    }
+                });
+                fullscreenGoogleLabels = [];
+            }
+
+            fullscreenMapMode = null;
         }
     };
 
@@ -2127,20 +2810,63 @@
      */
     function initializeFullscreenMap() {
         const mapContainer = document.getElementById('fullscreen-map');
-        if (!mapContainer || !window.google) {
-            console.error('Map container not found or Google Maps not loaded');
+        if (!mapContainer) {
+            console.error('Fullscreen map container not found');
             return;
         }
 
-        // Clear existing map
-        if (window.fullscreenMapInstance) {
-            window.fullscreenMapInstance.remove();
+        if (fullscreenLeafletMap) {
+            fullscreenLeafletMap.remove();
+            fullscreenLeafletMap = null;
         }
 
-        // Create new map instance
+        fullscreenLeafletMarkers = [];
+
+        if (window.fullscreenMapInstance && window.google && window.google.maps && window.google.maps.event) {
+            try {
+                window.google.maps.event.clearInstanceListeners(window.fullscreenMapInstance);
+            } catch (error) {
+                // Ignore cleanup errors
+            }
+            window.fullscreenMapInstance = null;
+        } else if (!googleMapsLoaded) {
+            window.fullscreenMapInstance = null;
+        }
+
+        resetFullscreenMapContainer(mapContainer);
+
+        if (fullscreenGoogleLabels.length) {
+            fullscreenGoogleLabels.forEach(label => {
+                try {
+                    label.setMap(null);
+                } catch (err) {
+                    // Ignore cleanup errors
+                }
+            });
+            fullscreenGoogleLabels = [];
+        }
+
+        const canUseGoogle = googleMapsLoaded && window.google && window.google.maps;
+
+        if (canUseGoogle) {
+            initializeGoogleFullscreenMap(mapContainer);
+            fullscreenMapMode = 'google';
+        } else if (typeof L !== 'undefined') {
+            initializeLeafletFullscreenMap(mapContainer);
+            fullscreenMapMode = 'leaflet';
+        } else {
+            console.error('No mapping library available for fullscreen display');
+        }
+    }
+
+    function initializeGoogleFullscreenMap(mapContainer) {
+        if (!window.google || !window.google.maps) {
+            return;
+        }
+
         window.fullscreenMapInstance = new google.maps.Map(mapContainer, {
-            zoom: 12,
-            center: { lat: 33.5731, lng: -7.5898 }, // Casablanca coordinates
+            zoom: MOROCCO_CENTER.zoom,
+            center: { lat: MOROCCO_CENTER.lat, lng: MOROCCO_CENTER.lng },
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             styles: [
                 {
@@ -2151,104 +2877,205 @@
             ]
         });
 
-        // Add all restaurants as markers
-        if (allRestaurants && allRestaurants.length > 0) {
-            const bounds = new google.maps.LatLngBounds();
-            
-            allRestaurants.forEach(restaurant => {
-                if (restaurant.latitude && restaurant.longitude) {
-                    const position = {
-                        lat: parseFloat(restaurant.latitude),
-                        lng: parseFloat(restaurant.longitude)
-                    };
+        const bounds = new google.maps.LatLngBounds();
+        let markersCount = 0;
+        let activeInfoWindow = null;
 
-                    // Create marker
-                    const marker = new google.maps.Marker({
-                        position: position,
-                        map: window.fullscreenMapInstance,
-                        title: restaurant.title,
-                        icon: {
-                            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                                <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="20" cy="20" r="18" fill="#fedc00" stroke="#0f1729" stroke-width="2"/>
-                                    <path d="M20 8c-6.627 0-12 5.373-12 12 0 6.627 12 20 12 20s12-13.373 12-20c0-6.627-5.373-12-12-12zm0 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" fill="#0f1729"/>
-                                </svg>
-                            `),
-                            scaledSize: new google.maps.Size(40, 40),
-                            anchor: new google.maps.Point(20, 40)
-                        }
-                    });
+        (allRestaurants || []).forEach(restaurant => {
+            const coords = getRestaurantCoordinates(restaurant);
+            if (!coords) {
+                return;
+            }
 
-                    // Create info window
-                    const infoWindow = new google.maps.InfoWindow({
-                        content: `
-                            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-width: 250px; max-width: 300px; padding: 0;">
-                                <div style="display: flex; gap: 12px; align-items: flex-start;">
-                                    <div style="flex-shrink: 0;">
-                                        <img src="${restaurant.principal_image || 'https://via.placeholder.com/60x60'}" 
-                                             alt="${restaurant.title}" 
-                                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);" />
-                                    </div>
-                                    <div style="flex: 1; min-width: 0;">
-                                        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 4px 0; line-height: 1.3; color: #0f1729;">${restaurant.title}</h3>
-                                        <p style="margin: 0 0 4px 0; font-size: 13px; line-height: 1.4; color: #6b7280;">${restaurant.address || ''}</p>
-                                        <p style="margin: 0 0 8px 0; font-size: 13px; line-height: 1.4; color: #6b7280;">${restaurant.city || ''}</p>
-                                        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-                                            ${restaurant.phone ? `
-                                                <a href="https://wa.me/${restaurant.phone.replace(/[^0-9]/g, '')}" 
-                                                   target="_blank"
-                                                   title="WhatsApp"
-                                                   style="display: inline-flex; align-items: center; justify-content: center; padding: 8px; background: #25D366; color: white; text-decoration: none; border-radius: 50%; width: 32px; height: 32px; transition: all 0.2s ease;"
-                                                   onmouseover="this.style.background='#128C7E'; this.style.transform='scale(1.1)'"
-                                                   onmouseout="this.style.background='#25D366'; this.style.transform='scale(1)'">
-                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
-                                                    </svg>
-                                                </a>
-                                            ` : ''}
-                                            <a href="${restaurant.google_maps_link || `https://www.google.com/maps?q=${restaurant.latitude},${restaurant.longitude}`}" 
-                                               target="_blank"
-                                               title="Google Maps"
-                                               style="display: inline-flex; align-items: center; justify-content: center; padding: 8px; background: #4285F4; color: white; text-decoration: none; border-radius: 50%; width: 32px; height: 32px; transition: all 0.2s ease;"
-                                               onmouseover="this.style.background='#3367D6'; this.style.transform='scale(1.1)'"
-                                               onmouseout="this.style.background='#4285F4'; this.style.transform='scale(1)'">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                                                </svg>
-                                            </a>
-                                            <a href="${window.location.origin}/details/${restaurant.slug}/" 
-                                               title="Voir détails"
-                                               style="display: inline-flex; align-items: center; justify-content: center; padding: 8px; background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%); color: white; text-decoration: none; border-radius: 50%; width: 32px; height: 32px; transition: all 0.2s ease;"
-                                               onmouseover="this.style.transform='scale(1.1)'"
-                                               onmouseout="this.style.transform='scale(1)'">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `
-                    });
+            const position = { lat: coords.lat, lng: coords.lng };
+            const infoContent = buildFullscreenPopupContent(restaurant, coords);
+            const labelHtml = buildMarkerLabelMarkup(restaurant);
+            const placeId = getRestaurantPlaceId(restaurant);
+            const markerSvg = getCustomMarkerSvg();
 
-                    // Add click listener to marker
-                    marker.addListener('click', function() {
-                        infoWindow.open(window.fullscreenMapInstance, marker);
-                    });
-
-                    // Extend bounds
-                    bounds.extend(position);
+            const markerOptions = {
+                position,
+                map: window.fullscreenMapInstance,
+                title: getRestaurantTitle(restaurant) || '',
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(markerSvg),
+                    scaledSize: new google.maps.Size(40, 40),
+                    anchor: new google.maps.Point(20, 40)
                 }
+            };
+
+            if (placeId) {
+                markerOptions.place = { placeId, location: position };
+            }
+
+            const marker = new google.maps.Marker(markerOptions);
+
+            if (placeId) {
+                marker.placeId = placeId;
+            }
+
+            const infoWindow = new google.maps.InfoWindow({
+                content: infoContent,
+                maxWidth: 360
             });
 
-            // Fit map to show all markers
-            if (allRestaurants.length > 1) {
-                window.fullscreenMapInstance.fitBounds(bounds);
-            } else if (allRestaurants.length === 1) {
-                window.fullscreenMapInstance.setCenter(bounds.getCenter());
-                window.fullscreenMapInstance.setZoom(15);
+            marker.addListener('click', function() {
+                if (activeInfoWindow) {
+                    activeInfoWindow.close();
+                }
+                infoWindow.open(window.fullscreenMapInstance, marker);
+                activeInfoWindow = infoWindow;
+            });
+
+            if (labelHtml) {
+                const labelOverlay = createGoogleMarkerLabel(window.fullscreenMapInstance, position, labelHtml);
+                if (labelOverlay) {
+                    fullscreenGoogleLabels.push(labelOverlay);
+                }
             }
+
+            bounds.extend(position);
+            markersCount += 1;
+        });
+
+        if (markersCount > 1) {
+            window.fullscreenMapInstance.fitBounds(bounds);
+        } else if (markersCount === 1) {
+            window.fullscreenMapInstance.setCenter(bounds.getCenter());
+            window.fullscreenMapInstance.setZoom(14);
+        } else {
+            window.fullscreenMapInstance.setCenter({ lat: MOROCCO_CENTER.lat, lng: MOROCCO_CENTER.lng });
+            window.fullscreenMapInstance.setZoom(MOROCCO_CENTER.zoom);
+        }
+    }
+
+    function initializeLeafletFullscreenMap(mapContainer) {
+        if (typeof L === 'undefined') {
+            return;
+        }
+
+        fullscreenLeafletMap = L.map(mapContainer).setView([MOROCCO_CENTER.lat, MOROCCO_CENTER.lng], MOROCCO_CENTER.zoom);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(fullscreenLeafletMap);
+
+        const bounds = [];
+
+        (allRestaurants || []).forEach(restaurant => {
+            const coords = getRestaurantCoordinates(restaurant);
+            if (!coords) {
+                return;
+            }
+
+            const marker = L.marker([coords.lat, coords.lng], {
+                icon: L.divIcon({
+                    className: 'custom-marker-with-label',
+                    html: buildLeafletMarkerIcon(restaurant),
+                    iconSize: [40, 64],
+                    iconAnchor: [20, 40],
+                    popupAnchor: [0, -76]
+                })
+            }).addTo(fullscreenLeafletMap);
+
+            marker.bindPopup(buildFullscreenPopupContent(restaurant, coords), {
+                maxWidth: 360,
+                className: 'fullscreen-map-popup'
+            });
+
+            fullscreenLeafletMarkers.push(marker);
+            bounds.push([coords.lat, coords.lng]);
+        });
+
+        if (bounds.length > 1) {
+            fullscreenLeafletMap.fitBounds(bounds, { padding: [40, 40] });
+        } else if (bounds.length === 1) {
+            fullscreenLeafletMap.setView(bounds[0], 14);
+        } else {
+            fullscreenLeafletMap.setView([MOROCCO_CENTER.lat, MOROCCO_CENTER.lng], MOROCCO_CENTER.zoom);
+        }
+
+        setTimeout(() => {
+            fullscreenLeafletMap.invalidateSize();
+        }, 200);
+    }
+
+    function createGoogleMarkerLabel(map, position, html) {
+        if (!map || !position || !html || !window.google || !window.google.maps || !google.maps.OverlayView) {
+            return null;
+        }
+
+        const latLng = position instanceof google.maps.LatLng
+            ? position
+            : new google.maps.LatLng(position.lat, position.lng);
+
+        class MarkerLabel extends google.maps.OverlayView {
+            constructor(labelPosition, labelHtml) {
+                super();
+                this.position = labelPosition;
+                this.html = labelHtml;
+                this.div = null;
+            }
+
+            onAdd() {
+                const div = document.createElement('div');
+                div.className = 'google-marker-label';
+                div.innerHTML = this.html;
+                div.style.position = 'absolute';
+                div.style.pointerEvents = 'none';
+                div.style.zIndex = '1000';
+                this.div = div;
+                const panes = this.getPanes();
+                panes.overlayImage.appendChild(div);
+            }
+
+            draw() {
+                if (!this.div) {
+                    return;
+                }
+
+                const projection = this.getProjection();
+                if (!projection) {
+                    return;
+                }
+
+                const point = projection.fromLatLngToDivPixel(this.position);
+                if (!point) {
+                    return;
+                }
+
+                const left = point.x - (this.div.offsetWidth / 2);
+                const verticalOffset = 48;
+                const top = point.y - this.div.offsetHeight - verticalOffset;
+                this.div.style.left = `${left}px`;
+                this.div.style.top = `${top}px`;
+            }
+
+            onRemove() {
+                if (this.div && this.div.parentNode) {
+                    this.div.parentNode.removeChild(this.div);
+                }
+                this.div = null;
+            }
+        }
+
+        const overlay = new MarkerLabel(latLng, html);
+        overlay.setMap(map);
+        return overlay;
+    }
+
+    function resetFullscreenMapContainer(mapContainer) {
+        if (!mapContainer) {
+            return;
+        }
+
+        mapContainer.innerHTML = '';
+
+        if (mapContainer.className) {
+            mapContainer.className = mapContainer.className
+                .split(' ')
+                .filter(cls => cls && !cls.startsWith('leaflet-'))
+                .join(' ');
         }
     }
 
