@@ -18,6 +18,12 @@
     let userLocation = null;
     let googleMapsLoaded = false;
 
+    const MOROCCO_CENTER = {
+        lat: 31.7917,
+        lng: -7.0926,
+        zoom: 6
+    };
+
     // Initialize when document is ready
     $(document).ready(function() {
         initializeApp();
@@ -494,7 +500,9 @@
         // Update UI
         updateResultsCount();
         displayRestaurants();
-        
+
+        refreshPopupMapMarkers();
+
     }
 
     /**
@@ -1431,10 +1439,10 @@
         const mapContainer = document.getElementById('popup-restaurants-map');
         if (!mapContainer || popupMap) return;
 
-        // Default center (Casablanca)
-        let centerLat = 33.5731;
-        let centerLng = -7.5898;
-        let zoom = 12;
+        // Default center (Morocco)
+        let centerLat = MOROCCO_CENTER.lat;
+        let centerLng = MOROCCO_CENTER.lng;
+        let zoom = MOROCCO_CENTER.zoom;
 
         // Use current restaurant location if available
         if (currentPopupRestaurant && currentPopupRestaurant.restaurant_meta) {
@@ -1454,6 +1462,10 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(popupMap);
+
+        setTimeout(() => {
+            popupMap.invalidateSize();
+        }, 200);
 
         // Add markers for all restaurants
         addRestaurantMarkersToPopup();
@@ -1475,7 +1487,7 @@
 
         // Add markers for filtered restaurants
         filteredRestaurants.forEach(restaurant => {
-        const meta = restaurant.restaurant_meta || {};
+            const meta = restaurant.restaurant_meta || {};
             const lat = parseFloat(meta.latitude);
             const lng = parseFloat(meta.longitude);
             
@@ -1561,6 +1573,8 @@
         if (popupMarkers.length > 0) {
             const group = new L.featureGroup(popupMarkers);
             popupMap.fitBounds(group.getBounds().pad(0.1));
+        } else {
+            popupMap.setView([MOROCCO_CENTER.lat, MOROCCO_CENTER.lng], MOROCCO_CENTER.zoom);
         }
     }
 
@@ -1735,6 +1749,27 @@
     }
 
     /**
+     * Refresh popup map markers when filters change
+     */
+    function refreshPopupMapMarkers() {
+        if (!popupMap) return;
+
+        if (currentPopupRestaurant) {
+            addRestaurantMarkersToPopup();
+        } else {
+            addAllRestaurantMarkersToPopup();
+        }
+
+        updatePopupResultsCount();
+
+        if (!popupMarkers.length) {
+            popupMap.setView([MOROCCO_CENTER.lat, MOROCCO_CENTER.lng], MOROCCO_CENTER.zoom);
+        }
+
+        updateCenterButtonText();
+    }
+
+    /**
      * Center popup map on current restaurant or fit all restaurants
      */
     function centerPopupOnCurrent() {
@@ -1793,10 +1828,10 @@
         const mapContainer = document.getElementById('popup-restaurants-map');
         if (!mapContainer || popupMap) return;
 
-        // Default center (Casablanca)
-        let centerLat = 33.5731;
-        let centerLng = -7.5898;
-        let zoom = 11;
+        // Default center (Morocco)
+        let centerLat = MOROCCO_CENTER.lat;
+        let centerLng = MOROCCO_CENTER.lng;
+        let zoom = MOROCCO_CENTER.zoom;
 
         // Initialize map
         popupMap = L.map('popup-restaurants-map').setView([centerLat, centerLng], zoom);
@@ -1806,11 +1841,14 @@
             attribution: '© OpenStreetMap contributors'
         }).addTo(popupMap);
 
+        setTimeout(() => {
+            popupMap.invalidateSize();
+        }, 200);
+
         // Add markers for all restaurants
-        addAllRestaurantMarkersToPopup();
+        refreshPopupMapMarkers();
 
         // Update results counter and button text
-        updatePopupResultsCount();
         updateCenterButtonText();
     }
 
@@ -1905,6 +1943,8 @@
         if (popupMarkers.length > 0) {
             const group = new L.featureGroup(popupMarkers);
             popupMap.fitBounds(group.getBounds().pad(0.1));
+        } else {
+            popupMap.setView([MOROCCO_CENTER.lat, MOROCCO_CENTER.lng], MOROCCO_CENTER.zoom);
         }
     }
 
@@ -2030,10 +2070,10 @@
             mapToggleBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 // Open fullscreen map with all restaurants (matches single page behavior)
-                if (typeof openMapFullscreen === 'function') {
+                if (typeof openMapFullscreen === 'function' && googleMapsLoaded && window.google && window.google.maps) {
                     openMapFullscreen();
                 } else {
-                    // Fallback to popup if fullscreen unavailable
+                    // Fallback to popup if fullscreen unavailable or Google Maps not ready
                     openMapWithAllRestaurants();
                 }
             });
@@ -2139,8 +2179,8 @@
 
         // Create new map instance
         window.fullscreenMapInstance = new google.maps.Map(mapContainer, {
-            zoom: 12,
-            center: { lat: 33.5731, lng: -7.5898 }, // Casablanca coordinates
+            zoom: MOROCCO_CENTER.zoom,
+            center: { lat: MOROCCO_CENTER.lat, lng: MOROCCO_CENTER.lng },
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             styles: [
                 {
@@ -2249,6 +2289,9 @@
                 window.fullscreenMapInstance.setCenter(bounds.getCenter());
                 window.fullscreenMapInstance.setZoom(15);
             }
+        } else {
+            window.fullscreenMapInstance.setCenter({ lat: MOROCCO_CENTER.lat, lng: MOROCCO_CENTER.lng });
+            window.fullscreenMapInstance.setZoom(MOROCCO_CENTER.zoom);
         }
     }
 
