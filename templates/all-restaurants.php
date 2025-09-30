@@ -477,17 +477,18 @@ Menus, photos culinaires professionnelles, avis clients et localisation Google M
 
     <!-- Fullscreen Map Modal -->
     <div id="fullscreen-map-modal" class="fullscreen-modal">
-        <button
-            type="button"
+        <a
+            href="#"
             class="fullscreen-map-close"
             id="fullscreen-map-close"
+            role="button"
             aria-label="<?php esc_attr_e('Fermer la carte', 'le-bon-resto'); ?>"
         >
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                 <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
             </svg>
-        </button>
+        </a>
         <div id="fullscreen-map"></div>
     </div>
 
