@@ -2451,48 +2451,6 @@
     z-index: 10000;
 }
 
-#fullscreen-map-modal {
-    position: fixed;
-}
-
-#fullscreen-map-modal .fullscreen-map-close {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-    width: 44px;
-    height: 44px;
-    border: none;
-    border-radius: 50%;
-    background: rgba(15, 23, 41, 0.85);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 16px 36px rgba(15, 23, 41, 0.4);
-    transition: transform 0.2s ease, background 0.2s ease;
-    z-index: 2;
-}
-
-#fullscreen-map-modal .fullscreen-map-close:hover {
-    transform: scale(1.05);
-    background: rgba(15, 23, 41, 0.95);
-}
-
-#fullscreen-map-modal .fullscreen-map-close svg {
-    width: 20px;
-    height: 20px;
-}
-
-@media (max-width: 640px) {
-    #fullscreen-map-modal .fullscreen-map-close {
-        top: 16px;
-        right: 16px;
-        width: 40px;
-        height: 40px;
-    }
-}
-
 #fullscreen-map {
     width: 100%;
     height: 100%;
@@ -2546,7 +2504,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
     cursor: pointer;
 }
 
@@ -2559,43 +2516,31 @@
     justify-content: center;
     transition: all 0.3s ease;
     cursor: pointer;
-}
-
-.marker-icon.small {
-    width: 32px;
-    height: 44px;
-    border-radius: 0;
+    margin-bottom: 4px;
 }
 
 .marker-label {
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(6px);
-    border-radius: 999px;
-    padding: 6px 12px;
-    box-shadow: 0 12px 25px rgba(15, 23, 41, 0.18);
-    border: 1px solid rgba(15, 23, 41, 0.08);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    border-radius: 8px;
+    padding: 6px 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    min-width: 120px;
     text-align: center;
     transition: all 0.3s ease;
-    min-width: 0;
-}
-
-.marker-label .marker-title {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #0f1729;
-    white-space: nowrap;
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .marker-name {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: #0f1729;
-    white-space: nowrap;
+    margin-bottom: 2px;
+    line-height: 1.2;
+    max-width: 110px;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .marker-rating {
@@ -2629,68 +2574,33 @@
 
 .marker-with-label:hover .marker-label {
     background: rgba(255, 255, 255, 1);
-    transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 16px 32px rgba(15, 23, 41, 0.25);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .marker-icon:hover {
     transform: scale(1.1);
+popup-tip {
+    background: rgba(255, 255, 255, 0.97.leaflet-popup.fullscreen-map-popup .leaflet-popup-content-wrapper {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 18px;
+    box-shadow: 0 20px 45px rgba(15, 23, 41, 0.25);
+    padding: 0;
 }
 
-.google-marker-label {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.96);
-    border-radius: 999px;
-    padding: 6px 12px;
-    color: #0f1729;
-    font-weight: 600;
-    font-size: 0.8rem;
-    box-shadow: 0 12px 26px rgba(15, 23, 41, 0.2);
-    border: 1px solid rgba(15, 23, 41, 0.08);
-    white-space: nowrap;
-    pointer-events: none;
-    transform-origin: center bottom;
+.leaflet-popup.fullscreen-map-popup .leaflet-popup-content {
+    margin: 0;
+    padding: 12px;
 }
 
-.google-marker-label::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -6px;
-    width: 10px;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.96);
-    border-left: 1px solid rgba(15, 23, 41, 0.08);
-    border-bottom: 1px solid rgba(15, 23, 41, 0.08);
-    transform: translateX(-50%) rotate(45deg);
-    box-shadow: 0 8px 16px rgba(15, 23, 41, 0.18);
-    pointer-events: none;
+.leaflet-popup.fullscreen-map-popup .leaflet-popup-tip {
+    background: rgba(255, 255, 255, 0.97);
 }
 
-.marker-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
+);
 }
 
-.marker-svg {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-.marker-text {
-    color: white;
-    font-size: 10px;
-    font-weight: 700;
-    text-align: center;
-    line-height: 1;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    max-width: 30px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+flow: ellipsis;
     white-space: nowrap;
 }
 
