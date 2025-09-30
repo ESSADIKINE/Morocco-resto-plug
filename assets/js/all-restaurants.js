@@ -1630,7 +1630,6 @@
         if (adminLink) {
             return adminLink.trim();
         }
-
         if (coords && Number.isFinite(coords.lat) && Number.isFinite(coords.lng)) {
             return `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`;
         }
@@ -1897,6 +1896,7 @@
                             </a>
                         ` : ''}
                         <a href="${escapeHtml(detailUrl)}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; height: 36px; border-radius: 18px; padding: 0 16px; background: linear-gradient(135deg, #fedc00 0%, #fbbf24 100%); color: #0f1729; font-weight: 600; font-size: 13px; text-decoration: none; box-shadow: 0 10px 25px rgba(251, 191, 36, 0.35);">
+
                             Voir le détail
                         </a>
                     </div>
@@ -2671,7 +2671,7 @@
             mapToggleBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 // Open fullscreen map with all restaurants (matches single page behavior)
-                if (typeof openMapFullscreen === 'function') {
+                if (typeof openMapFullscreen === 'function' && googleMapsLoaded && window.google && window.google.maps) {
                     openMapFullscreen();
                 } else {
                     openMapWithAllRestaurants();
@@ -2778,7 +2778,6 @@
                 });
                 fullscreenGoogleLabels = [];
             }
-
             fullscreenMapMode = null;
         }
     };
@@ -3064,6 +3063,24 @@
         return overlay;
     }
 
+    function resetFullscreenMapContainer(mapContainer) {
+        if (!mapContainer) {
+            return;
+        }
+
+        mapContainer.innerHTML = '';
+
+        if (mapContainer.className) {
+            mapContainer.className = mapContainer.className
+                .split(' ')
+                .filter(cls => cls && !cls.startsWith('leaflet-'))
+                .join(' ');
+        }
+
+        const overlay = new MarkerLabel(latLng, text);
+        overlay.setMap(map);
+        return overlay;
+    }
     function resetFullscreenMapContainer(mapContainer) {
         if (!mapContainer) {
             return;
