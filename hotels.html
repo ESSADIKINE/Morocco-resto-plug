@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Hotels in Morocco – Le Bon Hotel Collection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-sA+z0ymGpcFoYfJxP0LlwM1Zp1ur2bHY6bC6p2LlNNc="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="hotel.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <h1>Discover Morocco&apos;s Finest Hotels</h1>
+      <div class="star-rating" aria-hidden="true">★★★★★</div>
+      <p>Explore riads, desert camps, and seaside retreats curated with Moroccan hospitality.</p>
+    </header>
+
+    <section class="filter-bar" aria-label="Hotel Filters">
+      <input type="search" id="hotel-search" placeholder="Search by hotel or city" aria-label="Search hotels" />
+      <select id="hotel-distance" aria-label="Filter by distance">
+        <option value="any">Any distance</option>
+        <option value="10">Within 10 km</option>
+        <option value="20">Within 20 km</option>
+        <option value="50">Within 50 km</option>
+      </select>
+      <select id="hotel-sort" aria-label="Sort hotels">
+        <option value="date">Newest first</option>
+        <option value="price">Lowest price</option>
+        <option value="rating">Highest rated</option>
+      </select>
+      <button type="button" class="button" onclick="document.getElementById('hotel-search').focus();">Plan My Stay</button>
+    </section>
+
+    <main>
+      <section aria-labelledby="hotels-heading" style="padding-top: 1rem;">
+        <h2 id="hotels-heading" class="section-title" style="width: min(1200px, 94%); margin: 0 auto 2rem;">All Hotels</h2>
+        <div id="hotel-cards" class="hotels-grid" aria-live="polite"></div>
+        <nav class="pagination" aria-label="Pagination"></nav>
+      </section>
+
+      <section aria-labelledby="map-section-heading" class="map-wrapper" style="width: min(1200px, 94%); margin: 0 auto 4rem;">
+        <h2 id="map-section-heading" class="section-title">Explore on the Map</h2>
+        <div id="hotels-map"></div>
+      </section>
+    </main>
+
+    <footer style="text-align: center; padding-bottom: 2.5rem; color: rgba(22,33,62,0.6);">
+      <small>&copy; 2024 Le Bon Hotel — Where every journey begins with Moroccan warmth.</small>
+    </footer>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44c="
+      crossorigin=""
+    ></script>
+    <script src="hotel.js"></script>
+  </body>
+</html>

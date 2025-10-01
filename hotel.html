@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riad Fès Medina Luxury – Le Bon Hotel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-sA+z0ymGpcFoYfJxP0LlwM1Zp1ur2bHY6bC6p2LlNNc="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="hotel.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <h1>Riad Fès Medina Luxury</h1>
+      <div class="star-rating" aria-label="Rated five out of five stars">★★★★★</div>
+      <p>Immerse yourself in the elegance of the Fès medina with Andalusian courtyards and rooftop sunsets.</p>
+    </header>
+
+    <main id="single-hotel" class="hotel-container" data-hotel-id="riad-fes">
+      <section class="hotel-details" aria-label="Hotel Details">
+        <article class="detail-card">
+          <span>City</span>
+          <strong>Fès</strong>
+        </article>
+        <article class="detail-card">
+          <span>Region</span>
+          <strong>Fès-Meknès</strong>
+        </article>
+        <article class="detail-card">
+          <span>Postal Code</span>
+          <strong>30000</strong>
+        </article>
+        <article class="detail-card">
+          <span>Country</span>
+          <strong>Morocco</strong>
+        </article>
+        <article class="detail-card">
+          <span>Total Rooms</span>
+          <strong>42</strong>
+        </article>
+        <article class="detail-card">
+          <span>Check-in</span>
+          <strong>14:00</strong>
+        </article>
+        <article class="detail-card">
+          <span>Check-out</span>
+          <strong>12:00</strong>
+        </article>
+        <article class="detail-card">
+          <span>Avg. Price/Night</span>
+          <strong>$245</strong>
+        </article>
+      </section>
+
+      <section aria-label="Hotel Story" style="margin-bottom: 3rem; display: grid; gap: 1.5rem;">
+        <h2 class="section-title">The Experience</h2>
+        <p>
+          Discover the timeless charm of Fès at Riad Fès Medina Luxury. Wander through fragrant gardens, sip mint tea
+          beneath hand-carved cedar ceilings, and indulge in hammam rituals that revive the senses. Each suite blends
+          Andalusian artistry with contemporary comfort, while the rooftop terrace offers sweeping views of the ancient
+          medina.
+        </p>
+        <p>
+          Whether you seek culinary explorations, guided souk tours, or restorative spa journeys, our concierge team is
+          ready to curate an unforgettable Moroccan escape infused with the colors, textures, and rhythm of the kingdom.
+        </p>
+      </section>
+
+      <section aria-labelledby="gallery-heading">
+        <h2 id="gallery-heading" class="section-title">Gallery</h2>
+        <div class="gallery-grid">
+          <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80" alt="Riad Fès pool courtyard" data-lightbox="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1600&q=80" />
+          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&q=80" alt="Traditional Moroccan suite" data-lightbox="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1600&q=80" />
+          <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=80" alt="Rooftop dining with lanterns" data-lightbox="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1600&q=80" />
+        </div>
+      </section>
+
+      <section class="virtual-tour" aria-labelledby="tour-heading" style="margin-bottom: 3rem;">
+        <h2 id="tour-heading" class="section-title">Virtual Tour</h2>
+        <iframe
+          src="https://www.youtube.com/embed/4hQ8ZL0OflQ"
+          title="Virtual tour of Riad Fès Medina Luxury"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </section>
+
+      <section class="map-wrapper" aria-labelledby="map-heading">
+        <h2 id="map-heading" class="section-title">Map &amp; Nearby Destinations</h2>
+        <div id="hotel-map"></div>
+      </section>
+
+      <section class="booking-section" aria-labelledby="booking-heading" style="margin-bottom: 1rem;">
+        <h2 id="booking-heading" class="section-title">Book Your Stay</h2>
+        <iframe
+          src="https://example.com/booking/riad-fes"
+          title="Booking widget"
+          loading="lazy"
+        ></iframe>
+      </section>
+    </main>
+
+    <footer style="text-align: center; padding-bottom: 2.5rem; color: rgba(22,33,62,0.6);">
+      <small>&copy; 2024 Le Bon Hotel — Crafted with Moroccan warmth and hospitality.</small>
+    </footer>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44c="
+      crossorigin=""
+    ></script>
+    <script src="hotel.js"></script>
+  </body>
+</html>
