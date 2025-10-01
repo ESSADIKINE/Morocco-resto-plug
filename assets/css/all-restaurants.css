@@ -3,8 +3,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 
 :root {
-    --primary-color: #b3342b;
-    --primary-dark: #7d221c;
+    --primary-color: #ee2e20;
+    --primary-dark: #000000;
     --primary-light: #d75e43;
     --secondary-color: #0f6a58;
     --secondary-dark: #0a4d40;
@@ -12,13 +12,13 @@
     --accent-color: #f4c161;
     --accent-deep: #d08a1a;
     --sand-color: #f6ebdc;
-    --sand-soft: #fbf6ef;
+    --sand-soft: #d1c5c4;
     --tile-color: rgba(255, 255, 255, 0.1);
     --text-primary: #271714;
-    --text-secondary: #4e3129;
-    --text-muted: #826051;
-    --border-color: rgba(212, 170, 113, 0.5);
-    --border-light: rgba(255, 255, 255, 0.4);
+    --text-secondary: #000000;
+    --text-muted: #f6d2cf;
+    --border-color: rgb(255, 0, 0);
+    --border-light: rgb(255, 40, 40);
     --bg-white: #fffaf2;
     --bg-gray-50: #faf4ed;
     --bg-gray-100: #f1e4d6;
@@ -366,7 +366,7 @@
 }
 
 .filters-container {
-    background: linear-gradient(150deg, rgba(255, 250, 242, 0.95), rgba(246, 235, 220, 0.85));
+    background: linear-gradient(150deg, #0a4d40, #ee2e20);
     border: 1px solid rgba(179, 52, 43, 0.15);
     border-radius: var(--radius-lg);
     padding: 0;
@@ -410,7 +410,7 @@
 .filter-title {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--secondary-dark);
+    color: #fff;
     margin: 0;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -599,6 +599,7 @@
     transition: var(--transition);
     border-radius: var(--radius-md);
     background: transparent;
+    color: #fff;
 }
 
 .filter-option:hover {
@@ -609,9 +610,9 @@
 .filter-checkbox {
     width: 16px;
     height: 16px;
-    border: 1px solid rgba(15, 106, 88, 0.25);
+    border: 1px solid #b9ffc0;
     border-radius: var(--radius-sm);
-    background: var(--bg-white);
+    background: #b9ffc0;
     cursor: pointer;
     position: relative;
     appearance: none;
@@ -619,7 +620,7 @@
 }
 
 .filter-checkbox:checked {
-    background: var(--primary-color);
+    background: #00ff1a;
     border-color: var(--primary-color);
 }
 
@@ -638,9 +639,9 @@
 .filter-radio {
     width: 16px;
     height: 16px;
-    border: 1px solid rgba(15, 106, 88, 0.25);
+    border: 1px solid #b9ffc0;
     border-radius: 50%;
-    background: var(--bg-white);
+    background: #b9ffc0;
     cursor: pointer;
     position: relative;
     appearance: none;
@@ -648,7 +649,7 @@
 }
 
 .filter-radio:checked {
-    background: var(--primary-color);
+    background: #00ff1a;
     border-color: var(--primary-color);
 }
 
@@ -674,8 +675,12 @@
 
 .option-text {
     font-size: 0.875rem;
-    color: var(--text-secondary);
+    color: #b9ffc0;
     flex: 1;
+}
+
+.wp-embed-responsive{
+    background-color: #0a4d40;
 }
 
 /* Rating Stars */
@@ -966,6 +971,7 @@
     gap: 20px;
     padding: 20px 24px;
     align-items: center;
+    background-color: #0a4d40;
 }
 
 /* Card Image */
@@ -1198,7 +1204,7 @@
 .rating-value {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--primary-dark);
+    color: rgb(255, 0, 0);
 }
 
 .rating-bubbles {
@@ -1220,7 +1226,7 @@
 }
 
 .review-count {
-    color: rgba(81, 49, 38, 0.75);
+    color: rgb(255, 0, 0);
     font-size: 0.875rem;
     text-decoration: none;
 }
@@ -1241,7 +1247,7 @@
     align-items: center;
     gap: 8px;
     font-size: 0.875rem;
-    color: rgba(60, 41, 33, 0.9);
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .detail-icon {
@@ -1722,7 +1728,7 @@
     /* Text styling */
     .mobile-filter-toggle .filter-text {
         display: block !important;
-        color: #0f1729 !important;
+        color: #0a4d40 !important;
         font-weight: 600 !important;
         font-size: 14px !important;
         letter-spacing: 0.5px !important;
@@ -1774,7 +1780,7 @@
 }
 
 .mobile-filter-panel input::placeholder {
-    color: #9ca3af !important;
+    color: #f6d2cf !important;
     font-weight: 400 !important;
 }
 
@@ -1809,7 +1815,7 @@
 .mobile-filter-panel .flex.items-center span {
     font-size: 15px !important;
     font-weight: 500 !important;
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
 }
 
 /* Button styling */
@@ -1834,14 +1840,14 @@
 }
 
 /* Apply button specific styling */
-.mobile-filter-panel button[style*="background-color: #fedc00"],
+.mobile-filter-panel button[style*="background-color: #cc2014"],
 .mobile-filter-panel button.apply-filters {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-light) 100%) !important;
     color: #fffaf2 !important;
     border: 1px solid rgba(244, 193, 97, 0.45) !important;
 }
 
-.mobile-filter-panel button[style*="background-color: #fedc00"]:hover,
+.mobile-filter-panel button[style*="background-color: #cc2014"]:hover,
 .mobile-filter-panel button.apply-filters:hover {
     background: linear-gradient(135deg, var(--secondary-light) 0%, var(--primary-dark) 100%) !important;
     box-shadow: 0 12px 30px rgba(179, 52, 43, 0.3) !important;
@@ -2028,6 +2034,7 @@
         grid-template-columns: 1fr !important;
         gap: 10px !important;
         padding: 12px !important;
+        background-color: #0a4d40;
     }
     
     .card-image {
@@ -2104,6 +2111,7 @@
     .card-layout {
         padding: 10px !important;
         gap: 8px !important;
+        background-color: #0a4d40;
     }
     
     .restaurant-name {
@@ -2190,12 +2198,12 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --text-primary: #ffffff;
-        --text-secondary: #d1d5db;
-        --text-muted: #9ca3af;
-        --bg-white: #0f1729;
+        --text-secondary: #000000;
+        --text-muted: #f6d2cf;
+        --bg-white: #0a4d40;
         --bg-gray-50: #111827;
-        --bg-gray-100: #374151;
-        --border-color: #374151;
+        --bg-gray-100: rgb(255, 0, 0);
+        --border-color: rgb(255, 0, 0);
         --border-light: #4b5563;
     }
 }
@@ -2475,7 +2483,7 @@
 .popup-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #0f1729;
+    color: #0a4d40;
     margin: 0;
 }
 
@@ -2537,7 +2545,7 @@
     border-radius: 8px;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #374151;
+    color: rgb(255, 0, 0);
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -2545,7 +2553,7 @@
 
 .popup-control-btn:hover {
     background: #f9fafb;
-    border-color: #d1d5db;
+    border-color: #e71e0f;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -2563,7 +2571,7 @@
     border-radius: 8px;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #374151;
+    color: rgb(255, 0, 0);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #e5e7eb;
 }
@@ -2774,7 +2782,7 @@
 .marker-name {
     font-size: 0.75rem;
     font-weight: 600;
-    color: #0f1729;
+    color: #0a4d40;
     white-space: nowrap;
     max-width: 160px;
     overflow: hidden;
@@ -2798,7 +2806,7 @@
 .marker-rating-text {
     font-size: 0.7rem;
     font-weight: 600;
-    color: #0f1729;
+    color: #0a4d40;
 }
 
 .marker-review-count {

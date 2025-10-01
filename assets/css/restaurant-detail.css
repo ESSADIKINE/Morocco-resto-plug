@@ -5,7 +5,7 @@
 /* CSS Custom Properties */
 :root {
     --primary-color: #b3342b;
-    --primary-dark: #7d221c;
+    --primary-dark: #000000;
     --primary-light: #d75e43;
     --secondary-color: #0f6a58;
     --secondary-dark: #0a4d40;
@@ -13,12 +13,12 @@
     --accent-color: #f4c161;
     --accent-deep: #d08a1a;
     --text-primary: #271714;
-    --text-secondary: #4e3129;
-    --text-muted: #826051;
+    --text-secondary: #000000;
+    --text-muted: #f6d2cf;
     --bg-primary: #fffaf2;
     --bg-secondary: #faf4ed;
     --bg-tertiary: #f1e4d6;
-    --border-color: rgba(244, 193, 97, 0.4);
+    --border-color: rgb(255, 0, 0);
     --shadow-sm: 0 2px 8px rgba(26, 24, 23, 0.08);
     --shadow-md: 0 12px 28px rgba(15, 73, 63, 0.15);
     --shadow-lg: 0 24px 45px rgba(179, 52, 43, 0.18);
@@ -1253,6 +1253,10 @@ html {
 html.lebonresto-detail-page {
     overflow-x: hidden !important;
     overflow-y: auto !important;
+}
+
+.wp-singular{
+    background-color: #0a4d40;
 }
 
 body.lebonresto-detail-page {

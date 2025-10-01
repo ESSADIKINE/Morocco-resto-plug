@@ -459,7 +459,7 @@ html.lebonresto-detail-page {
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: #0f1729;
+    color: #0a4d40;
 }
 
 .property-navigation {
@@ -478,14 +478,14 @@ html.lebonresto-detail-page {
 }
 
 .property-navigation a:hover {
-    color: #fedc00;
+    color: #cc2014;
     background: #fef3c7;
 }
 
 .blog-title {
     font-size: 2.5rem;
     font-weight: 800;
-    color: #0f1729;
+    color: #0a4d40;
     margin-bottom: 0.5rem;
 }
 
@@ -495,13 +495,13 @@ html.lebonresto-detail-page {
 }
 
 .blog-path a {
-    color: #fedc00;
+    color: #cc2014;
     text-decoration: none;
 }
 
 .cuisine-badge {
-    background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%);
-    color: #0f1729;
+    background: linear-gradient(135deg, #cc2014 0%, #cc2014 100%);
+    color: #0a4d40;
     padding: 0.5rem 1.5rem;
     border-radius: 25px;
     font-weight: 600;
@@ -525,20 +525,20 @@ html.lebonresto-detail-page {
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     text-decoration: none;
-    color: #374151;
+    color: rgb(255, 0, 0);
     transition: all 0.3s ease;
     margin-bottom: 0.75rem;
 }
 
 .contact-btn:hover {
     background: #f9fafb;
-    border-color: #fedc00;
-    color: #0f1729;
+    border-color: #cc2014;
+    color: #0a4d40;
 }
 
 .contact-btn i {
     margin-right: 0.75rem;
-    color: #fedc00;
+    color: #cc2014;
 }
 
 /* Loading state */
@@ -546,7 +546,7 @@ html.lebonresto-detail-page {
     width: 40px;
     height: 40px;
     border: 4px solid #f3f4f6;
-    border-top: 4px solid #fedc00;
+    border-top: 4px solid #cc2014;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
@@ -785,7 +785,7 @@ html.lebonresto-detail-page {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #fedc00, #fbbf24);
+    background: linear-gradient(90deg, #cc2014, #fbbf24);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -1562,7 +1562,7 @@ html.lebonresto-detail-page {
                             Le restaurant que vous recherchez n'existe pas ou a été supprimé.
                         </p>
                         <a href="<?php echo home_url('/restaurants/'); ?>" 
-                           style="display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%); color: #0f1729; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease;">
+                           style="display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #cc2014 0%, #cc2014 100%); color: #0a4d40; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease;">
                             <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>
                             Retour aux restaurants
                         </a>
@@ -1771,7 +1771,7 @@ html.lebonresto-detail-page {
                                     font-weight: 600;
                                     margin: 0 0 4px 0;
                                     line-height: 1.3;
-                                    color: #0f1729;
+                                    color: #0a4d40;
                                 "><?php echo esc_html($blog_title ?: get_the_title()); ?></h3>
                                 <p style="
                                     margin: 0 0 4px 0;
@@ -1875,7 +1875,7 @@ html.lebonresto-detail-page {
                                            align-items: center;
                                            justify-content: center;
                                            padding: 8px;
-                                           background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%);
+                                           background: linear-gradient(135deg, #cc2014 0%, #cc2014 100%);
                                            color: white;
                                            text-decoration: none;
                                            border-radius: 50%;
@@ -1925,7 +1925,7 @@ html.lebonresto-detail-page {
                         transition: all 0.3s ease;
                     }
                     .restaurant-popup .leaflet-popup-content-wrapper:hover {
-                        border-color: #fedc00;
+                        border-color: #cc2014;
                         box-shadow: 0 12px 32px rgba(255, 193, 7, 0.3);
                     }
                 `;
@@ -2072,7 +2072,7 @@ html.lebonresto-detail-page {
                                 <div style="
                                     width: 60px;
                                     height: 60px;
-                                    background: linear-gradient(135deg, #fedc00 0%, #fedc00 100%);
+                                    background: linear-gradient(135deg, #cc2014 0%, #cc2014 100%);
                                     border-radius: 8px;
                                     display: flex;
                                     align-items: center;
@@ -2090,7 +2090,7 @@ html.lebonresto-detail-page {
                                     font-weight: 600;
                                     margin: 0 0 4px 0;
                                     line-height: 1.3;
-                                    color: #0f1729;
+                                    color: #0a4d40;
                                 "><?php echo esc_html($blog_title ?: get_the_title()); ?></h3>
                                 <p style="
                                     margin: 0 0 8px 0;
@@ -2140,7 +2140,7 @@ html.lebonresto-detail-page {
                         transition: all 0.3s ease;
                     }
                     .restaurant-popup .leaflet-popup-content-wrapper:hover {
-                        border-color: #fedc00;
+                        border-color: #cc2014;
                         box-shadow: 0 12px 32px rgba(255, 193, 7, 0.3);
                     }
                 `;

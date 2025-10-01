@@ -5,13 +5,13 @@
 
 :root {
     --primary-color: #b3342b;
-    --primary-dark: #7d221c;
+    --primary-dark: #000000;
     --primary-light: #d75e43;
     --text-primary: #271714;
-    --text-secondary: #4e3129;
-    --text-muted: #826051;
-    --border-color: rgba(244, 193, 97, 0.4);
-    --border-light: rgba(244, 193, 97, 0.25);
+    --text-secondary: #000000;
+    --text-muted: #f6d2cf;
+    --border-color: rgb(255, 0, 0);
+    --border-light: rgb(255, 40, 40);
     --bg-white: #fffaf2;
     --bg-gray-50: #faf4ed;
     --bg-gray-100: #f1e4d6;
@@ -656,7 +656,7 @@ input[type="checkbox"]:checked {
 
 .restaurant-card .flex-shrink-0 i {
     font-size: 1.5rem !important;
-    color: #9ca3af !important;
+    color: #f6d2cf !important;
 }
 
 /* Restaurant card badges */
@@ -743,7 +743,7 @@ input[type="checkbox"]:checked {
     border-radius: 10px !important;
     font-size: 14px !important;
     font-weight: 600 !important;
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
     border: 2px solid rgba(251, 191, 36, 0.2) !important;
 }
@@ -797,7 +797,7 @@ input[type="checkbox"]:checked {
 }
 
 .text-gray-700 {
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
 }
 
 .text-gray-800 {
@@ -1135,7 +1135,7 @@ input[type="checkbox"]:checked {
     border-radius: 8px !important;
     padding: 12px 16px !important;
     transition: all 0.3s ease !important;
-    background: #fdffb9 !important;
+    background: #b9ffc0 !important;
 }
 
 .filter-form input:focus,
@@ -1147,7 +1147,7 @@ input[type="checkbox"]:checked {
 
 .filter-form input:hover,
 .filter-form select:hover {
-    border-color: #d1d5db !important;
+    border-color: #e71e0f !important;
 }
 
 /* Enhanced button styling */
@@ -1178,7 +1178,7 @@ input[type="checkbox"]:checked {
 
 #clear-filters {
     background: #f3f4f6 !important;
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
     border: 2px solid #e5e7eb !important;
 }
 
@@ -1192,7 +1192,7 @@ input[type="checkbox"]:checked {
     width: 20px !important;
     height: 20px !important;
     border-radius: 4px !important;
-    border: 2px solid #d1d5db !important;
+    border: 2px solid #e71e0f !important;
     accent-color: var(--primary-color) !important;
 }
 
@@ -1362,12 +1362,12 @@ input[type="checkbox"]:checked {
 }
 
 .single-restaurant-template .review-rating svg.text-gray-300 {
-    color: #d1d5db !important;
-    fill: #d1d5db !important;
+    color: #e71e0f !important;
+    fill: #e71e0f !important;
 }
 
 .single-restaurant-template .review-text {
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
     font-size: 10px !important;
     line-height: 1.2 !important;
     margin: 4px 0 !important;
@@ -1476,9 +1476,9 @@ input[type="checkbox"]:checked {
 
 .pagination-btn {
     padding: 8px 12px !important;
-    border: 1px solid #d1d5db !important;
+    border: 1px solid #e71e0f !important;
     background: white !important;
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
     border-radius: 6px !important;
     font-size: 14px !important;
     font-weight: 500 !important;
@@ -1494,7 +1494,7 @@ input[type="checkbox"]:checked {
 
 .pagination-btn:hover {
     background: #f3f4f6 !important;
-    border-color: #9ca3af !important;
+    border-color: #f6d2cf !important;
     transform: translateY(-1px) !important;
 }
 
@@ -1513,7 +1513,7 @@ input[type="checkbox"]:checked {
 
 .pagination-btn:disabled:hover {
     background: white !important;
-    border-color: #d1d5db !important;
+    border-color: #e71e0f !important;
     transform: none !important;
 }
 
@@ -1643,7 +1643,7 @@ input[type="checkbox"]:checked {
 /* Ensure proper text color for inputs */
 .filter-form input::placeholder,
 .filter-form select {
-    color: #9ca3af !important;
+    color: #f6d2cf !important;
 }
 
 .filter-form input,
@@ -1657,7 +1657,7 @@ input[type="checkbox"]:checked {
 }
 
 #clear-filters {
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
 }
 
 #close-mobile-filters {
@@ -1697,7 +1697,7 @@ input[type="checkbox"]:checked {
 /* Enhanced hover effects */
 .filter-form input:hover,
 .filter-form select:hover {
-    border-color: #d1d5db !important;
+    border-color: #e71e0f !important;
     background-color: #fafafa !important;
 }
 
@@ -1954,7 +1954,7 @@ input[type="checkbox"]:checked {
 }
 
 .mobile-filter-panel input::placeholder {
-    color: #9ca3af !important;
+    color: #f6d2cf !important;
     font-weight: 400 !important;
 }
 
@@ -1988,7 +1988,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-panel .flex.items-center span {
     font-size: 15px !important;
     font-weight: 500 !important;
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
 }
 
 /* Button styling */
@@ -2028,7 +2028,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-panel .bg-gray-200 {
     background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
     color: #4b5563 !important;
-    border: 2px solid #d1d5db !important;
+    border: 2px solid #e71e0f !important;
 }
 
 .mobile-filter-panel .bg-gray-200:hover {
@@ -2097,7 +2097,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-panel .flex.items-center span {
     font-size: 15px !important;
     font-weight: 500 !important;
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
 }
 
 .mobile-filter-panel button {
@@ -2134,7 +2134,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-panel .bg-gray-200 {
     background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
     color: #4b5563 !important;
-    border: 2px solid #d1d5db !important;
+    border: 2px solid #e71e0f !important;
 }
 
 .mobile-filter-panel .bg-gray-200:hover {
@@ -2206,7 +2206,7 @@ input[type="checkbox"]:checked {
 }
 
 .mobile-filter-panel input::placeholder {
-    color: #9ca3af !important;
+    color: #f6d2cf !important;
     font-weight: 400 !important;
 }
 
@@ -2240,7 +2240,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-panel .flex.items-center span {
     font-size: 15px !important;
     font-weight: 500 !important;
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
 }
 
 /* Button styling */
@@ -2280,7 +2280,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-panel .bg-gray-200 {
     background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
     color: #4b5563 !important;
-    border: 2px solid #d1d5db !important;
+    border: 2px solid #e71e0f !important;
 }
 
 .mobile-filter-panel .bg-gray-200:hover {
@@ -2353,7 +2353,7 @@ input[type="checkbox"]:checked {
 .mobile-filter-label {
     display: block;
     font-weight: 600;
-    color: #374151;
+    color: rgb(255, 0, 0);
     margin-bottom: 8px;
     font-size: 14px;
 }
@@ -2388,7 +2388,7 @@ input[type="checkbox"]:checked {
 
 .mobile-filter-checkbox label {
     font-size: 14px;
-    color: #374151;
+    color: rgb(255, 0, 0);
     cursor: pointer;
 }
 
@@ -2421,13 +2421,13 @@ input[type="checkbox"]:checked {
 
 .mobile-filter-btn-secondary {
     background: #f3f4f6;
-    color: #374151;
+    color: rgb(255, 0, 0);
     border: 2px solid #e5e7eb;
 }
 
 .mobile-filter-btn-secondary:hover {
     background: #e5e7eb;
-    border-color: #d1d5db;
+    border-color: #e71e0f;
 }
 
 /* Hide mobile filter on desktop */
@@ -2730,7 +2730,7 @@ button:focus {
 
 .mobile-tab-btn:hover:not(.active) {
     background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
     transform: translateY(-3px) !important;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
 }
@@ -2986,7 +2986,7 @@ button:focus {
 
 .restaurant-popup-content .detail-row span {
     font-size: 0.85rem !important;
-    color: #374151 !important;
+    color: rgb(255, 0, 0) !important;
 }
 
 .restaurant-popup-content .detail-row a {
@@ -3053,12 +3053,12 @@ button:focus {
 @media (prefers-color-scheme: dark) {
     :root {
         --text-primary: #ffffff;
-        --text-secondary: #d1d5db;
-        --text-muted: #9ca3af;
+        --text-secondary: #000000;
+        --text-muted: #f6d2cf;
         --bg-white: var(--primary-dark);
         --bg-gray-50: #111827;
-        --bg-gray-100: #374151;
-        --border-color: #374151;
+        --bg-gray-100: rgb(243, 206, 206);
+        --border-color: rgb(255, 0, 0);
         --border-light: #4b5563;
     }
 }
@@ -3467,7 +3467,7 @@ button:focus {
     }
     
     .fullscreen-modal-header {
-        background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+        background: linear-gradient(135deg, rgb(255, 0, 0) 0%, #4b5563 100%);
         color: #f9fafb;
         border-bottom-color: rgba(255, 255, 255, 0.1);
     }
