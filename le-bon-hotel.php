@@ -100,3 +100,25 @@ function lbhotel_check_for_restaurant_cpt() {
     }
 }
 add_action( 'admin_init', 'lbhotel_check_for_restaurant_cpt', 5 );
+
+if ( ! function_exists( 'lbhotel_enqueue_theme_stylesheet' ) ) {
+    /**
+     * Enqueue the theme-level hotel stylesheet when present.
+     */
+    function lbhotel_enqueue_theme_stylesheet() {
+        if ( ! function_exists( 'get_stylesheet_directory' ) || ! function_exists( 'get_stylesheet_directory_uri' ) ) {
+            return;
+        }
+
+        $stylesheet_dir = trailingslashit( get_stylesheet_directory() );
+        $stylesheet_uri = trailingslashit( get_stylesheet_directory_uri() );
+        $style_path     = $stylesheet_dir . 'hotel-styles.css';
+
+        if ( file_exists( $style_path ) ) {
+            $version = filemtime( $style_path );
+
+            wp_enqueue_style( 'lbhotel-theme-hotel', $stylesheet_uri . 'hotel-styles.css', array(), $version );
+        }
+    }
+}
+add_action( 'wp_enqueue_scripts', 'lbhotel_enqueue_theme_stylesheet' );

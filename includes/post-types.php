@@ -46,7 +46,7 @@ function lbhotel_register_post_type() {
         'has_archive'        => true,
         'show_in_rest'       => true,
         'rewrite'            => array(
-            'slug'       => 'hotels',
+            'slug'       => 'all',
             'with_front' => false,
         ),
         'supports'           => array( 'title', 'editor', 'excerpt', 'thumbnail', 'custom-fields', 'revisions' ),
