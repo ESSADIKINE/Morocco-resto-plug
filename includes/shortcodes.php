@@ -46,6 +46,8 @@ function lebonresto_all_restaurants_page_shortcode($atts) {
             true
         );
 
+    $restaurant_cities = function_exists('lebonresto_get_restaurant_cities') ? lebonresto_get_restaurant_cities() : array();
+
     // Start output buffering
     ob_start();
     
@@ -133,12 +135,15 @@ function lebonresto_map_page_shortcode($atts) {
                         
                     <!-- City Filter -->
                     <div class="w-full lg:w-48">
-                            <input 
-                                type="text" 
-                                id="city-filter" 
-                            placeholder="<?php _e('City...', 'le-bon-resto'); ?>"
+                            <select
+                                id="city-filter"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                            />
+                            >
+                                <option value=""><?php _e('All Cities', 'le-bon-resto'); ?></option>
+                                <?php foreach ($restaurant_cities as $city_option): ?>
+                                    <option value="<?php echo esc_attr($city_option); ?>"><?php echo esc_html($city_option); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         
                     <!-- Cuisine Filter -->

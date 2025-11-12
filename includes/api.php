@@ -34,23 +34,8 @@ function lebonresto_register_api_endpoints() {
                 'type' => 'string',
                 'sanitize_callback' => 'sanitize_text_field',
             ),
-            'distance' => array(
-                'description' => 'Distance in km',
-                'type' => 'number',
-                'sanitize_callback' => 'absint',
-            ),
-            'lat' => array(
-                'description' => 'User latitude for distance calculation',
-                'type' => 'number',
-                'sanitize_callback' => function($value) { return floatval($value); },
-            ),
-            'lng' => array(
-                'description' => 'User longitude for distance calculation',
-                'type' => 'number',
-                'sanitize_callback' => function($value) { return floatval($value); },
-            ),
             'sort' => array(
-                'description' => 'Sort order: featured, newest, distance',
+                'description' => 'Sort order: featured, newest, oldest, name',
                 'type' => 'string',
                 'sanitize_callback' => 'sanitize_text_field',
             ),
@@ -97,6 +82,7 @@ function lebonresto_clear_restaurant_cache() {
 
     // Clear cuisine types cache
     delete_transient('lebonresto_cuisine_types');
+    delete_transient('lebonresto_cities');
     delete_transient('lebonresto_all_restaurants_for_map');
 }
 
@@ -261,30 +247,6 @@ function lebonresto_get_restaurants_endpoint($request) {
                 }
             }
             
-            // Apply distance filter if specified
-            if (!empty($params['distance']) && !empty($params['lat']) && !empty($params['lng'])) {
-                $restaurant_lat = floatval($restaurant_data['restaurant_meta']['latitude']);
-                $restaurant_lng = floatval($restaurant_data['restaurant_meta']['longitude']);
-                
-                if ($restaurant_lat && $restaurant_lng) {
-                    $distance = lebonresto_calculate_distance(
-                        $params['lat'], 
-                        $params['lng'], 
-                        $restaurant_lat, 
-                        $restaurant_lng
-                    );
-                    
-                    // Skip if distance exceeds filter
-                    if ($distance > $params['distance']) {
-                        continue;
-                    }
-                    
-                    // Add distance to restaurant data
-                    $restaurant_data['distance'] = round($distance, 2);
-                }
-            }
-            
-            
             $restaurants[] = $restaurant_data;
         }
         wp_reset_postdata();
@@ -292,28 +254,23 @@ function lebonresto_get_restaurants_endpoint($request) {
 
     // Apply sorting
     $sort_order = isset($params['sort']) ? $params['sort'] : 'featured';
-    
-    if (in_array($sort_order, ['featured', 'newest', 'oldest', 'distance', 'name'])) {
+
+    if (in_array($sort_order, ['featured', 'newest', 'oldest', 'name'])) {
         usort($restaurants, function($a, $b) use ($sort_order) {
             // Featured restaurants always come first (except for specific sorts)
             if ($sort_order !== 'oldest' && $sort_order !== 'name') {
                 $a_featured = $a['restaurant_meta']['is_featured'] === '1';
                 $b_featured = $b['restaurant_meta']['is_featured'] === '1';
-                
+
                 if ($a_featured && !$b_featured) return -1;
                 if (!$a_featured && $b_featured) return 1;
             }
-            
+
             // Apply secondary sort
             switch ($sort_order) {
-                case 'distance':
-                    $distance_a = isset($a['distance']) ? $a['distance'] : PHP_INT_MAX;
-                    $distance_b = isset($b['distance']) ? $b['distance'] : PHP_INT_MAX;
-                    return $distance_a <=> $distance_b;
-                    
                 case 'newest':
                     return intval($b['id']) - intval($a['id']); // Higher ID = newer
-                    
+
                 case 'oldest':
                     return intval($a['id']) - intval($b['id']); // Lower ID = older
                     
@@ -325,13 +282,6 @@ function lebonresto_get_restaurants_endpoint($request) {
                     // For featured sort, just maintain featured first, then by ID (newest)
                     return intval($b['id']) - intval($a['id']);
             }
-        });
-    } elseif (!empty($params['distance']) && !empty($params['lat']) && !empty($params['lng'])) {
-        // Legacy distance sorting
-        usort($restaurants, function($a, $b) {
-            $distance_a = isset($a['distance']) ? $a['distance'] : PHP_INT_MAX;
-            $distance_b = isset($b['distance']) ? $b['distance'] : PHP_INT_MAX;
-            return $distance_a <=> $distance_b;
         });
     }
 
@@ -486,30 +436,6 @@ function lebonresto_get_all_restaurants_for_map() {
 }
 
 /**
- * Calculate distance between two points using Haversine formula
- */
-function lebonresto_calculate_distance($lat1, $lng1, $lat2, $lng2) {
-    $earth_radius = 6371; // Earth's radius in kilometers
-
-    $lat1_rad = deg2rad($lat1);
-    $lng1_rad = deg2rad($lng1);
-    $lat2_rad = deg2rad($lat2);
-    $lng2_rad = deg2rad($lng2);
-
-    $delta_lat = $lat2_rad - $lat1_rad;
-    $delta_lng = $lng2_rad - $lng1_rad;
-
-    $a = sin($delta_lat / 2) * sin($delta_lat / 2) +
-         cos($lat1_rad) * cos($lat2_rad) *
-         sin($delta_lng / 2) * sin($delta_lng / 2);
-
-    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-    $distance = $earth_radius * $c;
-
-    return $distance;
-}
-
-/**
  * Get unique cuisine types for filter dropdown (optimized with caching)
  */
 function lebonresto_get_cuisine_types() {
@@ -553,6 +479,50 @@ add_action('rest_api_init', 'lebonresto_register_cuisine_endpoint');
 function lebonresto_get_cuisine_types_endpoint($request) {
     $cuisine_types = lebonresto_get_cuisine_types();
     return rest_ensure_response($cuisine_types);
+}
+
+/**
+ * Get unique restaurant cities for dropdowns (with caching)
+ */
+function lebonresto_get_restaurant_cities() {
+    $cached_cities = get_transient('lebonresto_cities');
+    if ($cached_cities !== false) {
+        return $cached_cities;
+    }
+
+    global $wpdb;
+
+    $cities = $wpdb->get_col(
+        "SELECT DISTINCT meta_value
+         FROM {$wpdb->postmeta}
+         WHERE meta_key = '_restaurant_city'
+         AND meta_value != ''
+         ORDER BY meta_value ASC"
+    );
+
+    set_transient('lebonresto_cities', $cities, 3600);
+
+    return $cities;
+}
+
+/**
+ * REST endpoint for getting restaurant cities
+ */
+function lebonresto_register_city_endpoint() {
+    register_rest_route('lebonresto/v1', '/cities', array(
+        'methods' => 'GET',
+        'callback' => 'lebonresto_get_cities_endpoint',
+        'permission_callback' => '__return_true',
+    ));
+}
+add_action('rest_api_init', 'lebonresto_register_city_endpoint');
+
+/**
+ * Restaurant cities endpoint callback
+ */
+function lebonresto_get_cities_endpoint($request) {
+    $cities = lebonresto_get_restaurant_cities();
+    return rest_ensure_response($cities);
 }
 
 /**

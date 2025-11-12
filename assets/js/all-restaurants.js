@@ -15,7 +15,6 @@
     let itemsPerPage = 20;
     let isLoading = false;
     let hasMoreResults = true;
-    let userLocation = null;
     let googleMapsLoaded = false;
     let fullscreenLeafletMap = null;
     let fullscreenLeafletMarkers = [];
@@ -42,7 +41,6 @@
         initializeFilters();
         initializeSort();
         initializeMobileFilters();
-        initializeGeolocation();
         loadGoogleMapsAPI();
         bootstrapInitialRestaurants();
         loadRestaurants();
@@ -128,15 +126,6 @@
             clearAllFilters();
         });
         
-        // Distance filter click (request location if needed)
-        $('input[name="distance"]').on('change', function() {
-            if ($(this).is(':checked') && !userLocation) {
-                requestLocation();
-            } else {
-                applyFilters();
-            }
-        });
-
         // Initially hide extra options
         $('.filter-options .filter-option:nth-child(n+5)').hide();
     }
@@ -297,9 +286,8 @@
     function syncDesktopToMobile() {
         // Get desktop filter values
         const desktopName = document.getElementById('restaurant-search')?.value || '';
-        const desktopCity = document.getElementById('city')?.value || '';
+        const desktopCity = document.getElementById('city-filter')?.value || '';
         const desktopCuisine = document.getElementById('cuisine')?.value || '';
-        const desktopDistance = document.getElementById('distance')?.value || '';
         const desktopSort = document.getElementById('sort')?.value || 'featured';
         const desktopFeaturedOnly = document.getElementById('featured-only')?.checked || false;
         
@@ -307,14 +295,12 @@
         const mobileRestaurantName = document.getElementById('mobile-restaurant-name');
         const mobileCity = document.getElementById('mobile-city');
         const mobileCuisine = document.getElementById('mobile-cuisine');
-        const mobileDistance = document.getElementById('mobile-distance');
         const mobileSort = document.getElementById('mobile-sort');
         const mobileFeaturedOnly = document.getElementById('mobile-featured-only');
-        
+
         if (mobileRestaurantName) mobileRestaurantName.value = desktopName;
         if (mobileCity) mobileCity.value = desktopCity;
         if (mobileCuisine) mobileCuisine.value = desktopCuisine;
-        if (mobileDistance) mobileDistance.value = desktopDistance;
         if (mobileSort) mobileSort.value = desktopSort;
         if (mobileFeaturedOnly) mobileFeaturedOnly.checked = desktopFeaturedOnly;
     }
@@ -327,22 +313,19 @@
         const mobileRestaurantName = document.getElementById('mobile-restaurant-name')?.value || '';
         const mobileCity = document.getElementById('mobile-city')?.value || '';
         const mobileCuisine = document.getElementById('mobile-cuisine')?.value || '';
-        const mobileDistance = document.getElementById('mobile-distance')?.value || '';
         const mobileSort = document.getElementById('mobile-sort')?.value || 'featured';
         const mobileFeaturedOnly = document.getElementById('mobile-featured-only')?.checked || false;
-        
+
         // Apply to desktop filters
         const desktopName = document.getElementById('restaurant-search');
-        const desktopCity = document.getElementById('city');
+        const desktopCity = document.getElementById('city-filter');
         const desktopCuisine = document.getElementById('cuisine');
-        const desktopDistance = document.getElementById('distance');
         const desktopSort = document.getElementById('sort');
         const desktopFeaturedOnly = document.getElementById('featured-only');
-        
+
         if (desktopName) desktopName.value = mobileRestaurantName;
         if (desktopCity) desktopCity.value = mobileCity;
         if (desktopCuisine) desktopCuisine.value = mobileCuisine;
-        if (desktopDistance) desktopDistance.value = mobileDistance;
         if (desktopSort) desktopSort.value = mobileSort;
         if (desktopFeaturedOnly) desktopFeaturedOnly.checked = mobileFeaturedOnly;
         
@@ -358,8 +341,7 @@
         const mobileInputs = [
             'mobile-restaurant-name',
             'mobile-city',
-            'mobile-cuisine',
-            'mobile-distance'
+            'mobile-cuisine'
         ];
         
         mobileInputs.forEach(id => {
@@ -375,63 +357,6 @@
         
         // Apply cleared filters
         applyMobileFilters();
-    }
-
-    /**
-     * Initialize geolocation for distance filtering
-     */
-    function initializeGeolocation() {
-        const $distanceOptions = $('.distance-option');
-        
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    userLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    
-                    $distanceOptions.addClass('enabled');
-                    
-                },
-                function(error) {
-                    // Location not available, but continue without showing status
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 300000
-                }
-            );
-        }
-    }
-
-    /**
-     * Request user location
-     */
-    function requestLocation() {
-        const $distanceOptions = $('.distance-option');
-        
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    userLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    
-                    $distanceOptions.addClass('enabled');
-                    
-                    // Apply filters if distance is selected
-                    if ($('input[name="distance"]:checked').length > 0) {
-                        applyFilters();
-                    }
-                },
-                function(error) {
-                    // Location not available, but continue without showing status
-                }
-            );
-        }
     }
 
     /**
@@ -590,12 +515,10 @@
             console.log('Added search filter:', searchTerm);
         }
 
-        // Distance filter
-        const selectedDistance = $('input[name="distance"]:checked').val();
-        if (selectedDistance && userLocation) {
-            currentFilters.distance = parseFloat(selectedDistance);
-            currentFilters.userLat = userLocation.lat;
-            currentFilters.userLng = userLocation.lng;
+        // City filter
+        const selectedCity = $('#city-filter').val();
+        if (selectedCity) {
+            currentFilters.city = selectedCity;
         }
 
         // Price range (custom inputs)
@@ -658,23 +581,11 @@
                 }
             }
             
-            // Distance filter
-            if (filters.distance && filters.userLat && filters.userLng) {
-                const restaurantLat = parseFloat(meta.latitude);
-                const restaurantLng = parseFloat(meta.longitude);
-                
-                if (restaurantLat && restaurantLng) {
-                    const distance = calculateDistance(
-                        filters.userLat, filters.userLng,
-                        restaurantLat, restaurantLng
-                    );
-                    
-                    if (distance > filters.distance) {
-                        return false;
-                    }
-                    
-                    // Add distance to restaurant object for display
-                    restaurant.calculatedDistance = distance;
+            // City filter
+            if (filters.city) {
+                const restaurantCity = (meta.city || '').toLowerCase();
+                if (restaurantCity !== filters.city.toLowerCase()) {
+                    return false;
                 }
             }
             
@@ -735,20 +646,6 @@
     }
 
     /**
-     * Calculate distance between two coordinates (Haversine formula)
-     */
-    function calculateDistance(lat1, lng1, lat2, lng2) {
-        const R = 6371; // Earth's radius in kilometers
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLng = (lng2 - lng1) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                  Math.sin(dLng/2) * Math.sin(dLng/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
-    }
-
-    /**
      * Sort restaurants based on criteria
      */
     function sortRestaurants(restaurants, sortBy) {
@@ -781,13 +678,6 @@
                     const aName = getRestaurantTitle(a);
                     const bName = getRestaurantTitle(b);
                     return aName.localeCompare(bName);
-                });
-                
-            case 'distance':
-                return sorted.sort((a, b) => {
-                    const distanceA = a.calculatedDistance || Infinity;
-                    const distanceB = b.calculatedDistance || Infinity;
-                    return distanceA - distanceB;
                 });
                 
             case 'price_low':
@@ -903,9 +793,6 @@
         const maxPrice = parseFloat(meta.max_price) || 0;
         const priceRange = getPriceRangeDisplay(minPrice, maxPrice);
         const priceSymbols = getPriceRangeSymbol(minPrice, maxPrice);
-        
-        // Distance display
-        const distance = restaurant.calculatedDistance;
         
         // Get primary image
         let imageUrl = getRestaurantPrimaryImageUrl(restaurant, 'medium');
@@ -1161,6 +1048,10 @@
         $('.filter-checkbox, .filter-radio').prop('checked', false);
         $('#restaurant-search').val('');
         $('#min-price, #max-price').val('');
+        $('#city-filter').val('');
+        $('#mobile-city').val('');
+        $('#mobile-cuisine').val('');
+        $('#mobile-sort').val('featured');
         currentFilters = {};
         currentSort = 'featured';
         currentPage = 1;
@@ -1918,15 +1809,6 @@
         `.trim();
     }
 
-    // Make functions globally available for debugging
-    window.lebonrestoAllRedesigned = {
-        loadRestaurants,
-        applyFilters,
-        clearAllFilters,
-        showMobileFilters,
-        hideMobileFilters
-    };
-
     /**
      * Fetch Google Places data for a restaurant
      */
@@ -1941,9 +1823,7 @@
         applyFilters,
         clearAllFilters,
         showMobileFilters,
-        hideMobileFilters,
-        requestLocation,
-        userLocation: () => userLocation
+        hideMobileFilters
     };
 
     /**

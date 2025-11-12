@@ -654,8 +654,9 @@ wp_add_inline_style('lebonresto-single-css', '
         
 
 
-        // Get cuisine types for filter
+        // Get cuisine types and cities for filters
         $cuisine_types = lebonresto_get_cuisine_types();
+        $restaurant_cities = lebonresto_get_restaurant_cities();
         
         // Get Google API reviews for the current restaurant
         error_log('LEBONRESTO REVIEWS LOG: Starting review data fetching for restaurant ID: ' . $current_restaurant_id);
@@ -767,12 +768,15 @@ wp_add_inline_style('lebonresto-single-css', '
                     
                     <!-- City Filter -->
                     <div>
-                        <input 
-                            type="text" 
-                            id="mobile-city" 
-                            placeholder="<?php _e('Ville...', 'le-bon-resto'); ?>"
+                        <select
+                            id="mobile-city"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                        />
+                        >
+                            <option value=""><?php _e('Toutes les villes', 'le-bon-resto'); ?></option>
+                            <?php foreach ($restaurant_cities as $city_option): ?>
+                                <option value="<?php echo esc_attr($city_option); ?>"><?php echo esc_html($city_option); ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     
                     <!-- Cuisine Filter -->
@@ -791,31 +795,14 @@ wp_add_inline_style('lebonresto-single-css', '
                         </select>
                     </div>
                     
-                    <!-- Distance Filter -->
-                    <div>
-                        <select 
-                            id="mobile-distance"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                            disabled
-                        >
-                            <option value=""><?php _e('Sélectionner la distance', 'le-bon-resto'); ?></option>
-                            <option value="5">5 km</option>
-                            <option value="10">10 km</option>
-                            <option value="25">25 km</option>
-                            <option value="50">50 km</option>
-                            <option value="100">100 km</option>
-                        </select>
-                    </div>
-                    
                     <!-- Sort Filter -->
                     <div>
-                        <select 
+                        <select
                             id="mobile-sort"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                         >
                             <option value="featured"><?php _e('Recommandés en premier', 'le-bon-resto'); ?></option>
                             <option value="newest"><?php _e('Plus récents', 'le-bon-resto'); ?></option>
-                            <option value="distance"><?php _e('Distance', 'le-bon-resto'); ?></option>
                             <option value="name"><?php _e('Nom A-Z', 'le-bon-resto'); ?></option>
                         </select>
                     </div>
@@ -871,12 +858,15 @@ wp_add_inline_style('lebonresto-single-css', '
                         
                         <!-- City Filter -->
                         <div class="w-full lg:w-48">
-                            <input 
-                                type="text" 
-                                id="city-filter" 
-                                placeholder="<?php _e('Ville...', 'le-bon-resto'); ?>"
+                            <select
+                                id="city-filter"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                            />
+                            >
+                                <option value=""><?php _e('Toutes les villes', 'le-bon-resto'); ?></option>
+                                <?php foreach ($restaurant_cities as $city_option): ?>
+                                    <option value="<?php echo esc_attr($city_option); ?>"><?php echo esc_html($city_option); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         
                         <!-- Cuisine Filter -->
@@ -891,22 +881,6 @@ wp_add_inline_style('lebonresto-single-css', '
                                         <?php echo esc_html(ucfirst($cuisine)); ?>
                                     </option>
                                 <?php endforeach; ?>
-                            </select>
-                        </div>
-                        
-                        <!-- Distance Filter -->
-                        <div class="w-full lg:w-48">
-                            <select 
-                                id="distance-filter"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                                disabled
-                            >
-                                <option value=""><?php _e('Distance', 'le-bon-resto'); ?></option>
-                                <option value="5">5 km</option>
-                                <option value="10">10 km</option>
-                                <option value="25">25 km</option>
-                                <option value="50">50 km</option>
-                                <option value="100">100 km</option>
                             </select>
                         </div>
                         
@@ -1287,7 +1261,6 @@ wp_add_inline_style('lebonresto-single-css', '
                             >
                         <option value="featured"><?php _e('Recommandés en premier', 'le-bon-resto'); ?></option>
                         <option value="newest"><?php _e('Plus récents', 'le-bon-resto'); ?></option>
-                                <option value="distance"><?php _e('Distance', 'le-bon-resto'); ?></option>
                         <option value="name"><?php _e('Nom A-Z', 'le-bon-resto'); ?></option>
                             </select>
                         </div>
@@ -1337,22 +1310,6 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeMobileTabs();
     }
     
-    // Initialize location detection for distance filtering
-    const distanceFilter = document.getElementById('distance-filter');
-    if (distanceFilter && navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                window.userLocation = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                distanceFilter.disabled = false;
-            },
-            function(error) {
-                distanceFilter.disabled = true;
-            }
-        );
-    }
 });
 })();
 
@@ -1448,15 +1405,13 @@ function syncMobileFilters() {
         name: 'restaurant-name-filter',
         city: 'city-filter',
         cuisine: 'cuisine-filter',
-        distance: 'distance-filter',
         featured: 'featured-only'
     };
-    
+
     const mobileFilters = {
         name: 'mobile-restaurant-name-filter',
         city: 'mobile-city-filter',
         cuisine: 'mobile-cuisine-filter',
-        distance: 'mobile-distance-filter',
         featured: 'mobile-featured-only'
     };
     
@@ -1524,7 +1479,6 @@ function setupMobileFilterListeners() {
                 'mobile-restaurant-name-filter',
                 'mobile-city-filter',
                 'mobile-cuisine-filter',
-                'mobile-distance-filter',
                 'mobile-featured-only'
             ];
             
@@ -1776,10 +1730,7 @@ function initializeMobileTabs() {
     }, 500); // Wait 500ms for DOM to be ready
 }
 
-// Initialize location detection for distance filtering
 document.addEventListener('DOMContentLoaded', function() {
-    const distanceFilter = document.getElementById('distance-filter');
-    
     // Initialize mobile tab system with a small delay to ensure DOM is ready
     setTimeout(() => {
         initializeMobileTabs();
@@ -2050,22 +2001,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                window.userLocation = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                distanceFilter.disabled = false;
-
-            },
-            function(error) {
-                distanceFilter.disabled = true;
-            }
-        );
-    }
 });
 
 // Also initialize on window load as backup
@@ -2090,9 +2025,11 @@ wp_localize_script(
     array(
         'apiUrl' => home_url('/wp-json/lebonresto/v1/restaurants'),
         'cuisineTypesUrl' => home_url('/wp-json/lebonresto/v1/cuisine-types'),
+        'citiesUrl' => home_url('/wp-json/lebonresto/v1/cities'),
         'homeUrl' => home_url('/'),
         'nonce' => wp_create_nonce('wp_rest'),
         'currentRestaurantId' => $current_restaurant_id,
+        'cities' => $restaurant_cities,
         'mapCenter' => array(
             'lat' => !empty($latitude) ? floatval($latitude) : 48.8566,
             'lng' => !empty($longitude) ? floatval($longitude) : 2.3522
@@ -2104,7 +2041,6 @@ wp_localize_script(
             'loadingError' => __('Error loading restaurants', 'le-bon-resto'),
             'phoneTitle' => __('Call restaurant', 'le-bon-resto'),
             'emailTitle' => __('Email restaurant', 'le-bon-resto'),
-            'kmAway' => __('%s km away', 'le-bon-resto'),
             'loadingRestaurants' => __('Loading restaurants...', 'le-bon-resto'),
             'restaurantsFound' => __('%s restaurants found', 'le-bon-resto'),
             'centerOnCurrent' => __('Centrer sur le restaurant actuel', 'le-bon-resto'),
