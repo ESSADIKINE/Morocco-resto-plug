@@ -81,11 +81,10 @@
     function initializeFilters() {
         // Search input
         $('#restaurant-search').on('input', debounce(handleFilterChange, 300));
-        
+
         // Filter dropdowns and inputs
-        $('#city-filter').on('input', debounce(handleFilterChange, 300));
+        $('#city-filter').on('change', handleFilterChange);
         $('#cuisine-filter').on('change', handleFilterChange);
-        $('#distance-filter').on('change', handleFilterChange);
         
         // Sort dropdown
         $('#sort-restaurants').on('change', handleSortChange);
@@ -119,13 +118,6 @@
             currentFilters.cuisine = cuisineFilter;
         }
 
-        const distanceFilter = $('#distance-filter').val();
-        if (distanceFilter && window.userLocation) {
-            currentFilters.distance = distanceFilter;
-            currentFilters.lat = window.userLocation.lat;
-            currentFilters.lng = window.userLocation.lng;
-        }
-
         // Apply filters and reload
         loadAllRestaurants(currentFilters);
     }
@@ -148,7 +140,6 @@
         $('#restaurant-search').val('');
         $('#city-filter').val('');
         $('#cuisine-filter').val('');
-        $('#distance-filter').val('');
         $('#sort-restaurants').val('featured');
         
         currentFilters = {};
@@ -350,14 +341,6 @@
             content += `</p>`;
         }
 
-        // Distance
-        if (restaurant.distance) {
-            content += `<p style="margin: 0 0 8px 0; font-size: 13px; color: #059669; display: flex; align-items: center; gap: 6px;">`;
-            content += `<i class="fas fa-route" style="width: 12px; color: #059669;"></i>`;
-            content += `${restaurant.distance} km de distance`;
-            content += `</p>`;
-        }
-
         // View details button
         content += `<div style="margin-top: 8px;">`;
         if (isCurrentRestaurant) {
@@ -460,7 +443,7 @@
                         
                         ${meta.city ? `<p class="text-sm text-gray-600 mb-1"><i class="fas fa-map-marker-alt mr-1"></i>${escapeHtml(meta.city)}</p>` : ''}
                         ${meta.cuisine_type ? `<p class="text-sm text-gray-600 mb-2"><i class="fas fa-utensils mr-1"></i>${escapeHtml(meta.cuisine_type.charAt(0).toUpperCase() + meta.cuisine_type.slice(1))}</p>` : ''}
-                        ${restaurant.distance ? `<p class="text-sm text-green-600 mb-2"><i class="fas fa-route mr-1"></i>${restaurant.distance} km de distance</p>` : ''}
+                        
                         
                         <div class="flex items-center space-x-2 mt-3">
                             <a href="${restaurant.link}" class="flex-1 px-3 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-800 text-sm font-medium rounded transition duration-200 text-center">

@@ -40,16 +40,16 @@ $initial_restaurants_for_map = function_exists('lebonresto_get_all_restaurants_f
 wp_localize_script('lebonresto-all-restaurants', 'lebonrestoAll', array(
     'apiUrl' => home_url('/wp-json/lebonresto/v1/restaurants'),
     'cuisineTypesUrl' => home_url('/wp-json/lebonresto/v1/cuisine-types'),
+    'citiesUrl' => home_url('/wp-json/lebonresto/v1/cities'),
     'googlePlacesUrl' => home_url('/wp-json/lebonresto/v1/google-places'),
     'nonce' => wp_create_nonce('wp_rest'),
     'perPage' => 20,
     'settings' => array(
-        'defaultRadius' => isset($options['default_radius']) ? intval($options['default_radius']) : 25,
-        'maxRadius' => isset($options['max_radius']) ? intval($options['max_radius']) : 100,
         'primaryColor' => isset($options['primary_color']) ? $options['primary_color'] : '#fedc00',
         'siteUrl' => home_url('/'),
     ),
     'initialRestaurants' => $initial_restaurants_for_map,
+    'cities' => $restaurant_cities,
     'strings' => array(
         'loading' => __('Chargement...', 'le-bon-resto'),
         'noResults' => __('Aucun restaurant trouvé', 'le-bon-resto'),
@@ -61,8 +61,9 @@ wp_localize_script('lebonresto-all-restaurants', 'lebonrestoAll', array(
     )
 ));
 
-// Get cuisine types
+// Get cuisine types and cities
 $cuisine_types = lebonresto_get_cuisine_types();
+$restaurant_cities = lebonresto_get_restaurant_cities();
 ?>
 
 <!DOCTYPE html>
@@ -151,10 +152,10 @@ $cuisine_types = lebonresto_get_cuisine_types();
                     <div class="filters-sidebar">
                         <div class="filters-container">
 
-                            <!-- Distance Filter -->
+                            <!-- City Filter -->
                             <div class="filter-group">
                                 <div class="filter-header">
-                                    <h3 class="filter-title"><?php _e('Distance', 'le-bon-resto'); ?></h3>
+                                    <h3 class="filter-title"><?php _e('Ville', 'le-bon-resto'); ?></h3>
                                     <button type="button" class="filter-toggle" aria-expanded="true">
                                         <svg viewBox="0 0 24 24" width="20" height="20" class="toggle-icon">
                                             <path d="M18.4 7.4 12 13.7 5.6 7.4 4.2 8.8l7.8 7.8 7.8-7.8z"></path>
@@ -162,28 +163,12 @@ $cuisine_types = lebonresto_get_cuisine_types();
                                     </button>
                                 </div>
                                 <div class="filter-content">
-                                    <div class="distance-options">
-                                        <label class="filter-option distance-option">
-                                            <input type="radio" class="filter-radio" name="distance" value="5">
-                                            <span class="radio-mark"></span>
-                                            <span class="option-text"><?php _e('5 km', 'le-bon-resto'); ?></span>
-                                        </label>
-                                        <label class="filter-option distance-option">
-                                            <input type="radio" class="filter-radio" name="distance" value="10">
-                                            <span class="radio-mark"></span>
-                                            <span class="option-text"><?php _e('10 km', 'le-bon-resto'); ?></span>
-                                        </label>
-                                        <label class="filter-option distance-option">
-                                            <input type="radio" class="filter-radio" name="distance" value="25">
-                                            <span class="radio-mark"></span>
-                                            <span class="option-text"><?php _e('25 km', 'le-bon-resto'); ?></span>
-                                        </label>
-                                        <label class="filter-option distance-option">
-                                            <input type="radio" class="filter-radio" name="distance" value="50">
-                                            <span class="radio-mark"></span>
-                                            <span class="option-text"><?php _e('50 km', 'le-bon-resto'); ?></span>
-                                        </label>
-                                    </div>
+                                    <select id="city-filter" class="filter-select">
+                                        <option value=""><?php _e('Toutes les villes', 'le-bon-resto'); ?></option>
+                                        <?php foreach ($restaurant_cities as $city_option): ?>
+                                            <option value="<?php echo esc_attr($city_option); ?>"><?php echo esc_html($city_option); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                             </div>
 
@@ -289,9 +274,6 @@ $cuisine_types = lebonresto_get_cuisine_types();
                                             <button type="button" class="sort-option" data-sort="name">
                                                 <?php _e('Nom', 'le-bon-resto'); ?>
                                             </button>
-                                            <button type="button" class="sort-option" data-sort="distance">
-                                                <?php _e('Distance', 'le-bon-resto'); ?>
-                                            </button>
                                             <button type="button" class="sort-option" data-sort="price_low">
                                                 <?php _e('Prix croissant', 'le-bon-resto'); ?>
                                             </button>
@@ -364,12 +346,15 @@ $cuisine_types = lebonresto_get_cuisine_types();
                     
                     <!-- City Filter -->
                     <div>
-                        <input 
-                            type="text" 
-                            id="mobile-city" 
-                            placeholder="<?php _e('Ville...', 'le-bon-resto'); ?>"
+                        <select
+                            id="mobile-city"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                        />
+                        >
+                            <option value=""><?php _e('Toutes les villes', 'le-bon-resto'); ?></option>
+                            <?php foreach ($restaurant_cities as $city_option): ?>
+                                <option value="<?php echo esc_attr($city_option); ?>"><?php echo esc_html($city_option); ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     
                     <!-- Cuisine Filter -->
@@ -388,31 +373,14 @@ $cuisine_types = lebonresto_get_cuisine_types();
                         </select>
                     </div>
                     
-                    <!-- Distance Filter -->
-                    <div>
-                        <select 
-                            id="mobile-distance"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                            disabled
-                        >
-                            <option value=""><?php _e('Sélectionner la distance', 'le-bon-resto'); ?></option>
-                            <option value="5">5 km</option>
-                            <option value="10">10 km</option>
-                            <option value="25">25 km</option>
-                            <option value="50">50 km</option>
-                            <option value="100">100 km</option>
-                        </select>
-                    </div>
-                    
                     <!-- Sort Filter -->
                     <div>
-                        <select 
+                        <select
                             id="mobile-sort"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                         >
                             <option value="featured"><?php _e('Recommandés en premier', 'le-bon-resto'); ?></option>
                             <option value="newest"><?php _e('Plus récents', 'le-bon-resto'); ?></option>
-                            <option value="distance"><?php _e('Distance', 'le-bon-resto'); ?></option>
                             <option value="name"><?php _e('Nom A-Z', 'le-bon-resto'); ?></option>
                         </select>
                     </div>

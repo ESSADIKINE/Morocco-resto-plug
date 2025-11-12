@@ -495,23 +495,6 @@
     flex-shrink: 0;
 }
 
-/* Distance Options */
-.distance-options {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.distance-option {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-.distance-option.enabled {
-    opacity: 1;
-    pointer-events: auto;
-}
-
 /* Price Range Inputs */
 .price-range-slider {
     margin-bottom: 16px;
@@ -2212,11 +2195,6 @@
 .price-display {
     color: var(--primary-color);
     font-weight: 600;
-}
-
-.distance-display {
-    color: var(--text-secondary);
-    font-weight: 500;
 }
 
 .rating-bubble.half {
