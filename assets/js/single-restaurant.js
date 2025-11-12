@@ -19,7 +19,7 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 const vtPopup = document.getElementById('virtual-tour-popup');
-                if (vtPopup?.classList.contains('show')) {
+                if (vtPopup && vtPopup.classList.contains('show')) {
                     closeVirtualTourPopup();
                 }
             }
@@ -74,7 +74,8 @@
         }
 
         // Get map center from current restaurant or default
-        const center = lebonrestoSingle?.mapCenter || { lat: 33.5731, lng: -7.5898 }; // Casablanca default
+        const hasMapCenter = typeof window.lebonrestoSingle === 'object' && window.lebonrestoSingle && window.lebonrestoSingle.mapCenter;
+        const center = hasMapCenter ? window.lebonrestoSingle.mapCenter : { lat: 33.5731, lng: -7.5898 }; // Casablanca default
         
         // Initialize map centered on current restaurant
         map = L.map('restaurants-map').setView([center.lat, center.lng], 10);
@@ -132,37 +133,44 @@
      */
     function initializeMobileFilters() {
         
-        // Mobile filter toggle
         const mobileFilterToggle = document.getElementById('mobile-filter-btn');
         const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
-        const mobileFilterPanel = document.querySelector('.mobile-filter-panel');
-        
-        
-        if (mobileFilterToggle) {
-            mobileFilterToggle.addEventListener('click', function() {
-                if (mobileFilterOverlay && mobileFilterPanel) {
-                    mobileFilterOverlay.style.display = 'block';
-                    mobileFilterPanel.classList.remove('-translate-x-full');
-                    document.body.style.overflow = 'hidden';
-                }
-            });
-        }
-        
-        // Close mobile filter
+        const mobileFilterPanel = mobileFilterOverlay ? mobileFilterOverlay.querySelector('.mobile-filter-panel') : null;
         const closeMobileFilters = document.getElementById('close-mobile-filters');
-        if (closeMobileFilters) {
-            closeMobileFilters.addEventListener('click', closeMobileFilter);
+
+        if (!mobileFilterOverlay || !mobileFilterPanel) {
+            return;
         }
-        
-        // Close on overlay click
-        if (mobileFilterOverlay) {
-            mobileFilterOverlay.addEventListener('click', function(e) {
-                if (e.target === mobileFilterOverlay) {
-                    closeMobileFilter();
-                }
+
+        // Keep initial UI in sync with desktop filters
+        syncDesktopToMobileFilters();
+
+        if (mobileFilterToggle) {
+            mobileFilterToggle.addEventListener('click', function(event) {
+                event.preventDefault();
+                openMobileFilter();
             });
         }
-        
+
+        if (closeMobileFilters) {
+            closeMobileFilters.addEventListener('click', function(event) {
+                event.preventDefault();
+                closeMobileFilter();
+            });
+        }
+
+        mobileFilterOverlay.addEventListener('click', function(event) {
+            if (event.target === mobileFilterOverlay) {
+                closeMobileFilter();
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && mobileFilterOverlay.classList.contains('show')) {
+                closeMobileFilter();
+            }
+        });
+
         // Mobile filter form elements
         const mobileRestaurantName = document.getElementById('mobile-restaurant-name');
         const mobileCity = document.getElementById('mobile-city');
@@ -194,32 +202,15 @@
         const mobileClearAll = document.getElementById('mobile-clear-all');
         
         if (mobileApplyFilters) {
-            mobileApplyFilters.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Apply the filters first
+            mobileApplyFilters.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
                 handleMobileFilterChange();
-                
-                // Close the panel after applying filters
                 closeMobileFilter();
-                
-                // Additional direct close as backup
-                setTimeout(() => {
-                    const panel = document.querySelector('.mobile-filter-panel');
-                    const overlay = document.getElementById('mobile-filter-overlay');
-                    if (panel && overlay) {
-                        panel.classList.add('-translate-x-full');
-                        overlay.style.display = 'none';
-                        document.body.style.overflow = '';
-                    }
-                }, 100);
-                
             });
-        } else {
-            console.error('Mobile apply filters button not found!');
         }
-        
+
         if (mobileClearAll) {
             mobileClearAll.addEventListener('click', function() {
                 clearMobileFilters();
@@ -230,26 +221,95 @@
     /**
      * Close mobile filter panel
      */
+    function openMobileFilter() {
+        const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
+        const mobileFilterPanel = mobileFilterOverlay ? mobileFilterOverlay.querySelector('.mobile-filter-panel') : null;
+        const mobileFilterToggle = document.getElementById('mobile-filter-btn');
+
+        if (!mobileFilterOverlay || !mobileFilterPanel) {
+            return;
+        }
+
+        syncDesktopToMobileFilters();
+
+        mobileFilterOverlay.removeAttribute('hidden');
+        mobileFilterOverlay.setAttribute('aria-hidden', 'false');
+        mobileFilterOverlay.classList.add('show');
+
+        mobileFilterPanel.classList.add('show');
+        mobileFilterPanel.classList.remove('-translate-x-full');
+
+        document.body.classList.add('mobile-filter-open');
+
+        if (mobileFilterToggle) {
+            mobileFilterToggle.setAttribute('aria-expanded', 'true');
+        }
+
+        if (typeof mobileFilterPanel.focus === 'function') {
+            mobileFilterPanel.focus();
+        }
+    }
+
     function closeMobileFilter() {
         const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
-        const mobileFilterPanel = document.querySelector('.mobile-filter-panel');
-        
-        
-        if (mobileFilterOverlay && mobileFilterPanel) {
-            
-            // Add the translate class to slide the panel out (this hides it)
-            mobileFilterPanel.classList.add('-translate-x-full');
-            
-            // Hide the overlay after a short delay to allow animation
-            setTimeout(() => {
-                mobileFilterOverlay.style.display = 'none';
-            }, 300); // Match the CSS transition duration
-            
-            // Restore body scroll
-            document.body.style.overflow = '';
-            
-        } else {
-            console.error('Could not find mobile filter elements to close');
+        const mobileFilterPanel = mobileFilterOverlay ? mobileFilterOverlay.querySelector('.mobile-filter-panel') : null;
+        const mobileFilterToggle = document.getElementById('mobile-filter-btn');
+
+        if (!mobileFilterOverlay || !mobileFilterPanel) {
+            return;
+        }
+
+        mobileFilterPanel.classList.remove('show');
+        mobileFilterPanel.classList.add('-translate-x-full');
+
+        mobileFilterOverlay.classList.remove('show');
+        mobileFilterOverlay.setAttribute('aria-hidden', 'true');
+
+        document.body.classList.remove('mobile-filter-open');
+
+        if (mobileFilterToggle) {
+            mobileFilterToggle.setAttribute('aria-expanded', 'false');
+            mobileFilterToggle.focus();
+        }
+
+        setTimeout(() => {
+            if (!mobileFilterOverlay.classList.contains('show')) {
+                mobileFilterOverlay.setAttribute('hidden', '');
+            }
+        }, 300);
+    }
+
+    function syncDesktopToMobileFilters() {
+        const desktopName = document.getElementById('restaurant-name-filter');
+        const desktopCity = document.getElementById('city-filter');
+        const desktopCuisine = document.getElementById('cuisine-filter');
+        const desktopFeatured = document.getElementById('featured-only');
+        const desktopSort = document.getElementById('sort-restaurants');
+
+        const mobileRestaurantName = document.getElementById('mobile-restaurant-name');
+        const mobileCity = document.getElementById('mobile-city');
+        const mobileCuisine = document.getElementById('mobile-cuisine');
+        const mobileFeaturedOnly = document.getElementById('mobile-featured-only');
+        const mobileSort = document.getElementById('mobile-sort');
+
+        if (desktopName && mobileRestaurantName) {
+            mobileRestaurantName.value = desktopName.value || '';
+        }
+
+        if (desktopCity && mobileCity) {
+            mobileCity.value = desktopCity.value || '';
+        }
+
+        if (desktopCuisine && mobileCuisine) {
+            mobileCuisine.value = desktopCuisine.value || '';
+        }
+
+        if (desktopFeatured && mobileFeaturedOnly) {
+            mobileFeaturedOnly.checked = desktopFeatured.checked;
+        }
+
+        if (desktopSort && mobileSort) {
+            mobileSort.value = desktopSort.value || 'featured';
         }
     }
     
@@ -341,6 +401,8 @@
         buildCurrentFilters();
         currentPage = 1; // Reset to first page when filters change
         loadAllRestaurants();
+
+        syncDesktopToMobileFilters();
     }
 
     /**
@@ -350,6 +412,8 @@
         const sortOrder = $('#sort-restaurants').val();
         currentFilters.sort = sortOrder;
         loadAllRestaurants();
+
+        syncDesktopToMobileFilters();
     }
 
     /**
@@ -361,10 +425,12 @@
         $('#cuisine-filter').val('');
         $('#featured-only').prop('checked', false);
         $('#sort-restaurants').val('featured');
-        
+
         currentFilters = {};
         currentPage = 1; // Reset to first page when clearing filters
         loadAllRestaurants();
+
+        syncDesktopToMobileFilters();
     }
 
     /**
@@ -407,13 +473,16 @@
      * Load all restaurants from API
      */
     function loadAllRestaurants() {
-        if (!lebonrestoSingle?.apiUrl) {
+        if (!window.lebonrestoSingle || !window.lebonrestoSingle.apiUrl) {
             console.error('API URL not available');
             return;
         }
 
         // Show loading state
-        updateResultsCount(lebonrestoSingle.strings?.loadingRestaurants || 'Chargement des restaurants...', true);
+        const loadingMessage = window.lebonrestoSingle && window.lebonrestoSingle.strings && window.lebonrestoSingle.strings.loadingRestaurants
+            ? window.lebonrestoSingle.strings.loadingRestaurants
+            : 'Chargement des restaurants...';
+        updateResultsCount(loadingMessage, true);
         showRestaurantListLoading(true);
 
         // Build query parameters
@@ -424,12 +493,12 @@
             }
         });
 
-        const apiUrl = lebonrestoSingle.apiUrl + (queryParams.toString() ? '?' + queryParams.toString() : '');
+        const apiUrl = window.lebonrestoSingle.apiUrl + (queryParams.toString() ? '?' + queryParams.toString() : '');
 
         // Fetch restaurants
         fetch(apiUrl, {
             headers: {
-                'X-WP-Nonce': lebonrestoSingle.nonce
+                'X-WP-Nonce': window.lebonrestoSingle.nonce
             }
         })
         .then(response => {
@@ -442,7 +511,10 @@
             // Debug: Log first restaurant data to see structure
             if (allRestaurants.length > 0) {
                 console.log('First restaurant from API:', allRestaurants[0]);
-                console.log('Principal image data:', allRestaurants[0].restaurant_meta?.principal_image);
+                const principalImage = allRestaurants[0] && allRestaurants[0].restaurant_meta
+                    ? allRestaurants[0].restaurant_meta.principal_image
+                    : undefined;
+                console.log('Principal image data:', principalImage);
             }
             
             // Update map markers
@@ -456,14 +528,19 @@
             
             // Update results count
             const count = allRestaurants.length;
-            const countText = lebonrestoSingle.strings?.restaurantsFound || '%s restaurants trouvés';
+            const countText = window.lebonrestoSingle && window.lebonrestoSingle.strings && window.lebonrestoSingle.strings.restaurantsFound
+                ? window.lebonrestoSingle.strings.restaurantsFound
+                : '%s restaurants trouvés';
             updateResultsCount(countText.replace('%s', count));
             
             showRestaurantListLoading(false);
         })
         .catch(error => {
             console.error('Error loading restaurants:', error);
-            updateResultsCount(lebonrestoSingle.strings?.loadingError || 'Erreur lors du chargement des restaurants', true);
+            const loadingError = window.lebonrestoSingle && window.lebonrestoSingle.strings && window.lebonrestoSingle.strings.loadingError
+                ? window.lebonrestoSingle.strings.loadingError
+                : 'Erreur lors du chargement des restaurants';
+            updateResultsCount(loadingError, true);
             showRestaurantListLoading(false);
         });
     }
@@ -487,12 +564,13 @@
             const meta = restaurant.restaurant_meta || {};
             const lat = parseFloat(meta.latitude);
             const lng = parseFloat(meta.longitude);
+            const restaurantTitle = getRenderedTitle(restaurant.title);
 
             // Debug logging for coordinates
-            console.log(`Restaurant: ${restaurant.title?.rendered}, Lat: ${lat}, Lng: ${lng}, Valid: ${!isNaN(lat) && !isNaN(lng)}`);
+            console.log(`Restaurant: ${restaurantTitle}, Lat: ${lat}, Lng: ${lng}, Valid: ${!isNaN(lat) && !isNaN(lng)}`);
 
             if (isNaN(lat) || isNaN(lng)) {
-                console.warn(`Invalid coordinates for restaurant ${restaurant.title?.rendered}: lat=${meta.latitude}, lng=${meta.longitude}`);
+                console.warn(`Invalid coordinates for restaurant ${restaurantTitle}: lat=${meta.latitude}, lng=${meta.longitude}`);
                 return;
             }
 
@@ -513,7 +591,8 @@
                         tempDiv.innerHTML = title;
                         return tempDiv.textContent || tempDiv.innerText || 'Restaurant';
                     }
-                    return title?.rendered || 'Restaurant';
+                    const renderedTitle = getRenderedTitle(title);
+                    return renderedTitle || 'Restaurant';
                 };
                 
                 const cleanTitle = getCleanTitle(restaurant.title);
@@ -601,7 +680,7 @@
             }
 
             const marker = L.marker([lat, lng], { icon: markerIcon });
-            console.log(`Created marker for ${restaurant.title?.rendered} at [${lat}, ${lng}] with icon:`, markerIcon);
+            console.log(`Created marker for ${restaurantTitle} at [${lat}, ${lng}] with icon:`, markerIcon);
             
             // Create popup content
             const popupContent = createMarkerPopup(restaurant, isCurrentRestaurant);
@@ -617,12 +696,12 @@
 
             // Add click handler
             marker.on('click', function() {
-                console.log(`Marker clicked for ${restaurant.title?.rendered}`);
+                console.log(`Marker clicked for ${restaurantTitle}`);
                 // Highlight functionality removed
             });
 
             markersLayer.addLayer(marker);
-            console.log(`Added marker for ${restaurant.title?.rendered} at [${lat}, ${lng}]`);
+            console.log(`Added marker for ${restaurantTitle} at [${lat}, ${lng}]`);
         });
 
         console.log(`Total markers added: ${markersLayer.getLayers().length}`);
@@ -671,7 +750,8 @@
         } else {
             console.log('No valid bounds found, using default view');
             // Fallback to default view
-            const center = lebonrestoSingle?.mapCenter || { lat: 33.5731, lng: -7.5898 }; // Casablanca
+        const hasCenter = typeof window.lebonrestoSingle === 'object' && window.lebonrestoSingle && window.lebonrestoSingle.mapCenter;
+        const center = hasCenter ? window.lebonrestoSingle.mapCenter : { lat: 33.5731, lng: -7.5898 }; // Casablanca
             map.setView([center.lat, center.lng], 10);
         }
     }
@@ -681,7 +761,7 @@
      */
     function createMarkerPopup(restaurant, isCurrentRestaurant) {
         const meta = restaurant.restaurant_meta || {};
-        const title = restaurant.title?.rendered || 'Restaurant';
+        const title = getRenderedTitle(restaurant.title) || 'Restaurant';
         const isFeatured = meta.is_featured === '1';
         const principalImage = meta.principal_image || {};
 
@@ -696,7 +776,9 @@
             .trim();
         
         // Get home URL from WordPress localization
-        const homeUrl = window.lebonrestoSingle?.homeUrl || window.location.origin;
+        const homeUrl = window.lebonrestoSingle && window.lebonrestoSingle.homeUrl
+            ? window.lebonrestoSingle.homeUrl
+            : window.location.origin;
         const restaurantUrl = `${homeUrl}details/${restaurantSlug}`;
         
         // Start popup content with proper structure
@@ -827,10 +909,13 @@
         container.empty();
 
         if (allRestaurants.length === 0) {
+            const noRestaurantsText = window.lebonrestoSingle && window.lebonrestoSingle.strings && window.lebonrestoSingle.strings.noRestaurants
+                ? window.lebonrestoSingle.strings.noRestaurants
+                : 'Aucun restaurant trouvé';
             container.html(`
                 <div class="text-center py-8">
                     <i class="fas fa-search text-2xl text-gray-400 mb-2"></i>
-                    <p class="text-gray-500">${lebonrestoSingle.strings?.noRestaurants || 'Aucun restaurant trouvé'}</p>
+                    <p class="text-gray-500">${noRestaurantsText}</p>
                 </div>
             `);
             updatePagination();
@@ -860,7 +945,7 @@
      */
     function createCompactRestaurantCard(restaurant) {
         const meta = restaurant.restaurant_meta || {};
-        const title = restaurant.title?.rendered || 'Restaurant';
+        const title = getRenderedTitle(restaurant.title) || 'Restaurant';
         const isFeatured = meta.is_featured === '1';
         const isCurrentRestaurant = restaurant.id === currentRestaurantId;
         // Create URLs for both single restaurant and details pages
@@ -870,7 +955,9 @@
             .replace(/-+/g, '-') // Replace multiple hyphens with single
             .trim();
         
-        const homeUrl = window.lebonrestoSingle?.homeUrl || window.location.origin;
+        const homeUrl = window.lebonrestoSingle && window.lebonrestoSingle.homeUrl
+            ? window.lebonrestoSingle.homeUrl
+            : window.location.origin;
         const link = `${homeUrl}restaurant/${restaurantSlug}/`; // For title links
         const detailsLink = `${homeUrl}details/${restaurantSlug}/`; // For "Voir les détails" button
         
@@ -1090,10 +1177,13 @@
         const container = $('#restaurants-container');
         
         if (show) {
+            const loadingText = window.lebonrestoSingle && window.lebonrestoSingle.strings && window.lebonrestoSingle.strings.loadingRestaurants
+                ? window.lebonrestoSingle.strings.loadingRestaurants
+                : 'Chargement des restaurants...';
             container.html(`
                 <div class="text-center py-8">
                     <div class="loading-spinner mx-auto mb-3"></div>
-                    <p class="text-gray-500">${lebonrestoSingle.strings?.loadingRestaurants || 'Chargement des restaurants...'}</p>
+                    <p class="text-gray-500">${loadingText}</p>
                 </div>
             `);
         }
@@ -1254,11 +1344,12 @@
             popup = document.createElement('div');
             popup.id = 'virtual-tour-popup';
             popup.className = 'restaurant-popup-modal';
+            const popupTitle = getRenderedTitle(restaurant.title) || 'Restaurant';
             popup.innerHTML = `
                 <div class="popup-overlay"></div>
                 <div class="popup-container">
                     <div class="popup-header">
-                        <h3>Visite Virtuelle - ${escapeHtml(restaurant.title?.rendered || 'Restaurant')}</h3>
+                        <h3>Visite Virtuelle - ${escapeHtml(popupTitle)}</h3>
                         <button id="close-virtual-tour" class="popup-close" aria-label="Fermer">
                             <svg viewBox="0 0 24 24" width="24" height="24">
                                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -1341,6 +1432,22 @@
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
+    }
+
+    function getRenderedTitle(title) {
+        if (!title) {
+            return '';
+        }
+
+        if (typeof title === 'string') {
+            return title;
+        }
+
+        if (typeof title === 'object' && typeof title.rendered === 'string') {
+            return title.rendered;
+        }
+
+        return '';
     }
 
 })(jQuery);
