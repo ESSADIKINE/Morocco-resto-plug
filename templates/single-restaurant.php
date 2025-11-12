@@ -813,11 +813,11 @@ wp_add_inline_style('lebonresto-single-css', '
                     </div>
                     
                     <!-- City Filter -->
-                        <div>
-                            <select
-                                id="mobile-city"
-                                class="filter-select"
-                            >
+                    <div>
+                        <select
+                            id="mobile-city"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                        >
                             <option value=""><?php _e('Toutes les villes', 'le-bon-resto'); ?></option>
                             <?php foreach ($restaurant_cities as $city_option): ?>
                                 <option value="<?php echo esc_attr($city_option); ?>"><?php echo esc_html($city_option); ?></option>
@@ -905,7 +905,7 @@ wp_add_inline_style('lebonresto-single-css', '
                         <div class="w-full lg:w-48">
                             <select
                                 id="city-filter"
-                                class="filter-select"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                             >
                                 <option value=""><?php _e('Toutes les villes', 'le-bon-resto'); ?></option>
                                 <?php foreach ($restaurant_cities as $city_option): ?>
