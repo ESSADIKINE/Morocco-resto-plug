@@ -914,15 +914,16 @@ wp_add_inline_style('lebonresto-single-css', '
             <div class="filter-container container mx-auto px-4 py-4">
                 <div class="filter-form bg-white rounded-lg shadow-md p-2">
                     <div class="flex flex-col lg:flex-row items-center gap-4">
-                        <!-- Restaurant Name Search -->
-                        <div class="flex-1">
-                            <input 
-                                type="text" 
-                                id="restaurant-name-filter" 
-                                placeholder="<?php _e('Rechercher des restaurants...', 'le-bon-resto'); ?>"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                            />
-                        </div>
+<!-- Restaurant Name Search -->
+<div style="width: 300px;">
+    <input 
+        type="text" 
+        id="restaurant-name-filter" 
+        placeholder="<?php _e('Rechercher des restaurants...', 'le-bon-resto'); ?>"
+        class="w-full px-4 py-2 border #000 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+    />
+</div>
+
                         
                         <!-- City Filter -->
                         <div class="w-full lg:w-48">
@@ -966,14 +967,6 @@ wp_add_inline_style('lebonresto-single-css', '
                             </span>
                             </label>
                         </div>
-
-                        <!-- Search Button -->
-                        <button
-                            id="search-restaurants"
-                            class="button-base button-primary w-full lg:w-auto"
-                        >
-                            <i class="fas fa-search mr-2"></i><?php _e('Rechercher', 'le-bon-resto'); ?>
-                        </button>
                         
                         <!-- Clear Button -->
                         <button
