@@ -1093,7 +1093,7 @@
             container.html(`
                 <div class="text-center py-8">
                     <div class="loading-spinner mx-auto mb-3"></div>
-                    <p class="text-gray-500">${lebonrestoSingle.strings?.loadingRestaurants || 'Loading restaurants...'}</p>
+                    <p class="text-gray-500">${lebonrestoSingle.strings?.loadingRestaurants || 'Chargement des restaurants...'}</p>
                 </div>
             `);
         }
@@ -1107,7 +1107,7 @@
         const paginationControls = $('#pagination-controls');
         
         if (allRestaurants.length === 0) {
-            paginationInfo.text('No restaurants found');
+            paginationInfo.text('Aucun restaurant trouvé');
             paginationControls.empty();
             return;
         }

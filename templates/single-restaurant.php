@@ -83,7 +83,7 @@ wp_add_inline_style('tailwind-css', '
 .bg-gray-100 { background-color: #f3f4f6; }
 .bg-white { background-color: #ffffff; }
 .bg-yellow-400 { background-color: #cc2014; }
-.bg-yellow-500 { background-color: #cc2014; }
+.bg-red-500 { background-color: #cc2014; }
 .text-gray-700 { color: rgb(255, 0, 0); }
 .text-gray-800 { color: ; }
 .text-gray-600 { color: #4b5563; }
@@ -133,7 +133,7 @@ wp_add_inline_style('tailwind-css', '
         }
         
 .duration-200 { transition-duration: 200ms; }
-.hover\\:bg-yellow-500:hover { background-color: #cc2014; }
+.hover\\:bg-red-500:hover { background-color: #cc2014; }
 .hover\\:bg-gray-300:hover { background-color: #d1d5db; }
 .focus\\:outline-none:focus { outline: 2px solid transparent; outline-offset: 2px; }
 .focus\\:ring-2:focus { box-shadow: 0 0 0 2px #cc2014; }
@@ -997,11 +997,11 @@ wp_add_inline_style('lebonresto-single-css', '
                 <div class="button-center">
                     <button 
                         id="center-current-restaurant"
-                        class="px-3 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-medium rounded text-sm transition duration-200"
-                        style="background-color: #cc2014;"
+                        class="px-3 py-2 hover:bg-red-500 text-gray-800 font-medium rounded text-sm transition duration-200"
+                        style="background-color: #0f6a58;"
                         title="<?php _e('Centrer sur le restaurant actuel', 'le-bon-resto'); ?>"
                     >
-                        <i class="fas fa-crosshairs mr-1"></i><?php _e('Centrer', 'le-bon-resto'); ?>
+                        <i class="fas fa-crosshairs"></i>&nbsp;<?php _e('Centrer', 'le-bon-resto'); ?>
                     </button>
                     </div>
                 
@@ -1012,7 +1012,7 @@ wp_add_inline_style('lebonresto-single-css', '
                 
                 <!-- Results Counter -->
                 <div class="results-counter">
-                    <span id="map-results-count" class="px-3 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-medium rounded text-sm">
+                    <span id="map-results-count" class="px-3 py-2 bg-yellow-400 hover:bg-red-500 text-gray-800 font-medium rounded text-sm">
                         <?php _e('Chargement des restaurants...', 'le-bon-resto'); ?>
                     </span>
                 </div>
@@ -2077,12 +2077,12 @@ wp_localize_script(
         'strings' => array(
             'featuredBadge' => __('Featured', 'le-bon-resto'),
             'viewDetails' => __('View Details', 'le-bon-resto'),
-            'noRestaurants' => __('No restaurants found', 'le-bon-resto'),
+            'noRestaurants' => __('No restaurants trouvé', 'le-bon-resto'),
             'loadingError' => __('Error loading restaurants', 'le-bon-resto'),
             'phoneTitle' => __('Call restaurant', 'le-bon-resto'),
             'emailTitle' => __('Email restaurant', 'le-bon-resto'),
-            'loadingRestaurants' => __('Loading restaurants...', 'le-bon-resto'),
-            'restaurantsFound' => __('%s restaurants found', 'le-bon-resto'),
+            'loadingRestaurants' => __('Chargement des restaurants...', 'le-bon-resto'),
+            'restaurantsFound' => __('%s restaurants trouvé', 'le-bon-resto'),
             'centerOnCurrent' => __('Centrer sur le restaurant actuel', 'le-bon-resto'),
             'googleReviews' => __('Avis Google', 'le-bon-resto'),
             'loadingReviews' => __('Chargement des avis...', 'le-bon-resto'),

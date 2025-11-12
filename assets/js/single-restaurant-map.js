@@ -186,7 +186,7 @@
                 updateRestaurantList();
                 
                 // Update results count
-                updateResultsCount(`${allRestaurants.length} restaurant${allRestaurants.length !== 1 ? 's' : ''} found`);
+                updateResultsCount(`${allRestaurants.length} restaurant${allRestaurants.length !== 1 ? 's' : ''} trouvé`);
                 
                 showRestaurantListLoading(false);
             })
