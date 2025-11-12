@@ -1898,6 +1898,12 @@ input[type="checkbox"]:checked {
     display: none;
 }
 
+.mobile-filter-overlay.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+}
+
 .mobile-filter-overlay:not(.hidden) {
     display: block;
 }
@@ -1914,6 +1920,10 @@ input[type="checkbox"]:checked {
     overflow-y: auto;
     z-index: 100000 !important;
     align-content: center;
+}
+
+.mobile-filter-panel.show {
+    transform: translateX(0);
 }
 
 .mobile-filter-panel .p-4 {

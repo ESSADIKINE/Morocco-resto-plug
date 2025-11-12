@@ -1567,8 +1567,9 @@
 
 .mobile-filter-overlay.show {
     display: block !important;
-    opacity: 0 !important;
+    opacity: 1 !important;
     visibility: visible !important;
+    pointer-events: auto !important;
 }
 
 .mobile-filter-overlay:not(.hidden) {
