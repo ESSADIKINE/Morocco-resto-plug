@@ -146,9 +146,14 @@
         syncDesktopToMobileFilters();
 
         if (mobileFilterToggle) {
-            mobileFilterToggle.addEventListener('click', function(event) {
-                event.preventDefault();
-                openMobileFilter();
+            mobileFilterToggle.addEventListener('click', function() {
+                if (mobileFilterOverlay && mobileFilterPanel) {
+                    mobileFilterOverlay.style.display = 'block';
+                    mobileFilterOverlay.classList.add('show');
+                    mobileFilterPanel.classList.remove('-translate-x-full');
+                    mobileFilterPanel.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
             });
         }
 
@@ -252,64 +257,26 @@
 
     function closeMobileFilter() {
         const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
-        const mobileFilterPanel = mobileFilterOverlay ? mobileFilterOverlay.querySelector('.mobile-filter-panel') : null;
-        const mobileFilterToggle = document.getElementById('mobile-filter-btn');
+        const mobileFilterPanel = document.querySelector('.mobile-filter-panel');
+        
+        
+        if (mobileFilterOverlay && mobileFilterPanel) {
 
-        if (!mobileFilterOverlay || !mobileFilterPanel) {
-            return;
-        }
+            // Add the translate class to slide the panel out (this hides it)
+            mobileFilterPanel.classList.remove('show');
+            mobileFilterPanel.classList.add('-translate-x-full');
 
-        mobileFilterPanel.classList.remove('show');
-        mobileFilterPanel.classList.add('-translate-x-full');
+            // Hide the overlay after a short delay to allow animation
+            setTimeout(() => {
+                mobileFilterOverlay.style.display = 'none';
+                mobileFilterOverlay.classList.remove('show');
+            }, 300); // Match the CSS transition duration
 
-        mobileFilterOverlay.classList.remove('show');
-        mobileFilterOverlay.setAttribute('aria-hidden', 'true');
-
-        document.body.classList.remove('mobile-filter-open');
-
-        if (mobileFilterToggle) {
-            mobileFilterToggle.setAttribute('aria-expanded', 'false');
-            mobileFilterToggle.focus();
-        }
-
-        setTimeout(() => {
-            if (!mobileFilterOverlay.classList.contains('show')) {
-                mobileFilterOverlay.setAttribute('hidden', '');
-            }
-        }, 300);
-    }
-
-    function syncDesktopToMobileFilters() {
-        const desktopName = document.getElementById('restaurant-name-filter');
-        const desktopCity = document.getElementById('city-filter');
-        const desktopCuisine = document.getElementById('cuisine-filter');
-        const desktopFeatured = document.getElementById('featured-only');
-        const desktopSort = document.getElementById('sort-restaurants');
-
-        const mobileRestaurantName = document.getElementById('mobile-restaurant-name');
-        const mobileCity = document.getElementById('mobile-city');
-        const mobileCuisine = document.getElementById('mobile-cuisine');
-        const mobileFeaturedOnly = document.getElementById('mobile-featured-only');
-        const mobileSort = document.getElementById('mobile-sort');
-
-        if (desktopName && mobileRestaurantName) {
-            mobileRestaurantName.value = desktopName.value || '';
-        }
-
-        if (desktopCity && mobileCity) {
-            mobileCity.value = desktopCity.value || '';
-        }
-
-        if (desktopCuisine && mobileCuisine) {
-            mobileCuisine.value = desktopCuisine.value || '';
-        }
-
-        if (desktopFeatured && mobileFeaturedOnly) {
-            mobileFeaturedOnly.checked = desktopFeatured.checked;
-        }
-
-        if (desktopSort && mobileSort) {
-            mobileSort.value = desktopSort.value || 'featured';
+            // Restore body scroll
+            document.body.style.overflow = '';
+            
+        } else {
+            console.error('Could not find mobile filter elements to close');
         }
     }
     
