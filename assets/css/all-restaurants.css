@@ -1606,7 +1606,7 @@
 .mobile-filter-overlay.show .mobile-filter-panel {
     transform: translateX(0) !important;
     visibility: visible !important;
-    opacity: 0 !important;
+    opacity: 1 !important;
 }
 
 /* Mobile Filter Button - Hide on desktop */

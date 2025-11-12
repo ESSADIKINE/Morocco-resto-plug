@@ -142,7 +142,9 @@
             mobileFilterToggle.addEventListener('click', function() {
                 if (mobileFilterOverlay && mobileFilterPanel) {
                     mobileFilterOverlay.style.display = 'block';
+                    mobileFilterOverlay.classList.add('show');
                     mobileFilterPanel.classList.remove('-translate-x-full');
+                    mobileFilterPanel.classList.add('show');
                     document.body.style.overflow = 'hidden';
                 }
             });
@@ -236,15 +238,17 @@
         
         
         if (mobileFilterOverlay && mobileFilterPanel) {
-            
+
             // Add the translate class to slide the panel out (this hides it)
+            mobileFilterPanel.classList.remove('show');
             mobileFilterPanel.classList.add('-translate-x-full');
-            
+
             // Hide the overlay after a short delay to allow animation
             setTimeout(() => {
                 mobileFilterOverlay.style.display = 'none';
+                mobileFilterOverlay.classList.remove('show');
             }, 300); // Match the CSS transition duration
-            
+
             // Restore body scroll
             document.body.style.overflow = '';
             
