@@ -57,9 +57,6 @@
         // Initialize filters
         initializeFilters();
         
-        // Initialize location detection
-        initializeLocationDetection();
-        
         // Load all restaurants
         loadAllRestaurants();
         
@@ -119,9 +116,8 @@
     function initializeFilters() {
         // Desktop filter elements
         $('#restaurant-name-filter').on('input', debounce(handleFilterChange, 500));
-        $('#city-filter').on('input', debounce(handleFilterChange, 500));
+        $('#city-filter').on('change', handleFilterChange);
         $('#cuisine-filter').on('change', handleFilterChange);
-        $('#distance-filter').on('change', handleFilterChange);
         $('#featured-only').on('change', handleFilterChange);
         $('#sort-restaurants').on('change', handleSortChange);
         $('#search-restaurants').on('click', handleFilterChange);
@@ -171,7 +167,6 @@
         const mobileRestaurantName = document.getElementById('mobile-restaurant-name');
         const mobileCity = document.getElementById('mobile-city');
         const mobileCuisine = document.getElementById('mobile-cuisine');
-        const mobileDistance = document.getElementById('mobile-distance');
         const mobileSort = document.getElementById('mobile-sort');
         const mobileFeaturedOnly = document.getElementById('mobile-featured-only');
         
@@ -180,17 +175,12 @@
             mobileRestaurantName.addEventListener('input', debounce(handleMobileFilterChange, 500));
         }
         if (mobileCity) {
-            mobileCity.addEventListener('input', debounce(handleMobileFilterChange, 500));
+            mobileCity.addEventListener('change', handleMobileFilterChange);
         }
-        
+
         // Mobile filter immediate changes
         if (mobileCuisine) {
             mobileCuisine.addEventListener('change', handleMobileFilterChange);
-        }
-        if (mobileDistance) {
-            mobileDistance.addEventListener('change', function() {
-                handleMobileFilterChange();
-            });
         }
         if (mobileSort) {
             mobileSort.addEventListener('change', handleMobileSortChange);
@@ -272,7 +262,6 @@
         const mobileRestaurantName = document.getElementById('mobile-restaurant-name');
         const mobileCity = document.getElementById('mobile-city');
         const mobileCuisine = document.getElementById('mobile-cuisine');
-        const mobileDistance = document.getElementById('mobile-distance');
         const mobileFeaturedOnly = document.getElementById('mobile-featured-only');
         
         
@@ -295,13 +284,6 @@
             const desktopCuisine = document.getElementById('cuisine-filter');
             if (desktopCuisine) {
                 desktopCuisine.value = mobileCuisine.value;
-            }
-        }
-        
-        if (mobileDistance) {
-            const desktopDistance = document.getElementById('distance-filter');
-            if (desktopDistance) {
-                desktopDistance.value = mobileDistance.value;
             }
         }
         
@@ -338,55 +320,18 @@
         const mobileRestaurantName = document.getElementById('mobile-restaurant-name');
         const mobileCity = document.getElementById('mobile-city');
         const mobileCuisine = document.getElementById('mobile-cuisine');
-        const mobileDistance = document.getElementById('mobile-distance');
         const mobileSort = document.getElementById('mobile-sort');
         const mobileFeaturedOnly = document.getElementById('mobile-featured-only');
-        
+
         if (mobileRestaurantName) mobileRestaurantName.value = '';
         if (mobileCity) mobileCity.value = '';
         if (mobileCuisine) mobileCuisine.value = '';
-        if (mobileDistance) mobileDistance.value = '';
         if (mobileSort) mobileSort.value = 'featured';
         if (mobileFeaturedOnly) mobileFeaturedOnly.checked = false;
         
         
         // Clear desktop filters too
         clearAllFilters();
-    }
-
-    /**
-     * Initialize location detection for distance filtering
-     */
-    function initializeLocationDetection() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    window.userLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    
-                    // Enable distance filter
-                    $('#distance-filter').prop('disabled', false);
-                    
-                    // Enable mobile distance filter
-                    const mobileDistance = document.getElementById('mobile-distance');
-                    if (mobileDistance) {
-                        mobileDistance.disabled = false;
-                    }
-                    
-                },
-                function(error) {
-                    $('#distance-filter').prop('disabled', true);
-                    
-                    // Disable mobile distance filter
-                    const mobileDistance = document.getElementById('mobile-distance');
-                    if (mobileDistance) {
-                        mobileDistance.disabled = true;
-                    }
-                }
-            );
-        }
     }
 
     /**
@@ -414,7 +359,6 @@
         $('#restaurant-name-filter').val('');
         $('#city-filter').val('');
         $('#cuisine-filter').val('');
-        $('#distance-filter').val('');
         $('#featured-only').prop('checked', false);
         $('#sort-restaurants').val('featured');
         
@@ -445,14 +389,6 @@
         const cuisine = $('#cuisine-filter').val();
         if (cuisine) {
             currentFilters.cuisine = cuisine;
-        }
-
-        // Distance (only if location is available)
-        const distance = $('#distance-filter').val();
-        if (distance && window.userLocation) {
-            currentFilters.distance = distance;
-            currentFilters.lat = window.userLocation.lat;
-            currentFilters.lng = window.userLocation.lng;
         }
 
         // Featured only

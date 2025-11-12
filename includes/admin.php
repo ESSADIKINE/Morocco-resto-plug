@@ -361,30 +361,6 @@ class LeBonResto_Admin {
         );
         
         add_settings_field(
-            'default_radius',
-            __('Default Search Radius', 'le-bon-resto'),
-            array($this, 'setting_field_default_radius'),
-            'lebonresto_settings',
-            'lebonresto_general'
-        );
-        
-        add_settings_field(
-            'max_radius',
-            __('Maximum Search Radius', 'le-bon-resto'),
-            array($this, 'setting_field_max_radius'),
-            'lebonresto_settings',
-            'lebonresto_general'
-        );
-        
-        add_settings_field(
-            'distance_filter_options',
-            __('Distance Filter Options', 'le-bon-resto'),
-            array($this, 'setting_field_distance'),
-            'lebonresto_settings',
-            'lebonresto_general'
-        );
-        
-        add_settings_field(
             'enable_layer_switcher',
             __('Enable Map Layer Switcher', 'le-bon-resto'),
             array($this, 'setting_field_layer_switcher'),
@@ -457,9 +433,6 @@ class LeBonResto_Admin {
             'default_map_center_lat' => '48.8566',
             'default_map_center_lng' => '2.3522',
             'default_zoom_level' => '12',
-            'default_radius' => '25',
-            'max_radius' => '100',
-            'distance_filter_options' => '10,25,50,100',
             'enable_layer_switcher' => '1',
             'enable_fullscreen' => '1',
             'primary_color' => '#fedc00',
@@ -503,24 +476,6 @@ class LeBonResto_Admin {
         $options = $this->get_options();
         echo '<input type="number" min="1" max="18" name="lebonresto_options[default_zoom_level]" value="' . esc_attr($options['default_zoom_level']) . '" />';
         echo '<p class="description">' . __('Default zoom level for the map (1-18, where 18 is closest)', 'le-bon-resto') . '</p>';
-    }
-    
-    public function setting_field_default_radius() {
-        $options = $this->get_options();
-        echo '<input type="number" min="1" max="1000" name="lebonresto_options[default_radius]" value="' . esc_attr($options['default_radius']) . '" />';
-        echo '<p class="description">' . __('Default search radius in kilometers when the map loads', 'le-bon-resto') . '</p>';
-    }
-    
-    public function setting_field_max_radius() {
-        $options = $this->get_options();
-        echo '<input type="number" min="1" max="1000" name="lebonresto_options[max_radius]" value="' . esc_attr($options['max_radius']) . '" />';
-        echo '<p class="description">' . __('Maximum search radius allowed in the radius slider', 'le-bon-resto') . '</p>';
-    }
-    
-    public function setting_field_distance() {
-        $options = $this->get_options();
-        echo '<input type="text" name="lebonresto_options[distance_filter_options]" value="' . esc_attr($options['distance_filter_options']) . '" />';
-        echo '<p class="description">' . __('Comma-separated list of distance options in kilometers (e.g., 10,25,50,100)', 'le-bon-resto') . '</p>';
     }
     
     public function setting_field_layer_switcher() {
@@ -652,45 +607,12 @@ class LeBonResto_Admin {
             }
         }
         
-        // Validate default radius
-        if (isset($input['default_radius'])) {
-            $radius = intval($input['default_radius']);
-            if ($radius >= 1 && $radius <= 1000) {
-                $validated['default_radius'] = $radius;
-            }
-        }
-        
-        // Validate max radius
-        if (isset($input['max_radius'])) {
-            $max_radius = intval($input['max_radius']);
-            if ($max_radius >= 1 && $max_radius <= 1000) {
-                $validated['max_radius'] = $max_radius;
-            }
-        }
-        
         // Validate layer switcher
         $validated['enable_layer_switcher'] = isset($input['enable_layer_switcher']) ? '1' : '0';
-        
+
         // Validate fullscreen
         $validated['enable_fullscreen'] = isset($input['enable_fullscreen']) ? '1' : '0';
-        
-        // Validate distance options
-        if (isset($input['distance_filter_options'])) {
-            $distances = sanitize_text_field($input['distance_filter_options']);
-            // Validate that it's a comma-separated list of numbers
-            $distance_array = explode(',', $distances);
-            $valid_distances = array();
-            foreach ($distance_array as $distance) {
-                $distance = trim($distance);
-                if (is_numeric($distance) && $distance > 0) {
-                    $valid_distances[] = intval($distance);
-                }
-            }
-            if (!empty($valid_distances)) {
-                $validated['distance_filter_options'] = implode(',', $valid_distances);
-            }
-        }
-        
+
         // Validate color
         if (isset($input['primary_color'])) {
             $color = sanitize_hex_color($input['primary_color']);
