@@ -132,12 +132,18 @@
      */
     function initializeMobileFilters() {
         
-        // Mobile filter toggle
         const mobileFilterToggle = document.getElementById('mobile-filter-btn');
         const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
-        const mobileFilterPanel = document.querySelector('.mobile-filter-panel');
-        
-        
+        const mobileFilterPanel = mobileFilterOverlay ? mobileFilterOverlay.querySelector('.mobile-filter-panel') : null;
+        const closeMobileFilters = document.getElementById('close-mobile-filters');
+
+        if (!mobileFilterOverlay || !mobileFilterPanel) {
+            return;
+        }
+
+        // Keep initial UI in sync with desktop filters
+        syncDesktopToMobileFilters();
+
         if (mobileFilterToggle) {
             mobileFilterToggle.addEventListener('click', function() {
                 if (mobileFilterOverlay && mobileFilterPanel) {
@@ -149,22 +155,26 @@
                 }
             });
         }
-        
-        // Close mobile filter
-        const closeMobileFilters = document.getElementById('close-mobile-filters');
+
         if (closeMobileFilters) {
-            closeMobileFilters.addEventListener('click', closeMobileFilter);
-        }
-        
-        // Close on overlay click
-        if (mobileFilterOverlay) {
-            mobileFilterOverlay.addEventListener('click', function(e) {
-                if (e.target === mobileFilterOverlay) {
-                    closeMobileFilter();
-                }
+            closeMobileFilters.addEventListener('click', function(event) {
+                event.preventDefault();
+                closeMobileFilter();
             });
         }
-        
+
+        mobileFilterOverlay.addEventListener('click', function(event) {
+            if (event.target === mobileFilterOverlay) {
+                closeMobileFilter();
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && mobileFilterOverlay.classList.contains('show')) {
+                closeMobileFilter();
+            }
+        });
+
         // Mobile filter form elements
         const mobileRestaurantName = document.getElementById('mobile-restaurant-name');
         const mobileCity = document.getElementById('mobile-city');
@@ -196,32 +206,15 @@
         const mobileClearAll = document.getElementById('mobile-clear-all');
         
         if (mobileApplyFilters) {
-            mobileApplyFilters.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Apply the filters first
+            mobileApplyFilters.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
                 handleMobileFilterChange();
-                
-                // Close the panel after applying filters
                 closeMobileFilter();
-                
-                // Additional direct close as backup
-                setTimeout(() => {
-                    const panel = document.querySelector('.mobile-filter-panel');
-                    const overlay = document.getElementById('mobile-filter-overlay');
-                    if (panel && overlay) {
-                        panel.classList.add('-translate-x-full');
-                        overlay.style.display = 'none';
-                        document.body.style.overflow = '';
-                    }
-                }, 100);
-                
             });
-        } else {
-            console.error('Mobile apply filters button not found!');
         }
-        
+
         if (mobileClearAll) {
             mobileClearAll.addEventListener('click', function() {
                 clearMobileFilters();
@@ -232,6 +225,35 @@
     /**
      * Close mobile filter panel
      */
+    function openMobileFilter() {
+        const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
+        const mobileFilterPanel = mobileFilterOverlay ? mobileFilterOverlay.querySelector('.mobile-filter-panel') : null;
+        const mobileFilterToggle = document.getElementById('mobile-filter-btn');
+
+        if (!mobileFilterOverlay || !mobileFilterPanel) {
+            return;
+        }
+
+        syncDesktopToMobileFilters();
+
+        mobileFilterOverlay.removeAttribute('hidden');
+        mobileFilterOverlay.setAttribute('aria-hidden', 'false');
+        mobileFilterOverlay.classList.add('show');
+
+        mobileFilterPanel.classList.add('show');
+        mobileFilterPanel.classList.remove('-translate-x-full');
+
+        document.body.classList.add('mobile-filter-open');
+
+        if (mobileFilterToggle) {
+            mobileFilterToggle.setAttribute('aria-expanded', 'true');
+        }
+
+        if (typeof mobileFilterPanel.focus === 'function') {
+            mobileFilterPanel.focus();
+        }
+    }
+
     function closeMobileFilter() {
         const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
         const mobileFilterPanel = document.querySelector('.mobile-filter-panel');
@@ -345,6 +367,8 @@
         buildCurrentFilters();
         currentPage = 1; // Reset to first page when filters change
         loadAllRestaurants();
+
+        syncDesktopToMobileFilters();
     }
 
     /**
@@ -354,6 +378,8 @@
         const sortOrder = $('#sort-restaurants').val();
         currentFilters.sort = sortOrder;
         loadAllRestaurants();
+
+        syncDesktopToMobileFilters();
     }
 
     /**
@@ -365,10 +391,12 @@
         $('#cuisine-filter').val('');
         $('#featured-only').prop('checked', false);
         $('#sort-restaurants').val('featured');
-        
+
         currentFilters = {};
         currentPage = 1; // Reset to first page when clearing filters
         loadAllRestaurants();
+
+        syncDesktopToMobileFilters();
     }
 
     /**

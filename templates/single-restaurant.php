@@ -778,113 +778,136 @@ wp_add_inline_style('lebonresto-single-css', '
 
         <!-- Mobile Filter Toggle Button -->
         <div class="mobile-filter-toggle lg:hidden">
-        <button type="button" id="mobile-filter-btn" class="mobile-filter-button button-base button-primary">
-            <svg viewBox="0 0 24 24" width="20" height="20" class="filter-icon">
-                <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path>
-            </svg>
-            <span class="filter-text">Filtres</span>
-        </button>
+            <button
+                type="button"
+                id="mobile-filter-btn"
+                class="mobile-filter-button button-base button-primary"
+                aria-haspopup="dialog"
+                aria-controls="mobile-filter-overlay"
+                aria-expanded="false"
+            >
+                <svg viewBox="0 0 24 24" width="20" height="20" class="filter-icon" aria-hidden="true">
+                    <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path>
+                </svg>
+                <span class="filter-text"><?php _e('Filtres', 'le-bon-resto'); ?></span>
+            </button>
         </div>
 
-    <!-- Mobile Filter Overlay -->
-    <div id="mobile-filter-overlay" class="mobile-filter-overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" style="display: none;">
-        <div class="mobile-filter-panel bg-white h-full w-80 max-w-[85vw] transform -translate-x-full transition-transform duration-300">
-            <!-- Filter Header with Close Button -->
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-yellow-400 to-yellow-500">
-                <h3 class="text-lg font-semibold text-gray-800"><?php _e('Filtres', 'le-bon-resto'); ?></h3>
-                <button type="button" id="close-mobile-filters" class="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="p-4 overflow-y-auto">
-                <!-- Mobile Filter Form -->
-                <div class="space-y-4">
-                    <!-- Restaurant Name Search -->
-                    <div>
-                        <input 
-                            type="text" 
-                            id="mobile-restaurant-name" 
-                            placeholder="<?php _e('Nom du restaurant...', 'le-bon-resto'); ?>"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                        />
-                    </div>
-                    
-                    <!-- City Filter -->
-                    <div>
-                        <select
-                            id="mobile-city"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                        >
-                            <option value=""><?php _e('Toutes les villes', 'le-bon-resto'); ?></option>
-                            <?php foreach ($restaurant_cities as $city_option): ?>
-                                <option value="<?php echo esc_attr($city_option); ?>"><?php echo esc_html($city_option); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    
-                    <!-- Cuisine Filter -->
-                    <div>
-                        <select
-                            id="mobile-cuisine"
-                            class="filter-select"
-                        >
-                            <option value=""><?php _e('Toutes les cuisines', 'le-bon-resto'); ?></option>
-                            <option value="française"><?php _e('Française', 'le-bon-resto'); ?></option>
-                            <option value="italienne"><?php _e('Italienne', 'le-bon-resto'); ?></option>
-                            <option value="asiatique"><?php _e('Asiatique', 'le-bon-resto'); ?></option>
-                            <option value="méditerranéenne"><?php _e('Méditerranéenne', 'le-bon-resto'); ?></option>
-                            <option value="mexicaine"><?php _e('Mexicaine', 'le-bon-resto'); ?></option>
-                            <option value="indienne"><?php _e('Indienne', 'le-bon-resto'); ?></option>
-                        </select>
-                    </div>
-                    
-                    <!-- Sort Filter -->
-                    <div>
-                        <select
-                            id="mobile-sort"
-                            class="filter-select"
-                        >
-                            <option value="featured"><?php _e('Recommandés en premier', 'le-bon-resto'); ?></option>
-                            <option value="newest"><?php _e('Plus récents', 'le-bon-resto'); ?></option>
-                            <option value="name"><?php _e('Nom A-Z', 'le-bon-resto'); ?></option>
-                        </select>
-                    </div>
-                    
-                    <!-- Featured Only Toggle -->
-                    <div class="flex items-center">
-                        <input 
-                            type="checkbox" 
-                            id="mobile-featured-only" 
-                            class="rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 focus:ring-2"
-                        />
-                        <span class="ml-2 text-sm text-gray-600">
-                            <?php _e('Seulement les recommandés', 'le-bon-resto'); ?>
-                        </span>
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div class="space-y-3 pt-4">
+        <!-- Mobile Filter Overlay -->
+        <div
+            id="mobile-filter-overlay"
+            class="mobile-filter-overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            hidden
+            aria-hidden="true"
+        >
+            <div
+                class="mobile-filter-panel h-full w-80 max-w-[85vw] bg-white shadow-lg transform -translate-x-full transition-transform duration-300"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="mobile-filter-title"
+                tabindex="-1"
+            >
+                <div class="flex flex-col h-full">
+                    <!-- Filter Header with Close Button -->
+                    <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-yellow-400 to-yellow-500">
+                        <h3 id="mobile-filter-title" class="text-lg font-semibold text-gray-800"><?php _e('Filtres', 'le-bon-resto'); ?></h3>
                         <button
-                            id="mobile-apply-filters"
-                            class="button-base button-primary w-full"
+                            type="button"
+                            id="close-mobile-filters"
+                            class="text-gray-100 hover:text-white p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-all"
+                            aria-label="<?php esc_attr_e('Fermer les filtres', 'le-bon-resto'); ?>"
                         >
-                            <?php _e('Appliquer les filtres', 'le-bon-resto'); ?>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
                         </button>
-                        
-                        <button
-                            id="mobile-clear-all"
-                            class="button-base button-secondary w-full"
-                        >
-                            <?php _e('Effacer tout', 'le-bon-resto'); ?>
-                        </button>
+                    </div>
+
+                    <div class="filter-form flex-1 overflow-y-auto bg-white border-0 shadow-none rounded-none p-4">
+                        <div class="space-y-4">
+                            <!-- Restaurant Name Search -->
+                            <div class="w-full">
+                                <input
+                                    type="text"
+                                    id="mobile-restaurant-name"
+                                    placeholder="<?php _e('Nom du restaurant...', 'le-bon-resto'); ?>"
+                                    class="filter-input w-full"
+                                />
+                            </div>
+
+                            <!-- City Filter -->
+                            <div class="w-full">
+                                <select
+                                    id="mobile-city"
+                                    class="filter-select w-full"
+                                >
+                                    <option value=""><?php _e('Toutes les villes', 'le-bon-resto'); ?></option>
+                                    <?php foreach ($restaurant_cities as $city_option): ?>
+                                        <option value="<?php echo esc_attr($city_option); ?>"><?php echo esc_html($city_option); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <!-- Cuisine Filter -->
+                            <div class="w-full">
+                                <select
+                                    id="mobile-cuisine"
+                                    class="filter-select w-full"
+                                >
+                                    <option value=""><?php _e('Toutes les cuisines', 'le-bon-resto'); ?></option>
+                                    <option value="française"><?php _e('Française', 'le-bon-resto'); ?></option>
+                                    <option value="italienne"><?php _e('Italienne', 'le-bon-resto'); ?></option>
+                                    <option value="asiatique"><?php _e('Asiatique', 'le-bon-resto'); ?></option>
+                                    <option value="méditerranéenne"><?php _e('Méditerranéenne', 'le-bon-resto'); ?></option>
+                                    <option value="mexicaine"><?php _e('Mexicaine', 'le-bon-resto'); ?></option>
+                                    <option value="indienne"><?php _e('Indienne', 'le-bon-resto'); ?></option>
+                                </select>
+                            </div>
+
+                            <!-- Sort Filter -->
+                            <div class="w-full">
+                                <select
+                                    id="mobile-sort"
+                                    class="filter-select w-full"
+                                >
+                                    <option value="featured"><?php _e('Recommandés en premier', 'le-bon-resto'); ?></option>
+                                    <option value="newest"><?php _e('Plus récents', 'le-bon-resto'); ?></option>
+                                    <option value="name"><?php _e('Nom A-Z', 'le-bon-resto'); ?></option>
+                                </select>
+                            </div>
+
+                            <!-- Featured Only Toggle -->
+                            <label class="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    id="mobile-featured-only"
+                                />
+                                <span class="text-sm text-gray-700">
+                                    <?php _e('Seulement les recommandés', 'le-bon-resto'); ?>
+                                </span>
+                            </label>
+
+                            <!-- Action Buttons -->
+                            <div class="space-y-3 pt-2">
+                                <button
+                                    id="mobile-apply-filters"
+                                    class="button-base button-primary w-full"
+                                >
+                                    <?php _e('Appliquer les filtres', 'le-bon-resto'); ?>
+                                </button>
+
+                                <button
+                                    id="mobile-clear-all"
+                                    class="button-base button-secondary w-full"
+                                >
+                                    <?php _e('Effacer tout', 'le-bon-resto'); ?>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
         <!-- Desktop Filter Header (Hidden on Mobile, Tablet, and iPad) -->
         <div class="filter-header1 w-full bg-gray-100 border-b border-gray-200 sticky top-0 z-50">
@@ -1836,297 +1859,6 @@ wp_localize_script(
         display: block !important;
         max-height: 65vh;
     }
-
-.mobile-filter-toggle button {
-    width: auto !important;
-    height: auto !important;
-    padding: 12px 18px !important;
-    border-radius: var(--radius-lg) !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-}
-
-.mobile-filter-toggle button:hover {
-    transform: translateY(-2px) !important;
-}
-
-/* Custom Filter Icon - Visible */
-.filter-icon {
-    display: block !important;
-    width: 20px !important;
-    height: 20px !important;
-    fill: currentColor !important;
-    color: var(--text-on-primary) !important;
-    flex-shrink: 0 !important;
-}
-
-.filter-line {
-    display: none;
-}
-
-.mobile-filter-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 40;
-    display: none;
-}
-
-/* Mobile Filter Panel - Essential Styles Only */
-.mobile-filter-panel {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-}
-
-.mobile-filter-panel .space-y-4 > div {
-    margin-bottom: 20px !important;
-}
-
-.mobile-filter-panel input,
-.mobile-filter-panel select {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
-    border: 2px solid #e5e7eb !important;
-    border-radius: 12px !important;
-    padding: 14px 16px !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: var(--secondary-dark) !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-}
-
-.mobile-filter-panel input:focus,
-.mobile-filter-panel select:focus {
-    outline: none !important;
-    border-color: #cc2014 !important;
-    box-shadow: 0 0 0 4px rgba(254, 220, 0, 0.15), 0 4px 12px rgba(254, 220, 0, 0.1) !important;
-    background: #ffffff !important;
-    transform: translateY(-1px) !important;
-}
-
-.mobile-filter-panel input::placeholder {
-    color: #f6d2cf !important;
-    font-weight: 400 !important;
-}
-
-.mobile-filter-panel select {
-    cursor: pointer !important;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3E%3Cpath stroke=%27%236b7280%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%271.5%27 d=%27m6 8 4 4 4-4%27/%3E%3C/svg%3E") !important;
-    background-position: right 12px center !important;
-    background-repeat: no-repeat !important;
-    background-size: 16px !important;
-    padding-right: 40px !important;
-}
-
-.mobile-filter-panel input:hover,
-.mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
-    box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
-}
-
-.mobile-filter-panel input[type="checkbox"] {
-    width: 20px !important;
-    height: 20px !important;
-    accent-color: #cc2014 !important;
-    margin-right: 12px !important;
-    cursor: pointer !important;
-}
-
-.mobile-filter-panel .flex.items-center {
-    padding: 12px 0 !important;
-}
-
-.mobile-filter-panel .flex.items-center span {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: rgb(255, 0, 0) !important;
-}
-
-.mobile-filter-panel button {
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    font-size: 14px !important;
-    padding: 16px 20px !important;
-}
-
-.mobile-filter-panel .button-primary {
-    color: var(--text-on-primary) !important;
-}
-
-.mobile-filter-panel .button-primary:hover {
-    box-shadow: var(--button-shadow-hover) !important;
-}
-
-.mobile-filter-panel .button-secondary {
-    color: var(--secondary-dark) !important;
-}
-
-.mobile-filter-panel .button-secondary:hover {
-    box-shadow: 0 10px 20px rgba(15, 106, 88, 0.18) !important;
-}
-
-.mobile-filter-panel .flex.items-center.justify-between {
-    background: linear-gradient(135deg, #cc2014 0%, #f59e0b 100%) !important;
-    padding: 20px !important;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1) !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 10 !important;
-    display: flex;
-    gap: 170px;
-}
-
-.mobile-filter-panel h3 {
-    color: var(--text-on-primary) !important;
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    margin: 0 !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-}
-
-#close-mobile-filters {
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 50% !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    color: var(--text-on-primary) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-#close-mobile-filters:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    transform: scale(1.1) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-#close-mobile-filters:active {
-    transform: scale(0.95) !important;
-}
-
-#close-mobile-filters svg {
-    width: 24px !important;
-    height: 24px !important;
-    stroke: currentColor !important;
-    stroke-width: 2.5 !important;
-    fill: none !important;
-}
-
-.mobile-filter-panel .p-4 {
-    padding: 24px !important;
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
-}
-
-.mobile-filter-panel .space-y-4 > div {
-    animation: slideInUp 0.3s ease-out !important;
-    animation-fill-mode: both !important;
-}
-
-.mobile-filter-panel .space-y-4 > div:nth-child(1) { animation-delay: 0.1s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(2) { animation-delay: 0.15s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(3) { animation-delay: 0.2s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(4) { animation-delay: 0.25s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(5) { animation-delay: 0.3s !important; }
-.mobile-filter-panel .space-y-4 > div:nth-child(6) { animation-delay: 0.35s !important; }
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.mobile-filter-panel::-webkit-scrollbar {
-    width: 6px !important;
-}
-
-.mobile-filter-panel::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05) !important;
-    border-radius: 3px !important;
-}
-
-.mobile-filter-panel::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #cc2014 0%, #f59e0b 100%) !important;
-    border-radius: 3px !important;
-}
-
-.mobile-filter-panel::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #f59e0b 0%, #cc2014 100%) !important;
-}
-
-.mobile-filter-panel .space-y-4 > div {
-    margin-bottom: 20px !important;
-}
-
-.mobile-filter-panel input,
-.mobile-filter-panel select {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
-    border: 2px solid #e5e7eb !important;
-    border-radius: 12px !important;
-    padding: 14px 16px !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: var(--secondary-dark) !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-}
-
-.mobile-filter-panel input:focus,
-.mobile-filter-panel select:focus {
-    outline: none !important;
-    border-color: #cc2014 !important;
-    box-shadow: 0 0 0 4px rgba(254, 220, 0, 0.15), 0 4px 12px rgba(254, 220, 0, 0.1) !important;
-    background: #ffffff !important;
-    transform: translateY(-1px) !important;
-}
-
-.mobile-filter-panel input::placeholder {
-    color: #f6d2cf !important;
-    font-weight: 400 !important;
-}
-
-.mobile-filter-panel select {
-    cursor: pointer !important;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3E%3Cpath stroke=%27%236b7280%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%271.5%27 d=%27m6 8 4 4 4-4%27/%3E%3C/svg%3E") !important;
-    background-position: right 12px center !important;
-    background-repeat: no-repeat !important;
-    background-size: 16px !important;
-    padding-right: 40px !important;
-}
-
-.mobile-filter-panel input:hover,
-.mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
-    box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
-}
-
-/* Checkbox styling */
-.mobile-filter-panel input[type="checkbox"] {
-    width: 20px !important;
-    height: 20px !important;
-    accent-color: #cc2014 !important;
-    margin-right: 12px !important;
-    cursor: pointer !important;
-}
-
-.mobile-filter-panel .flex.items-center {
-    padding: 12px 0 !important;
-}
-
-.mobile-filter-panel .flex.items-center span {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: rgb(255, 0, 0) !important;
-}
 
 /* Responsive improvements */
 @media (max-width: 768px) {

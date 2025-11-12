@@ -1688,40 +1688,6 @@ input[type="checkbox"]:checked {
     color: rgb(255, 0, 0) !important;
 }
 
-#close-mobile-filters {
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 50% !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    color: var(--primary-dark) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-#close-mobile-filters:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    transform: scale(1.1) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-#close-mobile-filters:active {
-    transform: scale(0.95) !important;
-}
-
-#close-mobile-filters svg {
-    width: 24px !important;
-    height: 24px !important;
-    stroke: currentColor !important;
-    stroke-width: 2.5 !important;
-    fill: none !important;
-}
-
 /* Enhanced hover effects */
 .filter-form input:hover,
 .filter-form select:hover {
@@ -1735,127 +1701,44 @@ input[type="checkbox"]:checked {
     box-shadow: 0 0 0 2px var(--primary-color) !important;
 }
 
-/* Mobile Filter Styles */
-.mobile-filter-toggle1 {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 50;
-    display: block;
+/* Mobile filter overlay behaviour aligned with desktop filter styling */
+body.mobile-filter-open {
+    overflow: hidden !important;
 }
 
-/* Hide mobile filter elements on desktop */
-@media (min-width: 1024px) {
-    .mobile-filter-toggle1,
-    .mobile-filter-overlay,
-    .mobile-filter-panel,
-    #mobile-filter-overlay,
-    #mobile-filter-panel {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
-}
-
-/* Show mobile filter button only on mobile/tablet */
-@media (max-width: 1023px) {
-    .mobile-filter-toggle1 {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-    }
-}
-
-.mobile-filter-toggle1 button {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
-    color: var(--primary-dark) !important;
-    border: none !important;
-    border-radius: 12px !important;
-    padding: 12px 16px !important;
-    display: flex !important;
+.mobile-filter-toggle button {
+    display: inline-flex !important;
     align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important;
-    box-shadow: 0 4px 16px rgba(254, 220, 0, 0.4) !important;
-    cursor: pointer !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    gap: 0.5rem !important;
     font-weight: 600 !important;
-    font-size: 14px !important;
-    min-width: auto !important;
-    height: auto !important;
-    white-space: nowrap !important;
-    position: relative !important;
-    overflow: visible !important;
+    border-radius: var(--radius-lg) !important;
+    padding: 0.75rem 1.25rem !important;
 }
 
-.mobile-filter-toggle1 button:hover {
-    transform: scale(1.05) translateY(-2px);
-    box-shadow: 0 8px 24px rgba(254, 220, 0, 0.6);
-    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
-}
-
-.mobile-filter-toggle1 button:active {
-    transform: scale(1.02) translateY(0px);
-    box-shadow: 0 4px 12px rgba(254, 220, 0, 0.5);
-}
-
-.mobile-filter-toggle1 .filter-icon {
-    display: block !important;
+.mobile-filter-toggle .filter-icon {
     width: 20px !important;
     height: 20px !important;
     fill: currentColor !important;
-    color: var(--primary-dark) !important;
-    flex-shrink: 0 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
 }
 
-.mobile-filter-toggle1 .filter-icon path {
-    fill: currentColor !important;
-    stroke: none !important;
-}
-
-.mobile-filter-toggle1 .filter-text {
-    display: block !important;
-    color: var(--primary-dark) !important;
+.mobile-filter-toggle .filter-text {
     font-weight: 600 !important;
-    font-size: 14px !important;
-    letter-spacing: 0.5px !important;
-    visibility: visible !important;
-    opacity: 1 !important;
 }
 
-/* Ensure button content is visible */
-.mobile-filter-toggle1 button * {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+.mobile-filter-overlay {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: opacity 0.3s ease !important;
 }
 
-/* Specific selectors for button content */
-.mobile-filter-toggle1 button svg,
-.mobile-filter-toggle1 button .filter-icon {
-    display: block !important;
-    visibility: visible !important;
+.mobile-filter-overlay.show {
     opacity: 1 !important;
-    width: 20px !important;
-    height: 20px !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
 }
 
-.mobile-filter-toggle1 button span,
-.mobile-filter-toggle1 button .filter-text {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    color: var(--primary-dark) !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-}
-
-.mobile-filter-toggle1 button::before {
+.mobile-filter-overlay[hidden] {
     display: none !important;
 }
 
@@ -2457,39 +2340,23 @@ input[type="checkbox"]:checked {
     transform: translateY(-1px);
 }
 
-.mobile-filter-btn-secondary {
-    background: #f3f4f6;
-    color: rgb(255, 0, 0);
-    border: 2px solid #e5e7eb;
+.mobile-filter-panel.show {
+    transform: translateX(0) !important;
 }
 
-.mobile-filter-btn-secondary:hover {
-    background: #e5e7eb;
-    border-color: #e71e0f;
+.mobile-filter-panel .filter-form {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 1.5rem !important;
 }
 
-/* Hide mobile filter on desktop */
-@media (min-width: 1024px) {
-    .mobile-filter-toggle1 {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
+.mobile-filter-panel .filter-form .space-y-4 > * {
+    margin-bottom: 1rem !important;
 }
 
-/* Show mobile filter button only on mobile/tablet */
-@media (max-width: 1023px) {
-    .mobile-filter-toggle1 {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        bottom: 70px !important;
-        right: 20px !important;
-        z-index: 1000 !important;
-        pointer-events: auto !important;
-    }
+.mobile-filter-panel .filter-form label span {
+    color: var(--text-secondary) !important;
 }
 
 /* Action Icons Styling */
