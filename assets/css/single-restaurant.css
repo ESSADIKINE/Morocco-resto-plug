@@ -53,6 +53,34 @@
     z-index: -1;
 }
 
+.add-review-button-container {
+    margin-bottom: 1rem !important;
+    margin-top: 1rem !important;
+    text-align: center !important;
+    padding: 0 1rem !important;
+}
+
+.add-review-button {
+    display: inline-block;
+    background-color: #ee2e20; /* Red background */
+    color: #ffffff; /* Green text */
+    border: 2px solid #0f6a58; /* Green border */
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.add-review-button:hover {
+    background-color: #ffffff; /* Green background on hover */
+    color: #0f6a58; /* White text on hover */
+    border-color: #0f6a58;
+    transform: scale(1.05);
+}
+
+
 
 .button-center{
     position: absolute;
@@ -1322,7 +1350,7 @@ input[type="checkbox"]:checked {
     height: 28px !important;
     border-radius: 50% !important;
     background: var(--primary-color) !important;
-    color: #000 !important;
+    color: #00a236 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -1362,12 +1390,12 @@ input[type="checkbox"]:checked {
 }
 
 .single-restaurant-template .review-rating svg.text-gray-300 {
-    color: #e71e0f !important;
-    fill: #e71e0f !important;
+    color: #0f6a58 !important;
+    fill: #0f6a58 !important;
 }
 
 .single-restaurant-template .review-text {
-    color: rgb(255, 0, 0) !important;
+    color: rgb(0, 0, 0) !important;
     font-size: 10px !important;
     line-height: 1.2 !important;
     margin: 4px 0 !important;
@@ -1393,9 +1421,8 @@ input[type="checkbox"]:checked {
 }
 
 .single-restaurant-template .review-badge {
-    background: var(--primary-color) !important;
+    background: var(--success-color) !important;
     color: #000 !important;
-    padding: 2px 6px !important;
     border-radius: 4px !important;
     font-size: 9px !important;
     font-weight: 600 !important;
