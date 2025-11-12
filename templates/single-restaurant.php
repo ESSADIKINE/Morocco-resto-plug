@@ -321,34 +321,31 @@ add_action('wp_head', function() {
     align-items: center !important;
     justify-content: center !important;
     gap: 0.5rem !important;
-    padding: 14px 24px !important;
+    padding: 12px 18px !important;
     border-radius: var(--radius-lg) !important;
     font-weight: 600 !important;
-    font-size: 16px !important;
-    line-height: 1.4 !important;
+    font-size: 14px !important;
     text-decoration: none !important;
     border: none !important;
     cursor: pointer !important;
     transition: var(--transition) !important;
-    min-height: 52px !important;
-    box-shadow: var(--shadow-md) !important;
+    box-shadow: var(--button-shadow) !important;
 }
 
 .button-base:focus {
-    outline: 2px solid rgba(204, 32, 20, 0.25) !important;
+    outline: 2px solid rgba(255, 255, 255, 0.32) !important;
     outline-offset: 2px !important;
 }
 
 .button-primary {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%) !important;
-    color: var(--text-primary) !important;
-    box-shadow: var(--shadow-lg) !important;
+    color: var(--text-on-primary) !important;
 }
 
 .button-primary:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 12px 24px rgba(204, 32, 20, 0.28) !important;
-    color: var(--text-primary) !important;
+    box-shadow: var(--button-shadow-hover) !important;
+    color: var(--text-on-primary) !important;
 }
 
 .button-primary:active {
@@ -359,13 +356,12 @@ add_action('wp_head', function() {
     background: linear-gradient(145deg, rgba(255, 247, 239, 0.95) 0%, rgba(243, 231, 211, 0.9) 100%) !important;
     color: var(--secondary-dark) !important;
     border: 2px solid rgba(15, 106, 88, 0.2) !important;
-    box-shadow: var(--shadow-md) !important;
+    box-shadow: var(--shadow-sm) !important;
 }
 
 .button-secondary:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 20px rgba(15, 106, 88, 0.18) !important;
-    color: var(--secondary-dark) !important;
 }
 
 .button-secondary:focus {
@@ -381,7 +377,10 @@ add_action('wp_head', function() {
     width: 18px !important;
     height: 18px !important;
     fill: currentColor !important;
-    flex-shrink: 0 !important;
+}
+
+.add-review-button svg {
+    margin-right: 8px !important;
 }
 
 .add-review-button-container {
@@ -814,11 +813,11 @@ wp_add_inline_style('lebonresto-single-css', '
                     </div>
                     
                     <!-- City Filter -->
-                        <div>
-                            <select
-                                id="mobile-city"
-                                class="filter-select"
-                            >
+                    <div>
+                        <select
+                            id="mobile-city"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                        >
                             <option value=""><?php _e('Toutes les villes', 'le-bon-resto'); ?></option>
                             <?php foreach ($restaurant_cities as $city_option): ?>
                                 <option value="<?php echo esc_attr($city_option); ?>"><?php echo esc_html($city_option); ?></option>
@@ -906,7 +905,7 @@ wp_add_inline_style('lebonresto-single-css', '
                         <div class="w-full lg:w-48">
                             <select
                                 id="city-filter"
-                                class="filter-select"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                             >
                                 <option value=""><?php _e('Toutes les villes', 'le-bon-resto'); ?></option>
                                 <?php foreach ($restaurant_cities as $city_option): ?>
@@ -1136,7 +1135,7 @@ wp_add_inline_style('lebonresto-single-css', '
                 <a href="https://search.google.com/local/writereview?placeid=<?php echo esc_attr($google_place_id); ?>"
                    target="_blank"
                    rel="noopener"
-                   class="add-review-button button-base button-primary w-full">
+                   class="add-review-button button-base button-primary">
                     <svg viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.365 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.365-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                     </svg>
