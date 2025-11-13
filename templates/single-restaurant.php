@@ -831,6 +831,7 @@ wp_add_inline_style('lebonresto-single-css', '
                             id="mobile-cuisine"
                             class="filter-select"
                         >
+                            <option value="moroccan"><?php _e('Moroccan', 'le-bon-resto'); ?></option>
                             <option value=""><?php _e('Toutes les cuisines', 'le-bon-resto'); ?></option>
                             <option value="française"><?php _e('Française', 'le-bon-resto'); ?></option>
                             <option value="italienne"><?php _e('Italienne', 'le-bon-resto'); ?></option>
@@ -838,18 +839,6 @@ wp_add_inline_style('lebonresto-single-css', '
                             <option value="méditerranéenne"><?php _e('Méditerranéenne', 'le-bon-resto'); ?></option>
                             <option value="mexicaine"><?php _e('Mexicaine', 'le-bon-resto'); ?></option>
                             <option value="indienne"><?php _e('Indienne', 'le-bon-resto'); ?></option>
-                        </select>
-                    </div>
-                    
-                    <!-- Sort Filter -->
-                    <div>
-                        <select
-                            id="mobile-sort"
-                            class="filter-select"
-                        >
-                            <option value="featured"><?php _e('Recommandés en premier', 'le-bon-resto'); ?></option>
-                            <option value="newest"><?php _e('Plus récents', 'le-bon-resto'); ?></option>
-                            <option value="name"><?php _e('Nom A-Z', 'le-bon-resto'); ?></option>
                         </select>
                     </div>
                     
@@ -871,14 +860,14 @@ wp_add_inline_style('lebonresto-single-css', '
                             id="mobile-apply-filters"
                             class="button-base button-primary w-full"
                         >
-                            <?php _e('Appliquer les filtres', 'le-bon-resto'); ?>
+                            <?php _e('Appliquer', 'le-bon-resto'); ?>
                         </button>
                         
                         <button
                             id="mobile-clear-all"
                             class="button-base button-secondary w-full"
                         >
-                            <?php _e('Effacer tout', 'le-bon-resto'); ?>
+                            <?php _e('Effacer', 'le-bon-resto'); ?>
                         </button>
                     </div>
                 </div>

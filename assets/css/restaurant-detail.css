@@ -1572,12 +1572,12 @@ body.lebonresto-detail-page {
 
 .section-btn.active {
     background: var(--gradient-primary);
-    color: var(--bg-primary);
+    color: #0f6a58;
 }
 
 .section-btn:hover {
     background: var(--gradient-primary);
-    color: var(--bg-primary);
+    color: #0f6a58;
     transform: scale(1.1);
 }
 

@@ -571,7 +571,7 @@ html.lebonresto-detail-page {
     cursor: pointer;
     box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease-out;
-    border: 2px solid #ffd700;
+    border: 2px solid #b3342b;
     position: relative;
     padding: 0;
 }
@@ -579,7 +579,7 @@ html.lebonresto-detail-page {
 .section-switcher .section-btn:hover {
     width: 200px;
     background: #fff;
-    border: 2px solid #ffd700;
+    border: 2px solid #b3342b;
 }
 
 .section-switcher .section-btn .icon {
@@ -588,7 +588,7 @@ html.lebonresto-detail-page {
     justify-content: center !important;
     height: 60px;
     width: 60px;
-    color: #000;
+    color: #0f6a58;
     border-radius: 50px;
     box-sizing: border-box;
     transition: all 0.3s ease-out;
@@ -599,19 +599,19 @@ html.lebonresto-detail-page {
 }
 
 .section-switcher .section-btn:nth-child(1):hover .icon {
-    background: #4285F4;
+    background: var(--bg-tertiary);
 }
 
 .section-switcher .section-btn:nth-child(2):hover .icon {
-    background: #00C851;
+    background: var(--bg-tertiary);
 }
 
 .section-switcher .section-btn:nth-child(3):hover .icon {
-    background: #ff0000;
+    background: var(--bg-tertiary);
 }
 
 .section-switcher .section-btn:nth-child(4):hover .icon {
-    background: #E1306C;
+    background: var(--bg-tertiary);
 }
 
 .section-switcher .section-btn .icon svg {
@@ -622,7 +622,7 @@ html.lebonresto-detail-page {
 }
 
 .section-switcher .section-btn:hover .icon svg {
-    color: #fff;
+    color: #0f6a58;
 }
 
 .section-switcher .section-btn span {
@@ -639,19 +639,19 @@ html.lebonresto-detail-page {
 }
 
 .section-switcher .section-btn:nth-child(1) span {
-    color: #4285F4;
+    color: var(--bg-tertiary);
 }
 
 .section-switcher .section-btn:nth-child(2) span {
-    color: #00C851;
+    color: var(--bg-tertiary);
 }
 
 .section-switcher .section-btn:nth-child(3) span {
-    color: #ff0000;
+    color: var(--bg-tertiary);
 }
 
 .section-switcher .section-btn:nth-child(4) span {
-    color: #E1306C;
+    color: var(--bg-tertiary);
 }
 
 .section-switcher .section-btn:hover span {
@@ -661,25 +661,25 @@ html.lebonresto-detail-page {
 
 /* Active state styling */
 .section-switcher .section-btn.active {
-    background: var(--gradient-primary);
-    color: var(--bg-primary);
+    background: var(--bg-tertiary);
+    color: #0f6a58;
     width: 200px;
 }
 
 .section-switcher .section-btn.active .icon {
-    background: var(--gradient-primary);
-    color: var(--bg-primary);
+    background: var(--bg-tertiary);
+    color: #0f6a58;
     position: absolute;
     left: 0;
     top: 0;
 }
 
 .section-switcher .section-btn.active .icon svg {
-    color: var(--bg-primary);
+    color: #0f6a58;
 }
 
 .section-switcher .section-btn.active span {
-    color: var(--bg-primary);
+    color: #0f6a58;
     opacity: 1;
     transform: translateX(0);
     margin-left: 70px;
@@ -751,7 +751,7 @@ html.lebonresto-detail-page {
 }
 
 .star-filled {
-    color: #fbbf24 !important;
+    color: #0f6a58 !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
@@ -845,7 +845,7 @@ html.lebonresto-detail-page {
         </div>
 
         <!-- Blog Information Section -->
-        <div class="blog-info-wrap" style="width: 100%; background: var(--bg-primary); padding: 2rem 0; border-bottom: 1px solid var(--border-color);">
+        <div class="blog-info-wrap" style="width: 100%; background: #FFF; padding: 2rem 0; border-bottom: 1px solid var(--border-color);">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-md-8">
@@ -860,7 +860,7 @@ html.lebonresto-detail-page {
                             <i class="fas fa-chevron-right mx-2"></i>
                             <span style="color: var(--text-secondary);"><?php echo esc_html($blog_title ?: get_the_title()); ?></span>
                         </p>
-                        <p class="blog-date" style="color: var(--text-muted); margin: 0; font-size: 0.9rem;">
+                        <p class="blog-date" style="color: #0f6a58; margin: 0; font-size: 0.9rem;">
                             <i class="fas fa-calendar"></i> Créé le <?php echo date('j F Y', strtotime(get_the_date())); ?>
                         </p>
                     </div>
@@ -923,7 +923,7 @@ html.lebonresto-detail-page {
                             <?php endif; ?>
                             
                             <?php if ($cuisine_type): ?>
-                            <span class="cuisine-badge" style="background: var(--gradient-primary); color: var(--bg-primary); padding: 0.5rem 1.5rem; border-radius: var(--radius-full); font-weight: 600; display: inline-block;">
+                            <span class="cuisine-badge" style="background: var(--gradient-primary); color: #FFF; padding: 0.5rem 1.5rem; border-radius: var(--radius-full); font-weight: 600; display: inline-block;">
                                 <?php echo esc_html(ucfirst($cuisine_type)); ?>
                             </span>
                             <?php endif; ?>
@@ -1198,7 +1198,7 @@ html.lebonresto-detail-page {
                                 <h2>Adresse</h2>
                             </div>
                             <div class="block-content-wrap">
-                                <div class="address-info" style="padding: 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-lg);">
+                                <div class="address-info" style="padding: 1.5rem; background: var(--text-muted); border-radius: var(--radius-lg);">
                                     <div style="display: flex; align-items: center; margin-bottom: 1rem;">
                                         <i class="fas fa-map-marker-alt" style="color: var(--primary-color); margin-right: 1rem; font-size: 1.5rem;"></i>
                                 <div>
@@ -1241,7 +1241,7 @@ html.lebonresto-detail-page {
                                     
                                     <!-- Google Reviews -->
                                     <?php if ($google_place_id): ?>
-                                    <div class="review-platform" style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                                    <div class="review-platform" style="background: var(--text-muted); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
                                         <div class="platform-header" style="display: flex; align-items: center; margin-bottom: 1rem;">
                                             <div class="platform-icon" style="width: 40px; height: 40px; background: #4285F4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
@@ -1448,11 +1448,11 @@ html.lebonresto-detail-page {
                                  <h2>Informations</h2>
                                     </div>
                              <div class="block-content-wrap">
-                                 <div class="restaurant-info" style="padding: 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                                 <div class="restaurant-info" style="padding: 1.5rem; background: var(--text-muted); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
                                      <div class="info-grid" style="display: grid; gap: 1rem;">
                                          <?php if ($cuisine_type): ?>
                                          <div class="info-item" style="display: flex; align-items: center; gap: 0.75rem;">
-                                             <i class="fas fa-utensils" style="color: var(--primary-color); width: 20px;"></i>
+                                             <i class="fas fa-utensils" style="color: var(--secondary-color); width: 20px;"></i>
                                              <div>
                                                  <span style="font-weight: 600; color: var(--text-primary);">Cuisine:</span>
                                                  <span style="color: var(--text-secondary); margin-left: 0.5rem;"><?php echo esc_html(ucfirst($cuisine_type)); ?></span>
@@ -1462,7 +1462,7 @@ html.lebonresto-detail-page {
                                          
                                          <?php if ($is_featured === '1'): ?>
                                          <div class="info-item" style="display: flex; align-items: center; gap: 0.75rem;">
-                                             <i class="fas fa-star" style="color: #fbbf24; width: 20px;"></i>
+                                             <i class="fas fa-star" style="color: var(--secondary-color); width: 20px;"></i>
                                              <div>
                                                  <span style="font-weight: 600; color: var(--text-primary);">Restaurant recommandé</span>
                                     </div>
@@ -1471,7 +1471,7 @@ html.lebonresto-detail-page {
                                          
                                          <?php if ($virtual_tour_url): ?>
                                          <div class="info-item" style="display: flex; align-items: center; gap: 0.75rem;">
-                                             <i class="fas fa-vr-cardboard" style="color: var(--primary-color); width: 20px;"></i>
+                                             <i class="fas fa-vr-cardboard" style="color: var(--secondary-color); width: 20px;"></i>
                                              <div>
                                                  <span style="font-weight: 600; color: var(--text-primary);">Visite virtuelle disponible</span>
                                     </div>
@@ -1480,7 +1480,7 @@ html.lebonresto-detail-page {
                                          
                                          <?php if ($video_url): ?>
                                          <div class="info-item" style="display: flex; align-items: center; gap: 0.75rem;">
-                                             <i class="fas fa-play-circle" style="color: var(--primary-color); width: 20px;"></i>
+                                             <i class="fas fa-play-circle" style="color: var(--secondary-color); width: 20px;"></i>
                                              <div>
                                                  <span style="font-weight: 600; color: var(--text-primary);">Vidéo disponible</span>
                                              </div>

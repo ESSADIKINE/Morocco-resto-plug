@@ -14,7 +14,7 @@
     --border-light: rgb(255, 40, 40);
     --bg-white: #fffaf2;
     --bg-gray-50: #faf4ed;
-    --bg-gray-100: #f1e4d6;
+    --bg-gray-100: #0f6a58;
     --shadow-sm: 0 2px 8px rgba(26, 24, 23, 0.08);
     --shadow-md: 0 12px 28px rgba(15, 73, 63, 0.14);
     --shadow-lg: 0 24px 45px rgba(179, 52, 43, 0.18);
@@ -300,7 +300,10 @@ input[type="url"],
 select,
 textarea,
 .filter-input,
-.filter-select {
+.filter-select,
+#mobile-city,
+#mobile-cuisine,
+#mobile-restaurant-name{
     padding: 12px 16px !important;
     border: 2px solid var(--border-color) !important;
     font-size: 16px !important;
@@ -1928,7 +1931,7 @@ input[type="checkbox"]:checked {
 
 .mobile-filter-panel .p-4 {
     padding: 24px !important;
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
+    background: var(--bg-white) !important;
 }
 
 .mobile-filter-panel .space-y-4 > div {
@@ -1971,7 +1974,7 @@ input[type="checkbox"]:checked {
 
 .mobile-filter-panel input,
 .mobile-filter-panel select {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
+    background: var(--bg-white) !important;
     border: 2px solid #e5e7eb !important;
     border-radius: 12px !important;
     padding: 14px 16px !important;
@@ -1992,7 +1995,7 @@ input[type="checkbox"]:checked {
 }
 
 .mobile-filter-panel input::placeholder {
-    color: #f6d2cf !important;
+    color: #000000 !important;
     font-weight: 400 !important;
 }
 
