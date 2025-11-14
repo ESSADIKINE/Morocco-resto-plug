@@ -45,6 +45,17 @@
         bootstrapInitialRestaurants();
         loadRestaurants();
 
+        // Normalize star colors on startup and observe DOM changes
+        normalizeStarColors(document);
+        const starObserver = new MutationObserver((mutations) => {
+            for (const m of mutations) {
+                if (m.addedNodes && m.addedNodes.length) {
+                    normalizeStarColors(document);
+                    break;
+                }
+            }
+        });
+        starObserver.observe(document.body, { childList: true, subtree: true });
     }
 
     function bootstrapInitialRestaurants() {
@@ -831,7 +842,7 @@
                             ${isFeatured ? `
                                 <div class="award-badge">
                                     <svg viewBox="0 0 24 24" width="16" height="16">
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#fedc00"/>
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#0f6a58"/>
                                     </svg>
                                 </div>
                             ` : ''}
@@ -1345,6 +1356,43 @@
         return Array.from(merged.values());
     }
 
+    // Normalize star icon colors globally (only change whites to green)
+    function normalizeStarColors(root = document) {
+        try {
+            const candidates = [];
+            candidates.push(...root.querySelectorAll('i.fa-star, i.far.fa-star, i.fas.fa-star'));
+            candidates.push(...root.querySelectorAll('.rating-stars i, .rating-stars span'));
+            candidates.push(...root.querySelectorAll('.stars span'));
+            candidates.push(...root.querySelectorAll('.marker-stars span'));
+
+            const toHex = (color) => {
+                if (!color) return '';
+                const c = color.trim().toLowerCase();
+                if (c.startsWith('#')) return c;
+                const m = c.match(/rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+                if (!m) return c;
+                const r = parseInt(m[1], 10), g = parseInt(m[2], 10), b = parseInt(m[3], 10);
+                return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+            };
+
+            const isWhite = (c) => {
+                if (!c) return false;
+                const hex = toHex(c);
+                return hex === '#ffffff' || hex === '#fff' || c === 'white' || c === 'rgb(255, 255, 255)' || c === 'rgba(255, 255, 255, 1)';
+            };
+
+            candidates.forEach(el => {
+                const cs = window.getComputedStyle(el);
+                const current = cs.color;
+                if (isWhite(current)) {
+                    el.style.color = '#0f6a58';
+                }
+            });
+        } catch (e) {
+            console.warn('normalizeStarColors error:', e);
+        }
+    }
+
     function getRestaurantCoordinates(restaurant) {
         if (!restaurant) return null;
         const meta = restaurant.restaurant_meta || {};
@@ -1543,9 +1591,9 @@
 
         for (let i = 1; i <= 5; i++) {
             if (rounded >= i) {
-                starsHtml += '<span style="color: #fbbf24;">★</span>';
+                starsHtml += '<span style="color: #0f6a58;">★</span>';
             } else if (rounded >= i - 0.5) {
-                starsHtml += '<span style="color: #fbbf24;">☆</span>';
+                starsHtml += '<span style="color: #0f6a58;">☆</span>';
             } else {
                 starsHtml += '<span style="color: #d1d5db;">★</span>';
             }
@@ -1786,7 +1834,7 @@
                                 </svg>
                             </a>
                         ` : ''}
-                        <a href="${escapeHtml(detailUrl)}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; height: 36px; border-radius: 18px; padding: 0 16px; background: linear-gradient(135deg, #fedc00 0%, #fbbf24 100%); color: #0f1729; font-weight: 600; font-size: 13px; text-decoration: none; box-shadow: 0 10px 25px rgba(251, 191, 36, 0.35);">
+                        <a href="${escapeHtml(detailUrl)}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; height: 36px; border-radius: 18px; padding: 0 16px; background: linear-gradient(135deg, #fedc00 0%, #FFF 100%); color: #0f1729; font-weight: 600; font-size: 13px; text-decoration: none; box-shadow: 0 10px 25px rgba(251, 191, 36, 0.35);">
 
                             Voir le détail
                         </a>
@@ -1995,7 +2043,7 @@
                     const stars = [];
                     for (let i = 1; i <= 5; i++) {
                         if (i <= rating) {
-                            stars.push('<span style="color: #fbbf24; font-size: 0.7rem;">★</span>');
+                            stars.push('<span style="color: #0f6a58; font-size: 0.7rem;">★</span>');
                         } else {
                             stars.push('<span style="color: #d1d5db; font-size: 0.7rem;">★</span>');
                         }
@@ -2109,7 +2157,7 @@
             const stars = [];
             for (let i = 1; i <= 5; i++) {
                 if (i <= rating) {
-                    stars.push('<span style="color: #fbbf24;">★</span>');
+                    stars.push('<span style="color: #0f6a58;">★</span>');
                 } else {
                     stars.push('<span style="color: #d1d5db;">★</span>');
                 }
@@ -2363,7 +2411,7 @@
                     const stars = [];
                     for (let i = 1; i <= 5; i++) {
                         if (i <= rating) {
-                            stars.push('<span style="color: #fbbf24; font-size: 0.7rem;">★</span>');
+                            stars.push('<span style="color: #0f6a58; font-size: 0.7rem;">★</span>');
                         } else {
                             stars.push('<span style="color: #d1d5db; font-size: 0.7rem;">★</span>');
                         }
@@ -2457,7 +2505,7 @@
                         </button>
                     </div>
                     <div class="popup-content">
-                        <iframe id="virtual-tour-iframe" src="" frameborder="0" allowfullscreen style="width: 100%; height: 500px; border-radius: 8px;"></iframe>
+                        <iframe id="virtual-tour-iframe" src="" frameborder="0" allowfullscreen style="width: 100%; height: 100%; border-radius: 8px;"></iframe>
                     </div>
                 </div>
             `;
@@ -2665,8 +2713,21 @@
     /**
      * Open virtual tour in fullscreen mode
      */
-    window.openVirtualTourFullscreen = function() {
+    window.openVirtualTourFullscreen = function(restaurant) {
         const modal = document.getElementById('fullscreen-virtual-tour-modal');
+        const iframe = document.getElementById('fullscreen-virtual-tour-iframe');
+        let virtualTourUrl = '';
+
+        if (restaurant && restaurant.restaurant_meta) {
+            virtualTourUrl = restaurant.restaurant_meta.virtual_tour_url || '';
+        } else if (typeof currentVirtualTourRestaurant !== 'undefined' && currentVirtualTourRestaurant && currentVirtualTourRestaurant.restaurant_meta) {
+            virtualTourUrl = currentVirtualTourRestaurant.restaurant_meta.virtual_tour_url || '';
+        }
+
+        if (iframe && virtualTourUrl) {
+            iframe.src = virtualTourUrl;
+        }
+
         if (modal) {
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -2678,9 +2739,13 @@
      */
     window.closeVirtualTourFullscreen = function() {
         const modal = document.getElementById('fullscreen-virtual-tour-modal');
+        const iframe = document.getElementById('fullscreen-virtual-tour-iframe');
         if (modal) {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
+        }
+        if (iframe) {
+            iframe.src = '';
         }
     };
 

@@ -186,7 +186,7 @@
                 updateRestaurantList();
                 
                 // Update results count
-                updateResultsCount(`${allRestaurants.length} restaurant${allRestaurants.length !== 1 ? 's' : ''} trouvé`);
+                updateResultsCount(`${allRestaurants.length} restaurant${allRestaurants.length !== 1 ? 's' : ''} trouvés`);
                 
                 showRestaurantListLoading(false);
             })
@@ -317,7 +317,7 @@
         content += `<h3 style="font-size: 16px; font-weight: 600; color: #0f1729; margin: 0; flex: 1;">${escapeHtml(title)}</h3>`;
         content += `<div style="display: flex; gap: 4px;">`;
         if (isFeatured) {
-            content += `<span style="padding: 2px 6px; background-color: #fedc00; color: #fedc00; font-size: 10px; border-radius: 12px; font-weight: bold;">★</span>`;
+            content += `<span style="padding: 2px 6px; background-color: #0f6a58; color: #0f6a58; font-size: 10px; border-radius: 12px; font-weight: bold;">★</span>`;
         }
         if (isCurrentRestaurant) {
             content += `<span style="padding: 2px 6px; background-color: #fee2e2; color: #991b1b; font-size: 10px; border-radius: 12px; font-weight: bold;">Current</span>`;

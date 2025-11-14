@@ -36,6 +36,10 @@ $initial_restaurants_for_map = function_exists('lebonresto_get_all_restaurants_f
     ? lebonresto_get_all_restaurants_for_map()
     : array();
 
+// Prepare filter data
+$cuisine_types = lebonresto_get_cuisine_types();
+$restaurant_cities = lebonresto_get_restaurant_cities();
+
 // Localize script
 wp_localize_script('lebonresto-all-restaurants', 'lebonrestoAll', array(
     'apiUrl' => home_url('/wp-json/lebonresto/v1/restaurants'),
@@ -61,9 +65,6 @@ wp_localize_script('lebonresto-all-restaurants', 'lebonrestoAll', array(
     )
 ));
 
-// Get cuisine types and cities
-$cuisine_types = lebonresto_get_cuisine_types();
-$restaurant_cities = lebonresto_get_restaurant_cities();
 ?>
 
 <!DOCTYPE html>
@@ -156,11 +157,11 @@ $restaurant_cities = lebonresto_get_restaurant_cities();
                             <div class="filter-group">
                                 <div class="filter-header">
                                     <h3 class="filter-title"><?php _e('Ville', 'le-bon-resto'); ?></h3>
-                                    <button type="button" class="filter-toggle" aria-expanded="true">
+                                    <div class="filter-toggle" aria-expanded="true">
                                         <svg viewBox="0 0 24 24" width="20" height="20" class="toggle-icon">
                                             <path d="M18.4 7.4 12 13.7 5.6 7.4 4.2 8.8l7.8 7.8 7.8-7.8z"></path>
                                         </svg>
-                                    </button>
+                                    </div>
                                 </div>
                                 <div class="filter-content">
                                     <select id="city-filter" class="filter-select">
@@ -177,11 +178,11 @@ $restaurant_cities = lebonresto_get_restaurant_cities();
                             <div class="filter-group">
                                 <div class="filter-header">
                                     <h3 class="filter-title"><?php _e('Type de cuisine', 'le-bon-resto'); ?></h3>
-                                    <button type="button" class="filter-toggle" aria-expanded="true">
+                                    <div class="filter-toggle" aria-expanded="true">
                                         <svg viewBox="0 0 24 24" width="20" height="20" class="toggle-icon">
                                             <path d="M18.4 7.4 12 13.7 5.6 7.4 4.2 8.8l7.8 7.8 7.8-7.8z"></path>
                                         </svg>
-                                    </button>
+                                    </div>
                                 </div>
                                 <div class="filter-content">
                                     <div class="filter-options">
@@ -206,11 +207,11 @@ $restaurant_cities = lebonresto_get_restaurant_cities();
                             <div class="filter-group">
                                 <div class="filter-header">
                                     <h3 class="filter-title"><?php _e('Gamme de prix', 'le-bon-resto'); ?></h3>
-                                    <button type="button" class="filter-toggle" aria-expanded="true">
+                                    <div class="filter-toggle" aria-expanded="true">
                                         <svg viewBox="0 0 24 24" width="20" height="20" class="toggle-icon">
                                             <path d="M18.4 7.4 12 13.7 5.6 7.4 4.2 8.8l7.8 7.8 7.8-7.8z"></path>
                                         </svg>
-                                    </button>
+                                    </div>
                                 </div>
                                 <div class="filter-content">
                                     <div class="price-range-slider">
@@ -463,6 +464,21 @@ $restaurant_cities = lebonresto_get_restaurant_cities();
             </svg>
         </a>
         <div id="fullscreen-map"></div>
+    </div>
+
+    <!-- Fullscreen Virtual Tour Modal -->
+    <div id="fullscreen-virtual-tour-modal" class="fullscreen-modal" style="display: none;">
+        <div class="fullscreen-modal-content">
+            <div class="fullscreen-modal-header">
+                <h3><?php _e('Visite virtuelle', 'le-bon-resto'); ?></h3>
+                <div class="fullscreen-close-icon" onclick="closeVirtualTourFullscreen()" title="<?php esc_attr_e('Fermer', 'le-bon-resto'); ?>">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="fullscreen-modal-body">
+                <iframe id="fullscreen-virtual-tour-iframe" src="" class="w-full h-full border-none" allowfullscreen loading="lazy"></iframe>
+            </div>
+        </div>
     </div>
 
     <?php wp_footer(); ?>

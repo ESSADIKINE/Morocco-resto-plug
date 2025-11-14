@@ -760,7 +760,7 @@ html.lebonresto-detail-page {
 }
 
 .star-half {
-    background: linear-gradient(90deg, #fbbf24 50%, #e5e7eb 50%);
+    background: linear-gradient(90deg, #FFF 50%, #e5e7eb 50%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -785,7 +785,7 @@ html.lebonresto-detail-page {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #cc2014, #fbbf24);
+    background: linear-gradient(90deg, #cc2014, #FFF);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -856,7 +856,7 @@ html.lebonresto-detail-page {
                             <i class="fas fa-home"></i> 
                             <a href="<?php echo home_url(); ?>" style="color: var(--primary-color); text-decoration: none;">Accueil</a> 
                             <i class="fas fa-chevron-right mx-2"></i>
-                            <a href="<?php echo home_url('/restaurants/'); ?>" style="color: var(--primary-color); text-decoration: none;">Restaurants</a>
+                            <a href="<?php echo home_url('/all/'); ?>" style="color: var(--primary-color); text-decoration: none;">Restaurants</a>
                             <i class="fas fa-chevron-right mx-2"></i>
                             <span style="color: var(--text-secondary);"><?php echo esc_html($blog_title ?: get_the_title()); ?></span>
                         </p>
@@ -1230,153 +1230,6 @@ html.lebonresto-detail-page {
                         </div>
                     </div>
                     
-                    <!-- Reviews Section -->
-                    <div class="property-section-wrap" id="reviews-section" style="margin-bottom: 2rem;">
-                        <div class="block-wrap">
-                            <div class="block-title-wrap">
-                                <h2>Avis Clients</h2>
-                            </div>
-                            <div class="block-content-wrap">
-                                <div class="reviews-container" style="display: grid; gap: 2rem;">
-                                    
-                                    <!-- Google Reviews -->
-                                    <?php if ($google_place_id): ?>
-                                    <div class="review-platform" style="background: var(--text-muted); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
-                                        <div class="platform-header" style="display: flex; align-items: center; margin-bottom: 1rem;">
-                                            <div class="platform-icon" style="width: 40px; height: 40px; background: #4285F4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                                                </svg>
-                                            </div>
-                                            <div>
-                                                <h3 style="margin: 0; color: var(--text-primary); font-size: 1.25rem; font-weight: 600;">Google Maps</h3>
-                                                <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">Avis Google</p>
-                                            </div>
-                                        </div>
-                                        
-                                        <?php if ($google_rating): ?>
-                                        <div class="rating-display" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                            <div class="stars" style="display: flex; gap: 2px;">
-                                                <?php 
-                                                $rating = floatval($google_rating);
-                                                for ($i = 1; $i <= 5; $i++): 
-                                                    $star_class = $i <= $rating ? 'star-filled' : ($i - 0.5 <= $rating ? 'star-half' : 'star-empty');
-                                                ?>
-                                                <span class="star <?php echo $star_class; ?>" style="color: #fbbf24; font-size: 1.5rem;">★</span>
-                                                <?php endfor; ?>
-                                            </div>
-                                            <div class="rating-text">
-                                                <span style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary);"><?php echo number_format($rating, 1); ?></span>
-                                                <span style="color: var(--text-secondary); margin-left: 0.5rem;">/ 5</span>
-                                            </div>
-                                        </div>
-                                        <?php if ($google_review_count): ?>
-                                        <p style="margin: 0 0 1rem 0; color: var(--text-secondary); font-size: 0.9rem;">
-                                            Basé sur <?php echo intval($google_review_count); ?> avis
-                                        </p>
-                                        <?php endif; ?>
-                                        <?php else: ?>
-                                        <div style="margin-bottom: 1rem; padding: 1rem; background: #e3f2fd; border-radius: var(--radius-md); border-left: 4px solid #4285F4;">
-                                            <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                                                <i class="fas fa-star" style="color: #4285F4; margin-right: 0.5rem;"></i>
-                                                <strong style="color: var(--text-primary);">Note Google disponible</strong>
-                                            </div>
-                                            <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">
-                                                Pour afficher la note Google, ajoutez-la dans l'administration du restaurant.
-                                            </p>
-                                        </div>
-                                        <?php endif; ?>
-                                        
-                                        <div style="margin-top: 1rem;">
-                                            <a href="<?php echo esc_url($google_maps_link); ?>" 
-                                               target="_blank" 
-                                               style="display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; background: #4285F4; color: white; text-decoration: none; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(66, 133, 244, 0.3);">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 0.5rem;">
-                                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                                                </svg>
-                                                <?php echo $google_rating ? 'Voir tous les avis sur Google Maps' : 'Voir les avis sur Google Maps'; ?>
-                                            </a>
-                                        </div>
-                                        
-                                        <?php if (current_user_can('manage_options') && !$google_rating): ?>
-                                        <div style="margin-top: 1rem; padding: 0.75rem; background: #fff3cd; border-radius: var(--radius-md); border: 1px solid #ffeaa7;">
-                                            <p style="margin: 0; font-size: 0.8rem; color: #856404;">
-                                                <i class="fas fa-info-circle" style="margin-right: 0.25rem;"></i>
-                                                <strong>Admin:</strong> 
-                                                <?php if (!$api_key): ?>
-                                                Ajoutez votre clé API Google Maps dans les paramètres généraux pour récupérer automatiquement les avis.
-                                                <?php elseif (!$google_place_id): ?>
-                                                Ajoutez un Google Place ID dans la section "Restaurant Reviews" pour récupérer automatiquement les avis.
-                                                <?php else: ?>
-                                                Les avis Google seront récupérés automatiquement via l'API.
-                                                <?php endif; ?>
-                                            </p>
-                                        </div>
-                                        <?php endif; ?>
-                                        
-                                        <!-- Individual Google API Reviews -->
-                                        <?php if (!empty($google_api_reviews)): ?>
-                                        <div style="margin-top: 1.5rem;">
-                                            <h4 style="margin: 0 0 1rem 0; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">Avis récents Google</h4>
-                                            <div style="display: grid; gap: 1rem;">
-                                                <?php foreach (array_slice($google_api_reviews, 0, 3) as $review): ?>
-                                                    <?php 
-                                                    // Validate review data and provide fallbacks
-                                                    $review_name = isset($review['name']) ? $review['name'] : (isset($review['author_name']) ? $review['author_name'] : 'Utilisateur anonyme');
-                                                    $review_rating = isset($review['rating']) ? intval($review['rating']) : 0;
-                                                    $review_text = isset($review['text']) ? $review['text'] : '';
-                                                    $review_date = isset($review['date']) ? $review['date'] : date('Y-m-d');
-                                                    
-                                                    // Skip reviews with invalid data
-                                                    if (empty($review_name) && empty($review_text) && $review_rating === 0) {
-                                                        continue;
-                                                    }
-                                                    ?>
-                                                <div class="review-item" style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-                                                        <div>
-                                                            <strong style="color: var(--text-primary); font-size: 0.9rem;"><?php echo esc_html($review_name); ?></strong>
-                                                            <div style="display: flex; align-items: center; margin-top: 0.25rem;">
-                                                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                                <span style="color: <?php echo $i <= $review_rating ? '#fbbf24' : '#d1d5db'; ?>; font-size: 0.9rem;">★</span>
-                                                                <?php endfor; ?>
-                                                            </div>
-                                                        </div>
-                                                        <span style="color: var(--text-secondary); font-size: 0.8rem;"><?php echo esc_html($review_date); ?></span>
-                                                    </div>
-                                                    <?php if (!empty($review_text)): ?>
-                                                    <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">
-                                                        <?php echo esc_html(wp_trim_words($review_text, 30)); ?>
-                                                    </p>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <?php endforeach; ?>
-                                            </div>
-                                            <?php if (count($google_api_reviews) > 3): ?>
-                                            <p style="margin: 1rem 0 0 0; text-align: center;">
-                                                <a href="<?php echo esc_url($google_maps_link); ?>" target="_blank" style="color: #4285F4; text-decoration: none; font-size: 0.9rem;">
-                                                    Voir tous les <?php echo count($google_api_reviews); ?> avis sur Google Maps →
-                                                </a>
-                                            </p>
-                                            <?php endif; ?>
-                                        </div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <?php endif; ?>
-                                    
-                                    <!-- Fallback when no reviews are available -->
-                                    <?php if (!$google_place_id): ?>
-                                    <div style="text-align: center; padding: 3rem 2rem; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
-                                        <i class="fas fa-star" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5;"></i>
-                                        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Aucun avis disponible</h3>
-                                        <p style="color: var(--text-secondary); margin-bottom: 0;">Les avis Google apparaîtront automatiquement une fois le Google Place ID ajouté.</p>
-                                    </div>
-                                    <?php endif; ?>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     
                     
                             
@@ -1541,6 +1394,76 @@ html.lebonresto-detail-page {
                              </div>
                             </div>
                         </div>
+
+                        <div class="property-section-wrap" style="margin-bottom: 2rem;">
+                            <div class="block-wrap">
+                                <div class="block-title-wrap">
+                                    <h2>Avis Google</h2>
+                                </div>
+                                <div class="block-content-wrap">
+                                    <?php if (!empty($google_place_id)): ?>
+                                        <?php if (!empty($google_rating)): ?>
+                                        <?php $rating = floatval($google_rating); ?>
+                                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                            <div style="display: flex; gap: 2px;">
+                                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                    <span style="color: <?php echo $i <= $rating ? '#0f6a58' : '#d1d5db'; ?>; font-size: 1.5rem;">★</span>
+                                                <?php endfor; ?>
+                                            </div>
+                                            <div>
+                                                <span style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary);"><?php echo number_format($rating, 1); ?></span>
+                                                <span style="color: var(--text-secondary); margin-left: 0.5rem;">/ 5</span>
+                                            </div>
+                                        </div>
+                                        <?php if (!empty($google_review_count)): ?>
+                                        <p style="margin: 0 0 1rem 0; color: var(--text-secondary); font-size: 0.9rem;">
+                                            Basé sur <?php echo intval($google_review_count); ?> avis
+                                        </p>
+                                        <?php endif; ?>
+                                        <?php endif; ?>
+
+                                        <a href="<?php echo esc_url($google_maps_link); ?>"
+                                           target="_blank"
+                                           style="display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; background: #0f6a58; color: white; text-decoration: none; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; transition: var(--transition); margin-bottom: 1.5rem;">
+                                            <i class="fas fa-plus-circle" style="margin-right: 0.5rem;"></i>
+                                            Ajouter un avis
+                                        </a>
+
+                                        <?php if (!empty($google_api_reviews)): ?>
+                                        <div style="display: grid; gap: 1rem;">
+                                            <?php foreach (array_slice($google_api_reviews, 0, 3) as $review): ?>
+                                            <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                                    <div>
+                                                        <strong style="color: var(--text-primary); font-size: 0.9rem;"><?php echo esc_html($review['name'] ?? 'Utilisateur anonyme'); ?></strong>
+                                                        <div style="display: flex; align-items: center; margin-top: 0.25rem;">
+                                                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                            <span style="color: <?php echo $i <= intval($review['rating'] ?? 0) ? '#0f6a58 : '#d1d5db'; ?>; font-size: 0.9rem;">★</span>
+                                                            <?php endfor; ?>
+                                                        </div>
+                                                    </div>
+                                                    <span style="color: var(--text-secondary); font-size: 0.8rem;"><?php echo esc_html($review['date'] ?? date('Y-m-d')); ?></span>
+                                                </div>
+                                                <?php if (!empty($review['text'])): ?>
+                                                <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">
+                                                    <?php echo esc_html(wp_trim_words($review['text'], 30)); ?>
+                                                </p>
+                                                <?php endif; ?>
+                                            </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                    <div style="text-align: center; padding: 3rem 2rem; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                                        <i class="fas fa-star" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5;"></i>
+                                        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Aucun avis disponible</h3>
+                                        <p style="color: var(--text-secondary); margin-bottom: 0;">Les avis Google apparaîtront automatiquement une fois le Google Place ID ajouté.</p>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+
                     </aside>
                 </div>
             </div>
@@ -1561,7 +1484,7 @@ html.lebonresto-detail-page {
                         <p style="color: #6c757d; margin-bottom: 2rem; font-size: 1.1rem;">
                             Le restaurant que vous recherchez n'existe pas ou a été supprimé.
                         </p>
-                        <a href="<?php echo home_url('/restaurants/'); ?>" 
+                        <a href="<?php echo home_url('/all/'); ?>" 
                            style="display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #cc2014 0%, #cc2014 100%); color: #0a4d40; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease;">
                             <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>
                             Retour aux restaurants

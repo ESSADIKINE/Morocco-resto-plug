@@ -529,7 +529,7 @@ wp_add_inline_style('lebonresto-single-css', '
 
     .mobile-filter-toggle .filter-text {
         display: block !important;
-        color: var(--text-on-primary) !important;
+        color: #ffffff !important;
         font-weight: 600 !important;
         font-size: 14px !important;
         letter-spacing: 0.5px !important;
@@ -1908,7 +1908,7 @@ wp_localize_script(
 
 .mobile-filter-panel input:hover,
 .mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
+    border-color: #FFF !important;
     box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
 }
 
@@ -2094,7 +2094,7 @@ wp_localize_script(
 
 .mobile-filter-panel input:hover,
 .mobile-filter-panel select:hover {
-    border-color: #fbbf24 !important;
+    border-color: #FFF !important;
     box-shadow: 0 2px 8px rgba(254, 220, 0, 0.1) !important;
 }
 
@@ -2362,11 +2362,11 @@ wp_localize_script(
 .restaurant-card:hover {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
     transform: translateY(-4px) scale(1.02) !important;
-    border-color: #fbbf24 !important;
+    border-color: #FFF !important;
 }
 
 .restaurant-card.current-restaurant {
-    border-color: #fbbf24 !important;
+    border-color: #FFF !important;
     box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3) !important;
 }
 
@@ -2429,7 +2429,7 @@ wp_localize_script(
 
 /* Current restaurant highlighting */
 .restaurant-card.current-restaurant .restaurant-name a {
-    color: #fbbf24 !important;
+    color: #FFF !important;
     font-weight: 700 !important;
 }
 
@@ -3034,7 +3034,7 @@ function addRestaurantMarkersToFullscreenMap() {
             const generateStars = (rating) => {
                 const numRating = parseFloat(rating) || 0;
                 return Array.from({ length: 5 }, (_, i) => {
-                    const starColor = i < Math.floor(numRating) ? '#fbbf24' : '#d1d5db';
+                    const starColor = i < Math.floor(numRating) ? '#0f6a58' : '#d1d5db';
                     return `<span style="color: ${starColor}; font-size: 0.7rem;">★</span>`;
                 }).join('');
             };
@@ -3057,6 +3057,16 @@ function addRestaurantMarkersToFullscreenMap() {
             // Create custom icon with name and rating below (same as all-restaurants popup)
             const iconHtml = `
                 <div class="marker-with-label">
+                    <div class="marker-label">
+                        <div class="marker-name">${cleanTitle}</div>
+                        ${rating > 0 ? `
+                            <div class="marker-rating">
+                                <div class="marker-stars">${generateStars(rating)}</div>
+                                <span class="marker-rating-text">${rating.toFixed(1)}</span>
+                                ${reviewCount > 0 ? `<span class="marker-review-count">(${reviewCount})</span>` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
                     <div class="marker-icon ${isCurrent ? 'current' : 'regular'}">
                         <div class="marker-content">
                             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" x="0" y="0" viewBox="0 0 713.343 713.343" style="enable-background:new 0 0 512 512" xml:space="preserve" class="marker-svg">
@@ -3074,16 +3084,6 @@ function addRestaurantMarkersToFullscreenMap() {
                                 </g>
                             </svg>
                         </div>
-                    </div>
-                    <div class="marker-label">
-                        <div class="marker-name">${cleanTitle}</div>
-                        ${rating > 0 ? `
-                            <div class="marker-rating">
-                                <div class="marker-stars">${generateStars(rating)}</div>
-                                <span class="marker-rating-text">${rating.toFixed(1)}</span>
-                                ${reviewCount > 0 ? `<span class="marker-review-count">(${reviewCount})</span>` : ''}
-                            </div>
-                        ` : ''}
                     </div>
                 </div>
             `;
@@ -3163,7 +3163,7 @@ function createRestaurantPopupContent(restaurant) {
 
     // Generate rating stars
     const ratingStars = Array.from({ length: 5 }, (_, i) => {
-        const starColor = i < Math.floor(rating) ? '#fbbf24' : '#d1d5db';
+        const starColor = i < Math.floor(rating) ? '#0f6a58' : '#d1d5db';
         return `<span style="color: ${starColor};">★</span>`;
     }).join('');
 

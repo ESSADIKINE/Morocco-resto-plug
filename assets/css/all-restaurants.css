@@ -351,12 +351,10 @@
     max-height: calc(100vh - 48px);
     overflow-y: auto;
     z-index: 10;
-    background: rgba(251, 246, 239, 0.92);
+    background: #ffffff;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
-    border: 1px solid rgba(244, 193, 97, 0.4);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid #0f6a58;
     transition: all 0.3s ease;
 }
 
@@ -366,8 +364,8 @@
 }
 
 .filters-container {
-    background: linear-gradient(150deg, #0a4d40, #ee2e20);
-    border: 1px solid rgba(179, 52, 43, 0.15);
+    background: #ffffff;
+    border: 1px solid #0f6a58;
     border-radius: var(--radius-lg);
     padding: 0;
     position: relative;
@@ -391,7 +389,7 @@
 
 /* Filter Groups */
 .filter-group {
-    border-bottom: 1px solid rgba(15, 74, 62, 0.12);
+    border-bottom: 1px solid #0f6a58;
 }
 
 .filter-group:last-child {
@@ -405,12 +403,13 @@
     padding: 18px 22px;
     cursor: pointer;
     user-select: none;
+    background: #0f6a58;
 }
 
 .filter-title {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #fff;
+    color: #ffffff;
     margin: 0;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -420,19 +419,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    border: none;
-    background: rgba(15, 106, 88, 0.08);
+    width: 28px;
+    height: 28px;
+    border: 1px solid #b3342b;
+    background: #ffffff;
     cursor: pointer;
-    color: var(--secondary-dark);
+    color: #b3342b;
     transition: var(--transition);
     border-radius: 50%;
 }
 
 .filter-toggle:hover {
-    color: #fff;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: #b3342b;
+    color: #ffffff;
+    border-color: #b3342b;
 }
 
 .toggle-icon {
@@ -448,6 +448,7 @@
 .filter-content {
     padding: 0 22px 20px 22px;
     display: block;
+    background: #ffffff;
 }
 
 .filter-group .filter-header[aria-expanded="false"] + .filter-content {
@@ -581,21 +582,21 @@
     padding: 10px 12px;
     transition: var(--transition);
     border-radius: var(--radius-md);
-    background: transparent;
-    color: #fff;
+    background: #ffffff;
+    color: #0f6a58;
 }
 
 .filter-option:hover {
-    color: var(--text-primary);
-    background: rgba(244, 193, 97, 0.12);
+    background: #0f6a58;
+    color: #ffffff;
 }
 
 .filter-checkbox {
     width: 16px;
     height: 16px;
-    border: 1px solid #b9ffc0;
+    border: 1px solid #0f6a58;
     border-radius: var(--radius-sm);
-    background: #b9ffc0;
+    background: #ffffff;
     cursor: pointer;
     position: relative;
     appearance: none;
@@ -603,8 +604,8 @@
 }
 
 .filter-checkbox:checked {
-    background: #00ff1a;
-    border-color: var(--primary-color);
+    background: #b3342b;
+    border-color: #b3342b;
 }
 
 .filter-checkbox:checked::after {
@@ -613,7 +614,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #fffaf2;
+    color: #ffffff;
     font-size: 12px;
     font-weight: bold;
 }
@@ -622,9 +623,9 @@
 .filter-radio {
     width: 16px;
     height: 16px;
-    border: 1px solid #b9ffc0;
+    border: 1px solid #0f6a58;
     border-radius: 50%;
-    background: #b9ffc0;
+    background: #ffffff;
     cursor: pointer;
     position: relative;
     appearance: none;
@@ -632,8 +633,8 @@
 }
 
 .filter-radio:checked {
-    background: #00ff1a;
-    border-color: var(--primary-color);
+    background: #b3342b;
+    border-color: #b3342b;
 }
 
 .filter-radio:checked::after {
@@ -644,7 +645,7 @@
     transform: translate(-50%, -50%);
     width: 6px;
     height: 6px;
-    background: #fffaf2;
+    background: #ffffff;
     border-radius: 50%;
 }
 
@@ -658,7 +659,7 @@
 
 .option-text {
     font-size: 0.875rem;
-    color: #b9ffc0;
+    color: #0f6a58;
     flex: 1;
 }
 
@@ -687,19 +688,21 @@
 .show-more-btn {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 8px 0;
-    background: none;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #b3342b;
     border: none;
-    color: var(--text-secondary);
+    color: #ffffff;
     font-size: 0.875rem;
     cursor: pointer;
     transition: var(--transition);
     margin-top: 8px;
+    border-radius: var(--radius-full);
 }
 
 .show-more-btn:hover {
-    color: var(--text-primary);
+    background: #0f6a58;
+    color: #ffffff;
 }
 
 .show-more-icon {
@@ -715,18 +718,19 @@
 /* Filter Actions */
 .filter-actions {
     padding: 16px 20px;
-    border-top: 1px solid var(--border-light);
+    border-top: 1px solid #0f6a58;
+    background: #ffffff;
 }
 
 .clear-filters-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
-    background: none;
-    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    background: #ffffff;
+    border: 1px solid #b3342b;
     border-radius: var(--radius-md);
-    color: var(--text-secondary);
+    color: #b3342b;
     font-size: 0.875rem;
     cursor: pointer;
     transition: var(--transition);
@@ -735,14 +739,57 @@
 }
 
 .clear-filters-btn:hover {
-    border-color: var(--primary-color);
-    color: var(--text-primary);
+    background: #0f6a58;
+    border-color: #0f6a58;
+    color: #ffffff;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #0f6a58;
+    border-radius: var(--radius-md);
+    background: #ffffff;
+    color: #0f6a58;
+}
+
+.filter-select:focus {
+    outline: 2px solid #b3342b;
+}
+
+.price-inputs .price-input {
+    border: 1px solid #0f6a58;
+    background: #ffffff;
+    color: #0f6a58;
+    border-radius: var(--radius-md);
+}
+
+.price-inputs .price-input:focus {
+    outline: 2px solid #b3342b;
+}
+
+.currency-symbol {
+    color: #0f6a58;
 }
 
 .clear-icon {
     width: 16px;
     height: 16px;
 }
+.clear-icon path { fill: currentColor; }
+.clear-filters-btn .clear-icon { color: #ffffff; }
+.clear-filters-btn:hover .clear-icon { color: #b3342b; }
+
+/* Popup control icon color behavior */
+.control-icon { width: 16px; height: 16px; }
+.control-icon path { fill: currentColor; }
+.popup-control-btn .control-icon { color: #ffffff; }
+.popup-control-btn:hover .control-icon { color: #b3342b; }
+
+/* Header search icon */
+.header-search-icon { color: #ffffff; }
+.header-search-icon path { fill: currentColor; }
+.header-search-input-container:hover .header-search-icon { color: #b3342b; }
 
 /* Restaurant Content */
 .restaurants-content {
@@ -784,7 +831,7 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     background: var(--bg-white);
-    color: var(--text-secondary);
+    color: #FFF;
     font-size: 0.875rem;
     cursor: pointer;
     transition: var(--transition);
@@ -1014,12 +1061,12 @@
 /* Icon colors - Yellow */
 .save-btn svg,
 .vr-btn svg {
-    color: var(--accent-color);
+    color: #0f6a58;
 }
 
 .save-btn svg path,
 .vr-btn svg path {
-    fill: #fbbf24;
+    fill: #0f6a58;
 }
 
 /* Ensure div inside a tags work properly */
@@ -1034,8 +1081,12 @@
 
 /* VR Popup - Auto height based on content */
 #virtual-tour-popup .popup-container {
-    height: auto;
-    max-height: 90vh;
+    height: 100vh;
+    max-height: 100vh;
+}
+#irtual-tour-iframe{
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* Icon Tooltips */
@@ -1050,7 +1101,7 @@
     bottom: -35px;
     left: 50%;
     transform: translateX(-50%);
-    background: #fbbf24;
+    background: #0f6a58;
     color: white;
     padding: 6px 10px;
     border-radius: 6px;
@@ -1074,7 +1125,7 @@
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 5px solid #fbbf24;
+    border-bottom: 5px solid #FFF;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -1093,7 +1144,7 @@
     bottom: -35px;
     left: 50%;
     transform: translateX(-50%);
-    background: #fbbf24;
+    background: #0f6a58;
     color: white;
     padding: 6px 10px;
     border-radius: 6px;
@@ -1117,7 +1168,7 @@
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 5px solid #fbbf24;
+    border-bottom: 5px solid #FFF;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -1173,7 +1224,7 @@
 }
 
 .restaurant-name:hover {
-    color: var(--accent-color);
+    color: #FFF;
 }
 
 .rating-section {
@@ -1215,6 +1266,7 @@
 }
 
 .review-count:hover {
+    color: rgb(255, 255, 255);
     text-decoration: underline;
 }
 
@@ -1236,12 +1288,12 @@
 .detail-icon {
     width: 16px;
     height: 16px;
-    color: #fbbf24;
+    color: #FFF;
 }
 
 /* Ensure yellow fill for inline SVG paths */
 .detail-icon path {
-    fill: #fbbf24;
+    fill: #FFF;
 }
 
 .cuisine-price {
@@ -1251,8 +1303,8 @@
 }
 
 .price-range {
-    color: var(--text-secondary);
-    font-weight: 500;
+    color: #FFF;
+    font-weight: 700;
 }
 
 .status-open {
@@ -1382,7 +1434,7 @@
 
 .review-rating .star {
     font-size: 12px;
-    color: #fbbf24;
+    color: #0f6a58;
 }
 
 .more-reviews {
@@ -1416,12 +1468,6 @@
     flex-wrap: wrap;
 }
 
-.price-range {
-    font-weight: 500;
-    color: var(--text-secondary);
-    font-size: 13px;
-}
-
 /* Card Actions */
 .card-actions {
     display: flex;
@@ -1450,14 +1496,14 @@
 /* Color action icons in yellow */
 .action-icons-vertical .action-btn svg,
 .action-icons-vertical .action-btn svg path {
-    color: #fbbf24;
-    fill: #fbbf24;
+    color: #ffffff;
+    fill: #ffffff;
 }
 
 .action-icons-vertical .action-btn:hover svg,
 .action-icons-vertical .action-btn:hover svg path {
-    color: #f59e0b;
-    fill: #f59e0b;
+    color: #b3342b;
+    fill: #b3342b;
 }
 
 .action-btn {
@@ -2249,9 +2295,9 @@
 }
 
 .header-search-input {
-    padding: 0.75rem 1rem 0.75rem 3rem;
+    padding: 0.75rem 1rem 0.75rem 3rem !important;
     border: 2px solid rgba(244, 193, 97, 0.45);
-    border-radius: 0.75rem;
+    border-radius: 2rem !important;
     font-size: 1rem;
     background: rgba(255, 250, 242, 0.92);
     transition: all 0.2s ease;
@@ -2455,7 +2501,7 @@
     justify-content: space-between;
     align-items: center;
     padding:20px;
-    background: linear-gradient(135deg, #fff700 0%, #e2e8f0 100%);
+    background: linear-gradient(135deg, #ff0000 0%, #e2e8f0 100%);
     border-bottom: 2px solid #e5e7eb;
 }
 

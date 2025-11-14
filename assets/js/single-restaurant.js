@@ -90,6 +90,17 @@
         // Add map controls
         addMapControls();
         
+        // Normalize star colors initially and on DOM changes
+        normalizeStarColors(document);
+        const starObserver = new MutationObserver((mutations) => {
+            for (const m of mutations) {
+                if (m.addedNodes && m.addedNodes.length) {
+                    normalizeStarColors(document);
+                    break;
+                }
+            }
+        });
+        starObserver.observe(document.body, { childList: true, subtree: true });
     }
 
     /**
@@ -526,7 +537,7 @@
                 const generateStars = (rating) => {
                     const numRating = parseFloat(rating) || 0;
                     return Array.from({ length: 5 }, (_, i) => {
-                        const starColor = i < Math.floor(numRating) ? '#fbbf24' : '#d1d5db';
+                        const starColor = i < Math.floor(numRating) ? '#0f6a58' : '#d1d5db';
                         return `<span style="color: ${starColor}; font-size: 0.7rem;">★</span>`;
                     }).join('');
                 };
@@ -535,6 +546,16 @@
                     className: 'current-restaurant-marker-with-label',
                     html: `
                         <div class="marker-with-label">
+                            <div class="marker-label">
+                                <div class="marker-name">${cleanTitle}</div>
+                                ${rating > 0 ? `
+                                    <div class="marker-rating">
+                                        <div class="marker-stars">${generateStars(rating)}</div>
+                                        <span class="marker-rating-text">${rating.toFixed(1)}</span>
+                                        ${reviewCount > 0 ? `<span class="marker-review-count">(${reviewCount})</span>` : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
                             <div class="marker-icon current">
                                 <div class="marker-content">
                                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" x="0" y="0" viewBox="0 0 713.343 713.343" style="enable-background:new 0 0 512 512" xml:space="preserve" class="marker-svg">
@@ -552,16 +573,6 @@
                                         </g>
                                     </svg>
                                 </div>
-                            </div>
-                            <div class="marker-label">
-                                <div class="marker-name">${cleanTitle}</div>
-                                ${rating > 0 ? `
-                                    <div class="marker-rating">
-                                        <div class="marker-stars">${generateStars(rating)}</div>
-                                        <span class="marker-rating-text">${rating.toFixed(1)}</span>
-                                        ${reviewCount > 0 ? `<span class="marker-review-count">(${reviewCount})</span>` : ''}
-                                    </div>
-                                ` : ''}
                             </div>
                         </div>
                     `,
@@ -633,6 +644,8 @@
 
         // Highlight current restaurant
         highlightCurrentRestaurant();
+        // After markers update, normalize star colors
+        setTimeout(() => normalizeStarColors(document), 0);
     }
 
     /**
@@ -677,6 +690,43 @@
             // Fallback to default view
             const center = lebonrestoSingle?.mapCenter || { lat: 33.5731, lng: -7.5898 }; // Casablanca
             map.setView([center.lat, center.lng], 10);
+        }
+    }
+
+    // Normalize star icon colors globally (only change whites to green)
+    function normalizeStarColors(root = document) {
+        try {
+            const candidates = [];
+            candidates.push(...root.querySelectorAll('i.fa-star, i.far.fa-star, i.fas.fa-star'));
+            candidates.push(...root.querySelectorAll('.rating-stars i, .rating-stars span'));
+            candidates.push(...root.querySelectorAll('.stars span'));
+            candidates.push(...root.querySelectorAll('.marker-stars span'));
+
+            const toHex = (color) => {
+                if (!color) return '';
+                const c = color.trim().toLowerCase();
+                if (c.startsWith('#')) return c;
+                const m = c.match(/rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+                if (!m) return c;
+                const r = parseInt(m[1], 10), g = parseInt(m[2], 10), b = parseInt(m[3], 10);
+                return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+            };
+
+            const isWhite = (c) => {
+                if (!c) return false;
+                const hex = toHex(c);
+                return hex === '#ffffff' || hex === '#fff' || c === 'white' || c === 'rgb(255, 255, 255)' || c === 'rgba(255, 255, 255, 1)';
+            };
+
+            candidates.forEach(el => {
+                const cs = window.getComputedStyle(el);
+                const current = cs.color;
+                if (isWhite(current)) {
+                    el.style.color = '#0f6a58';
+                }
+            });
+        } catch (e) {
+            console.warn('normalizeStarColors error:', e);
         }
     }
 
@@ -736,7 +786,7 @@
             
             // Generate star rating
             for (let i = 1; i <= 5; i++) {
-                const starColor = i <= Math.floor(rating) ? '#fbbf24' : '#d1d5db';
+                const starColor = i <= Math.floor(rating) ? '#0f6a58' : '#d1d5db';
                 content += `<span style="color: ${starColor}; font-size: 0.9rem;">★</span>`;
             }
             
